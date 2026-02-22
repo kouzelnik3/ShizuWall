@@ -153,6 +153,53 @@ class ForegroundDetectionService : AccessibilityService() {
                 }
             }
         }
+
+        /**
+         * Auto-disable the accessibility service via shell command (Shizuku or LADB daemon).
+         * Returns true if the service was successfully disabled.
+         */
+        suspend fun disableServiceViaShell(context: Context): Boolean {
+            return withContext(Dispatchers.IO) {
+                try {
+                    val executor = ShellExecutorProvider.forContext(context)
+                    val componentName = "${context.packageName}/${ForegroundDetectionService::class.java.canonicalName}"
+
+                    val currentResult = executor.exec("settings get secure enabled_accessibility_services")
+                    val currentServices = currentResult.stdout.trim().ifEmpty { "null" }
+
+                    if (!currentServices.split(":").any { it == componentName }) {
+                        Log.d(TAG, "Service not in enabled_accessibility_services")
+                        return@withContext true
+                    }
+
+                    val newValue = currentServices.split(":").filter { it != componentName }.joinToString(":")
+
+                    // Handle empty case - use "null" to properly clear the setting
+                    val putResult = if (newValue.isEmpty()) {
+                        executor.exec("settings put secure enabled_accessibility_services null")
+                    } else {
+                        executor.exec("settings put secure enabled_accessibility_services '$newValue'")
+                    }
+                    if (!putResult.success) {
+                        Log.w(TAG, "Failed to set enabled_accessibility_services: ${putResult.stderr}")
+                        return@withContext false
+                    }
+
+                    // Give the system time to process and verify the service was actually disabled
+                    delay(500)
+                    if (isServiceEnabled(context)) {
+                        Log.w(TAG, "Service still enabled after shell command")
+                        return@withContext false
+                    }
+
+                    Log.d(TAG, "Accessibility service auto-disabled via shell")
+                    true
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to auto-disable accessibility service", e)
+                    false
+                }
+            }
+        }
     }
 
     private var currentForegroundPackage: String? = null

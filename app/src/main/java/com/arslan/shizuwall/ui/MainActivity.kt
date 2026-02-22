@@ -133,6 +133,8 @@ class MainActivity : BaseActivity() {
 
     private var defaultItemAnimator: RecyclerView.ItemAnimator? = null
     private var isAppListLoadingVisible = false
+    private var isFirewallProcessRunning = false
+    private var isEnablingProcess = false
 
     private val requestPermissionResultListener = Shizuku.OnRequestPermissionResultListener { requestCode, grantResult ->
         onRequestPermissionsResult(requestCode, grantResult)
@@ -529,18 +531,27 @@ class MainActivity : BaseActivity() {
         }
 
         // Re-sync toggle with saved state without triggering listener
-        suppressToggleListener = true
-        firewallToggle.isChecked = loadFirewallEnabled()
-        suppressToggleListener = false
+        if (!isFirewallProcessRunning) {
+            suppressToggleListener = true
+            firewallToggle.isChecked = loadFirewallEnabled()
+            suppressToggleListener = false
+        }
 
         // Update firewallMode from preferences
         firewallMode = FirewallMode.fromName(sharedPreferences.getString(KEY_FIREWALL_MODE, FirewallMode.DEFAULT.name))
 
         // Reflect current firewall state in UI
-        val enabled = loadFirewallEnabled()
-        appListAdapter.setSelectionEnabled(!enabled || firewallMode.allowsDynamicSelection())
-        updateInteractiveViews()
-        if (enabled) showDimOverlay() else hideDimOverlay()
+        if (!isFirewallProcessRunning) {
+            val enabled = loadFirewallEnabled()
+            appListAdapter.setSelectionEnabled(!enabled || firewallMode.allowsDynamicSelection())
+            updateInteractiveViews()
+            if (enabled) showDimOverlay() else hideDimOverlay()
+        } else {
+            showDimOverlay(force = true)
+            suppressToggleListener = true
+            firewallToggle.isChecked = isEnablingProcess
+            suppressToggleListener = false
+        }
         loadInstalledApps()
         
         // Auto-enable accessibility service if revoked (e.g. after debug APK reinstall)
@@ -554,6 +565,12 @@ class MainActivity : BaseActivity() {
                     } else {
                         Toast.makeText(this@MainActivity, getString(R.string.accessibility_manual_enable_needed), Toast.LENGTH_LONG).show()
                     }
+                }
+            }
+        } else {
+            if (ForegroundDetectionService.isServiceEnabled(this)) {
+                lifecycleScope.launch {
+                    ForegroundDetectionService.disableServiceViaShell(this@MainActivity)
                 }
             }
         }
@@ -1296,7 +1313,7 @@ class MainActivity : BaseActivity() {
 
                 if (animate) {
                     recyclerView.post {
-                        val targetAlpha = if (isFirewallEnabled && !firewallMode.allowsDynamicSelection()) 0.5f else 1f
+                    val targetAlpha = if ((isFirewallEnabled && !firewallMode.allowsDynamicSelection()) || isFirewallProcessRunning) 0.5f else 1f
                         recyclerView.animate()
                             .alpha(targetAlpha)
                             .setStartDelay(400)
@@ -1321,7 +1338,7 @@ class MainActivity : BaseActivity() {
             appList.sortWith(finalComparator)
             filterApps(currentQuery)
             recyclerView.animate().cancel()
-            val targetAlpha = if (isFirewallEnabled && !firewallMode.allowsDynamicSelection()) 0.5f else 1f
+            val targetAlpha = if ((isFirewallEnabled && !firewallMode.allowsDynamicSelection()) || isFirewallProcessRunning) 0.5f else 1f
             recyclerView.alpha = targetAlpha
             updateList()
         }
@@ -1538,7 +1555,7 @@ class MainActivity : BaseActivity() {
         // enable the firewall toggle if firewall is currently active (so user can disable),
         // or if there is at least one selected app (so user can enable).
         if (::firewallToggle.isInitialized) {
-            firewallToggle.isEnabled = isFirewallEnabled || count > 0 || firewallMode.allowsDynamicSelection()
+            firewallToggle.isEnabled = (isFirewallEnabled || count > 0 || firewallMode.allowsDynamicSelection()) && !isFirewallProcessRunning
         }
         
         updateSelectAllCheckbox()
@@ -1833,13 +1850,13 @@ class MainActivity : BaseActivity() {
     private fun applyFirewallState(enable: Boolean, packageNames: List<String>) {
         if (enable && packageNames.isEmpty() && !firewallMode.allowsDynamicSelection()) return
         firewallToggle.isEnabled = false
+        isFirewallProcessRunning = true
+        isEnablingProcess = enable
         lifecycleScope.launch {
             firewallProgress.visibility = android.view.View.VISIBLE
-            if (enable && !firewallMode.allowsDynamicSelection()) {
-                appListAdapter.setSelectionEnabled(false)
-                updateInteractiveViews()
-                showDimOverlay()
-            }
+            appListAdapter.setSelectionEnabled(false)
+            updateInteractiveViews()
+            showDimOverlay(force = true)
             
             if (enable && firewallMode == FirewallMode.SMART_FOREGROUND) {
                 if (!ForegroundDetectionService.isServiceEnabled(this@MainActivity)) {
@@ -1865,7 +1882,6 @@ class MainActivity : BaseActivity() {
                     suppressToggleListener = false
                     appListAdapter.setSelectionEnabled(true)
                     updateInteractiveViews()
-                    hideDimOverlay()
                     return@launch
                 }
 
@@ -1972,6 +1988,8 @@ class MainActivity : BaseActivity() {
             } finally {
                 firewallProgress.visibility = android.view.View.GONE
                 firewallToggle.isEnabled = true
+                hideDimOverlay()
+                isFirewallProcessRunning = false
             }
         }
     }
@@ -2085,9 +2103,9 @@ class MainActivity : BaseActivity() {
     }
 
     // dim only the RecyclerView and disable its interactions
-    private fun showDimOverlay() {
+    private fun showDimOverlay(force: Boolean = false) {
         // visually dim RecyclerView and block interactions
-        if (firewallMode.allowsDynamicSelection()) return // do not dim in Adaptive/Smart Foreground Mode
+        if (firewallMode.allowsDynamicSelection() && !force) return
 
         recyclerView.alpha = 0.5f
         recyclerView.isEnabled = false
