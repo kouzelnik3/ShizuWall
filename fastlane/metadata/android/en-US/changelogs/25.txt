@@ -1,0 +1,5 @@
+Added smartforegrund and whitelist firewall modes
+Added language selector
+SearchView improvements
+Shizuku detection improved (support official + forks )
+Other performance and usability improvements
