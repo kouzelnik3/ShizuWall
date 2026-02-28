@@ -65,6 +65,7 @@ class SettingsActivity : BaseActivity() {
     private lateinit var switchAutoEnableOnShizukuStart: SwitchCompat
     private lateinit var cardAutoEnableOnShizukuStart: com.google.android.material.card.MaterialCardView
     private lateinit var switchAppMonitor: SwitchCompat
+    private lateinit var switchFloatingButton: SwitchCompat
 
     private lateinit var cardAdbBroadcastUsage: com.google.android.material.card.MaterialCardView
     private lateinit var layoutAdbBroadcastUsage: LinearLayout // new
@@ -148,6 +149,27 @@ class SettingsActivity : BaseActivity() {
             val isFirewallEnabled = sharedPreferences.getBoolean(MainActivity.KEY_FIREWALL_ENABLED, false)
             updateFirewallModeSelectorState(isFirewallEnabled)
         }
+
+        // Re-check overlay permission — auto-enable floating button if user just granted it
+        if (::switchFloatingButton.isInitialized) {
+            val wantEnabled = sharedPreferences.getBoolean(
+                com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false
+            )
+            if (wantEnabled && !Settings.canDrawOverlays(this)) {
+                // Permission was revoked while we were open — turn off
+                switchFloatingButton.isChecked = false
+                sharedPreferences.edit().putBoolean(
+                    com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false
+                ).apply()
+                com.arslan.shizuwall.services.FloatingButtonService.stop(this)
+            } else if (Settings.canDrawOverlays(this) && !switchFloatingButton.isChecked) {
+                // User might have just granted permission — keep switch in sync with pref
+                val prefEnabled = sharedPreferences.getBoolean(
+                    com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false
+                )
+                switchFloatingButton.isChecked = prefEnabled
+            }
+        }
     }
 
     private fun initializeViews() {
@@ -179,6 +201,7 @@ class SettingsActivity : BaseActivity() {
         cardSetLadb = findViewById(R.id.cardSetLadb)
         layoutSetLadb = findViewById(R.id.layoutSetLadb)
         switchAppMonitor = findViewById(R.id.switchAppMonitor)
+        switchFloatingButton = findViewById(R.id.switchFloatingButton)
         // Auto-enable switch (new)
         switchAutoEnableOnShizukuStart = findViewById(R.id.switchAutoEnableOnShizukuStart)
         cardAutoEnableOnShizukuStart = findViewById(R.id.cardAutoEnableOnShizukuStart)
@@ -229,6 +252,9 @@ class SettingsActivity : BaseActivity() {
         switchUseDynamicColor.isChecked = prefs.getBoolean(MainActivity.KEY_USE_DYNAMIC_COLOR, true)
         switchAutoEnableOnShizukuStart.isChecked = prefs.getBoolean(MainActivity.KEY_AUTO_ENABLE_ON_SHIZUKU_START, false)
         switchAppMonitor.isChecked = prefs.getBoolean(MainActivity.KEY_APP_MONITOR_ENABLED, false)
+        switchFloatingButton.isChecked = prefs.getBoolean(
+            com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false
+        )
 
         // Load working mode
         val workingModeName = prefs.getString(MainActivity.KEY_WORKING_MODE, com.arslan.shizuwall.WorkingMode.SHIZUKU.name)
@@ -505,6 +531,32 @@ class SettingsActivity : BaseActivity() {
             }
         }
 
+        switchFloatingButton.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                // Check overlay permission
+                if (!Settings.canDrawOverlays(this)) {
+                    // Reset switch — will be restored in onResume if user grants permission
+                    switchFloatingButton.isChecked = false
+                    Toast.makeText(this, R.string.overlay_permission_required, Toast.LENGTH_LONG).show()
+                    val intent = Intent(
+                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        android.net.Uri.parse("package:$packageName")
+                    )
+                    startActivity(intent)
+                    return@setOnCheckedChangeListener
+                }
+                prefs.edit().putBoolean(
+                    com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, true
+                ).apply()
+                com.arslan.shizuwall.services.FloatingButtonService.start(this)
+            } else {
+                prefs.edit().putBoolean(
+                    com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false
+                ).apply()
+                com.arslan.shizuwall.services.FloatingButtonService.stop(this)
+            }
+        }
+
         layoutAdbBroadcastUsage.setOnClickListener { showAdbBroadcastDialog() }
 
         // Make the whole card area toggle the corresponding switches when tapped
@@ -515,6 +567,7 @@ class SettingsActivity : BaseActivity() {
         makeCardClickableForSwitch(switchKeepErrorAppsSelected)
         makeCardClickableForSwitch(switchAutoEnableOnShizukuStart)
         makeCardClickableForSwitch(switchAppMonitor)
+        makeCardClickableForSwitch(switchFloatingButton)
     }
     
 

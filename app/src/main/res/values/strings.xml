@@ -298,4 +298,14 @@
     <string name="accessibility_permission_message">This app requires AccessibilityService API to monitor foreground app changes for Smart Foreground mode. The API will be used to detect when you switch between apps and automatically update firewall rules accordingly. No personal data is collected or transmitted.</string>
     <string name="accept">Accept</string>
     <string name="decline">Decline</string>
+
+    <!-- Floating Firewall Button -->
+    <string name="floating_button">Floating Firewall Button</string>
+    <string name="floating_button_description">Show a draggable overlay button to toggle firewall from anywhere</string>
+    <string name="floating_button_notification_channel_name">Floating Button (Service)</string>
+    <string name="floating_button_notification_channel_description">Background service for the floating firewall button</string>
+    <string name="floating_button_notification_title">Floating Firewall Button</string>
+    <string name="floating_button_notification_text">Tap the floating button to toggle firewall</string>
+    <string name="floating_button_content_description">Toggle firewall</string>
+    <string name="overlay_permission_required">Overlay permission is required for the floating button</string>
 </resources>

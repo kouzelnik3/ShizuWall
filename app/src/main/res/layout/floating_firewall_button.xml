@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Floating firewall toggle button (system overlay) -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="56dp"
+    android:layout_height="56dp"
+    android:background="@drawable/floating_button_bg"
+    android:elevation="6dp">
+
+    <ImageView
+        android:id="@+id/fabFirewallIcon"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_quick_tile"
+        android:contentDescription="@string/floating_button_content_description" />
+
+</FrameLayout>
