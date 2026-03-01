@@ -38,12 +38,12 @@
 ## Screenshots
 
 <p align="center">
-  <img src="assets/screenShots/v4.0/1.png" width="30%" />
-  <img src="assets/screenShots/v4.0/2.png" width="30%" />
-  <img src="assets/screenShots/v4.0/3.png" width="30%" />
-  <img src="assets/screenShots/v4.0/4.png" width="30%" />
-  <img src="assets/screenShots/v4.0/5.png" width="30%" />
-  <img src="assets/screenShots/v4.0/6.png" width="30%" />
+  <img src="assets/screenShots/v4.3/1.png" width="30%" />
+  <img src="assets/screenShots/v4.3/2.png" width="30%" />
+  <img src="assets/screenShots/v4.3/3.png" width="30%" />
+  <img src="assets/screenShots/v4.3/4.png" width="30%" />
+  <img src="assets/screenShots/v4.3/5.png" width="30%" />
+  <img src="assets/screenShots/v4.3/6.png" width="30%" />
   <img src="assets/screenShots/v4.0/7.png" width="30%" />
 </p>
 
