@@ -291,6 +291,10 @@
     <string name="do_not_show_again">Не показывать снова</string>
     <string name="select_font">Выбрать шрифт</string>
     <string name="apply">Применить</string>
+    <string name="accessibility_permission_title">Требуется разрешение на специальные возможности</string>
+    <string name="accessibility_permission_message">Это приложение требует API AccessibilityService для мониторинга изменений приложения на переднем плане для режима Умного переднего плана. API будет использоваться для обнаружения, когда вы переключаетесь между приложениями, и автоматического обновления правил брандмауэра соответственно. Личные данные не собираются и не передаются.</string>
+    <string name="accept">Принять</string>
+    <string name="decline">Отклонить</string>
     <string name="firewall_mode_whitelist">Белый список</string>
     <string name="firewall_mode_whitelist_description">Блокировать все приложения по умолчанию, разрешить выбранные приложения</string>
     <string name="whitelist_info_system_apps_warning">Когда "Показать системные приложения" отключено, системные приложения не будут заблокированы брандмауэром в режиме Белого списка.\n\nЕсли вы включили "Показать системные приложения" и используете режим Белого списка, эта комбинация не была полностью протестирована. Используйте с осторожностью.</string>

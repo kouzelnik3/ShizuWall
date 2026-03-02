@@ -291,6 +291,10 @@
     <string name="do_not_show_again">今後表示しない</string>
     <string name="select_font">フォントを選択</string>
     <string name="apply">適用</string>
+    <string name="accessibility_permission_title">ユーザー補助権限が必要です</string>
+    <string name="accessibility_permission_message">このアプリは、スマートフォアグラウンドモードでフォアグラウンドアプリの変更を監視するためにAccessibilityService APIが必要です。APIは、アプリ間で切り替えたときに検知し、ファイアウォールルールを自動的に更新するために使用されます。個人データは収集または送信されません。</string>
+    <string name="accept">受け入れる</string>
+    <string name="decline">拒否</string>
     <string name="firewall_mode_whitelist">ホワイトリスト</string>
     <string name="firewall_mode_whitelist_description">デフォルトですべてのアプリをブロックし、選択されたアプリを許可</string>
     <string name="whitelist_info_system_apps_warning">"システムアプリを表示"が無効の場合、ホワイトリストモードでシステムアプリはファイアウォールの対象になりません。\n\n"システムアプリを表示"を有効にしてホワイトリストモードを使用している場合、この組み合わせは十分にテストされていません。注意して使用してください。</string>

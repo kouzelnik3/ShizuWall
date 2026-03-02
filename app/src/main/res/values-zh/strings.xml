@@ -289,6 +289,10 @@
     <string name="do_not_show_again">不再显示</string>
     <string name="select_font">选择字体</string>
     <string name="apply">应用</string>
+    <string name="accessibility_permission_title">需要无障碍权限</string>
+    <string name="accessibility_permission_message">此应用需要 AccessibilityService API 来监控智能前台模式下的前台应用更改。API 将用于检测您何时在应用之间切换，并相应地自动更新防火墙规则。不收集或传输个人数据。</string>
+    <string name="accept">接受</string>
+    <string name="decline">拒绝</string>
     <string name="firewall_mode_whitelist">白名单</string>
     <string name="firewall_mode_whitelist_description">默认阻止所有应用，允许选定的应用</string>
     <string name="whitelist_info_system_apps_warning">当"显示系统应用"被禁用时，系统应用将不会在白名单模式下被防火墙阻止。\n\n如果您已启用"显示系统应用"并使用白名单模式，此组合尚未完全测试。请谨慎使用。</string>

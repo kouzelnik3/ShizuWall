@@ -289,6 +289,10 @@
     <string name="do_not_show_again">Bir daha gösterme</string>
     <string name="select_font">Yazı Tipi Seç</string>
     <string name="apply">Uygula</string>
+    <string name="accessibility_permission_title">Erişilebilirlik İzni Gerekli</string>
+    <string name="accessibility_permission_message">Bu uygulama, Akıllı Ön Plan modu için ön plan uygulama değişikliklerini izlemek üzere AccessibilityService API\'sine ihtiyaç duyar. API, uygulamalar arasında geçiş yaptığınızda algılamak ve güvenlik duvarı kurallarını otomatik olarak güncellemek için kullanılacaktır. Kişisel veri toplanmaz veya iletilmez.</string>
+    <string name="accept">Kabul Et</string>
+    <string name="decline">Reddet</string>
     <string name="firewall_mode_whitelist">Beyaz Liste</string>
     <string name="firewall_mode_whitelist_description">Varsayılan olarak tüm uygulamaları engelle, seçili uygulamalara izin ver</string>
     <string name="whitelist_info_system_apps_warning">"Sistem uygulamalarını göster" devre dışı bırakıldığında, sistem uygulamaları Beyaz Liste modunda güvenlik duvarı tarafından engellenmez.\n\n"Sistem uygulamalarını göster" seçeneğini etkinleştirdiyseniz ve Beyaz Liste modunu kullanıyorsanız, bu kombinasyon tam olarak test edilmemiştir. Dikkatli kullanın.</string>

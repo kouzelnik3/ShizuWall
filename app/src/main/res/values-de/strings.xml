@@ -287,6 +287,10 @@
     <string name="do_not_show_again">Nicht mehr anzeigen</string>
     <string name="select_font">Schriftart auswählen</string>
     <string name="apply">Anwenden</string>
+    <string name="accessibility_permission_title">Barrierefreiheitsberechtigung erforderlich</string>
+    <string name="accessibility_permission_message">Diese App benötigt die AccessibilityService-API, um Vordergrund-App-Änderungen für den Smart-Vordergrund-Modus zu überwachen. Die API wird verwendet, um zu erkennen, wann Sie zwischen Apps wechseln, und die Firewall-Regeln automatisch zu aktualisieren. Es werden keine persönlichen Daten gesammelt oder übertragen.</string>
+    <string name="accept">Akzeptieren</string>
+    <string name="decline">Ablehnen</string>
     <string name="firewall_mode_whitelist">Whitelist</string>
     <string name="firewall_mode_whitelist_description">Alle Apps standardmäßig blockieren, ausgewählte Apps erlauben</string>
     <string name="whitelist_info_system_apps_warning">Wenn "System-Apps anzeigen" deaktiviert ist, werden System-Apps im Whitelist-Modus nicht durch die Firewall geschützt.\n\nWenn Sie "System-Apps anzeigen" aktiviert haben und den Whitelist-Modus verwenden, wurde diese Kombination nicht vollständig getestet. Verwenden Sie sie mit Vorsicht.</string>

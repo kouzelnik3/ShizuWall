@@ -45,6 +45,7 @@ import rikka.shizuku.Shizuku
 class SettingsActivity : BaseActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var prefs: SharedPreferences
     private lateinit var switchMoveSelectedTop: SwitchCompat
     private lateinit var switchSkipConfirm: SwitchCompat
     private lateinit var switchSkipErrorDialog: SwitchCompat
@@ -64,6 +65,7 @@ class SettingsActivity : BaseActivity() {
     private lateinit var switchAutoEnableOnShizukuStart: SwitchCompat
     private lateinit var cardAutoEnableOnShizukuStart: com.google.android.material.card.MaterialCardView
     private lateinit var switchAppMonitor: SwitchCompat
+    private lateinit var switchFloatingButton: SwitchCompat
 
     private lateinit var cardAdbBroadcastUsage: com.google.android.material.card.MaterialCardView
     private lateinit var layoutAdbBroadcastUsage: LinearLayout // new
@@ -147,6 +149,27 @@ class SettingsActivity : BaseActivity() {
             val isFirewallEnabled = sharedPreferences.getBoolean(MainActivity.KEY_FIREWALL_ENABLED, false)
             updateFirewallModeSelectorState(isFirewallEnabled)
         }
+
+        // Re-check overlay permission — auto-enable floating button if user just granted it
+        if (::switchFloatingButton.isInitialized) {
+            val wantEnabled = sharedPreferences.getBoolean(
+                com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false
+            )
+            if (wantEnabled && !Settings.canDrawOverlays(this)) {
+                // Permission was revoked while we were open — turn off
+                switchFloatingButton.isChecked = false
+                sharedPreferences.edit().putBoolean(
+                    com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false
+                ).apply()
+                com.arslan.shizuwall.services.FloatingButtonService.stop(this)
+            } else if (Settings.canDrawOverlays(this) && !switchFloatingButton.isChecked) {
+                // User might have just granted permission — keep switch in sync with pref
+                val prefEnabled = sharedPreferences.getBoolean(
+                    com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false
+                )
+                switchFloatingButton.isChecked = prefEnabled
+            }
+        }
     }
 
     private fun initializeViews() {
@@ -178,6 +201,7 @@ class SettingsActivity : BaseActivity() {
         cardSetLadb = findViewById(R.id.cardSetLadb)
         layoutSetLadb = findViewById(R.id.layoutSetLadb)
         switchAppMonitor = findViewById(R.id.switchAppMonitor)
+        switchFloatingButton = findViewById(R.id.switchFloatingButton)
         // Auto-enable switch (new)
         switchAutoEnableOnShizukuStart = findViewById(R.id.switchAutoEnableOnShizukuStart)
         cardAutoEnableOnShizukuStart = findViewById(R.id.cardAutoEnableOnShizukuStart)
@@ -193,7 +217,7 @@ class SettingsActivity : BaseActivity() {
     }
 
     private fun loadSettings() {
-        val prefs = getSharedPreferences(MainActivity.PREF_NAME, Context.MODE_PRIVATE)
+        prefs = getSharedPreferences(MainActivity.PREF_NAME, Context.MODE_PRIVATE)
 
         switchMoveSelectedTop.isChecked = prefs.getBoolean(MainActivity.KEY_MOVE_SELECTED_TOP, true)
         switchSkipConfirm.isChecked = prefs.getBoolean("skip_enable_confirm", false)
@@ -228,6 +252,9 @@ class SettingsActivity : BaseActivity() {
         switchUseDynamicColor.isChecked = prefs.getBoolean(MainActivity.KEY_USE_DYNAMIC_COLOR, true)
         switchAutoEnableOnShizukuStart.isChecked = prefs.getBoolean(MainActivity.KEY_AUTO_ENABLE_ON_SHIZUKU_START, false)
         switchAppMonitor.isChecked = prefs.getBoolean(MainActivity.KEY_APP_MONITOR_ENABLED, false)
+        switchFloatingButton.isChecked = prefs.getBoolean(
+            com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false
+        )
 
         // Load working mode
         val workingModeName = prefs.getString(MainActivity.KEY_WORKING_MODE, com.arslan.shizuwall.WorkingMode.SHIZUKU.name)
@@ -315,7 +342,6 @@ class SettingsActivity : BaseActivity() {
     }
 
     private fun setupListeners() {
-        val prefs = getSharedPreferences(MainActivity.PREF_NAME, Context.MODE_PRIVATE)
 
         switchMoveSelectedTop.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean(MainActivity.KEY_MOVE_SELECTED_TOP, isChecked).apply()
@@ -354,21 +380,25 @@ class SettingsActivity : BaseActivity() {
             TransitionManager.beginDelayedTransition(findViewById(R.id.settingsRoot), AutoTransition())
             updateFirewallModeUI(newMode)
             
-            // Show info dialog and auto-enable accessibility for Smart Foreground mode
+            // Handle accessibility for Smart Foreground mode
             if (newMode == FirewallMode.SMART_FOREGROUND) {
                 if (!ForegroundDetectionService.isServiceEnabled(this)) {
-                    // Try to auto-enable via shell
-                    lifecycleScope.launch {
-                        val success = ForegroundDetectionService.enableServiceViaShell(this@SettingsActivity)
-                        if (success) {
-                            updateFirewallModeUI(newMode)
+                    // Check dialog status
+                    val dialogShown = sharedPreferences.getBoolean("accessibility_dialog_shown", false)
+                    val dialogAccepted = sharedPreferences.getBoolean("accessibility_dialog_accepted", false)
+                    
+                    if (!dialogShown || !dialogAccepted) {
+                        // Show permission dialog
+                        showAccessibilityPermissionDialog()
+                    } else {
+                        // Previously accepted, try to auto-enable again
+                        lifecycleScope.launch {
+                            val success = ForegroundDetectionService.enableServiceViaShell(this@SettingsActivity)
+                            if (success) {
+                                updateFirewallModeUI(newMode)
+                            }
                         }
-                        // Show info dialog regardless
-                        showSmartForegroundInfoDialog(success)
                     }
-                } else {
-                    // Already enabled, just show info
-                    showSmartForegroundInfoDialog(true)
                 }
             }
             
@@ -501,6 +531,32 @@ class SettingsActivity : BaseActivity() {
             }
         }
 
+        switchFloatingButton.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                // Check overlay permission
+                if (!Settings.canDrawOverlays(this)) {
+                    // Reset switch — will be restored in onResume if user grants permission
+                    switchFloatingButton.isChecked = false
+                    Toast.makeText(this, R.string.overlay_permission_required, Toast.LENGTH_LONG).show()
+                    val intent = Intent(
+                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        android.net.Uri.parse("package:$packageName")
+                    )
+                    startActivity(intent)
+                    return@setOnCheckedChangeListener
+                }
+                prefs.edit().putBoolean(
+                    com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, true
+                ).apply()
+                com.arslan.shizuwall.services.FloatingButtonService.start(this)
+            } else {
+                prefs.edit().putBoolean(
+                    com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false
+                ).apply()
+                com.arslan.shizuwall.services.FloatingButtonService.stop(this)
+            }
+        }
+
         layoutAdbBroadcastUsage.setOnClickListener { showAdbBroadcastDialog() }
 
         // Make the whole card area toggle the corresponding switches when tapped
@@ -511,6 +567,7 @@ class SettingsActivity : BaseActivity() {
         makeCardClickableForSwitch(switchKeepErrorAppsSelected)
         makeCardClickableForSwitch(switchAutoEnableOnShizukuStart)
         makeCardClickableForSwitch(switchAppMonitor)
+        makeCardClickableForSwitch(switchFloatingButton)
     }
     
 
@@ -522,11 +579,7 @@ class SettingsActivity : BaseActivity() {
         val showPrompt = sharedPreferences.getBoolean("show_smart_foreground_prompt", true)
         if (!showPrompt) return
 
-        val message = if (accessibilityGranted) {
-            getString(R.string.smart_foreground_info_enabled)
-        } else {
-            getString(R.string.smart_foreground_info_deferred)
-        }
+        val message = getString(R.string.smart_foreground_info_enabled)
         
         val promptView = layoutInflater.inflate(R.layout.dialog_shizuku_prompt, null)
         val messageText: TextView = promptView.findViewById(R.id.shizuku_prompt_message_text)
@@ -544,6 +597,48 @@ class SettingsActivity : BaseActivity() {
                 }
             }
             .show()
+    }
+
+    private fun showAccessibilityPermissionDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.accessibility_permission_title)
+            .setMessage(R.string.accessibility_permission_message)
+            .setCancelable(true)
+            .setPositiveButton(R.string.accept) { _, _ ->
+                // Mark as shown and accepted
+                sharedPreferences.edit()
+                    .putBoolean("accessibility_dialog_shown", true)
+                    .putBoolean("accessibility_dialog_accepted", true)
+                    .apply()
+                // Open accessibility settings
+                val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                startActivity(intent)
+            }
+            .setNegativeButton(R.string.decline) { _, _ ->
+                // Mark as shown and declined
+                sharedPreferences.edit()
+                    .putBoolean("accessibility_dialog_shown", true)
+                    .putBoolean("accessibility_dialog_accepted", false)
+                    .apply()
+                // Revert to default mode
+                revertToDefaultMode()
+            }
+            .setOnCancelListener {
+                // Mark as shown and declined if dismissed
+                sharedPreferences.edit()
+                    .putBoolean("accessibility_dialog_shown", true)
+                    .putBoolean("accessibility_dialog_accepted", false)
+                    .apply()
+                // Revert to default mode if dialog is dismissed
+                revertToDefaultMode()
+            }
+            .show()
+    }
+
+    private fun revertToDefaultMode() {
+        prefs.edit().putString(MainActivity.KEY_FIREWALL_MODE, FirewallMode.DEFAULT.name).apply()
+        radioGroupFirewallMode.check(R.id.radioModeDefault)
+        updateFirewallModeUI(FirewallMode.DEFAULT)
     }
 
     /**
@@ -572,17 +667,30 @@ class SettingsActivity : BaseActivity() {
             .show()
     }
 
-    private val supportedLocales = linkedMapOf(
-        "" to "System default",
-        "en" to "English",
-        "de" to "Deutsch",
-        "es" to "Espa\u00f1ol",
-        "ja" to "\u65e5\u672c\u8a9e",
-        "pt" to "Portugu\u00eas",
-        "ru" to "\u0420\u0443\u0441\u0441\u043a\u0438\u0439",
-        "tr" to "T\u00fcrk\u00e7e",
-        "zh" to "\u4e2d\u6587"
-    )
+    private fun buildSupportedLocales(): LinkedHashMap<String, String> {
+        val map = linkedMapOf("" to getString(R.string.language_system_default))
+        try {
+            val parser = resources.getXml(R.xml.locales_config)
+            var eventType = parser.eventType
+            while (eventType != org.xmlpull.v1.XmlPullParser.END_DOCUMENT) {
+                if (eventType == org.xmlpull.v1.XmlPullParser.START_TAG && parser.name == "locale") {
+                    val tag = parser.getAttributeValue(
+                        "http://schemas.android.com/apk/res/android", "name"
+                    )
+                    if (!tag.isNullOrEmpty()) {
+                        val locale = java.util.Locale.forLanguageTag(tag)
+                        val displayName = locale.getDisplayName(locale)
+                            .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+                        map[tag] = displayName.ifEmpty { tag }
+                    }
+                }
+                eventType = parser.next()
+            }
+        } catch (_: Exception) {
+            map["en"] = "English"
+        }
+        return map
+    }
 
     private fun updateCurrentLanguageDisplay() {
         val currentLocales = androidx.appcompat.app.AppCompatDelegate.getApplicationLocales()
@@ -590,15 +698,17 @@ class SettingsActivity : BaseActivity() {
             tvCurrentLanguage.text = getString(R.string.language_system_default)
         } else {
             val tag = currentLocales.get(0)?.toLanguageTag() ?: ""
-            tvCurrentLanguage.text = supportedLocales[tag] ?: getString(R.string.language_system_default)
+            val locale = java.util.Locale.forLanguageTag(tag)
+            tvCurrentLanguage.text = locale.getDisplayName(locale)
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+                .ifEmpty { getString(R.string.language_system_default) }
         }
     }
 
     private fun showLanguageSelectorDialog() {
+        val supportedLocales = buildSupportedLocales()
         val localeKeys = supportedLocales.keys.toList()
         val localeNames = supportedLocales.values.toTypedArray()
-        // Replace first entry with the dynamic string
-        localeNames[0] = getString(R.string.language_system_default)
 
         val currentLocales = androidx.appcompat.app.AppCompatDelegate.getApplicationLocales()
         val currentTag = if (currentLocales.isEmpty) "" else (currentLocales.get(0)?.toLanguageTag() ?: "")

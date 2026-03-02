@@ -291,6 +291,10 @@
     <string name="do_not_show_again">No mostrar de nuevo</string>
     <string name="select_font">Seleccionar fuente</string>
     <string name="apply">Aplicar</string>
+    <string name="accessibility_permission_title">Permiso de Accesibilidad Requerido</string>
+    <string name="accessibility_permission_message">Esta app requiere la API de AccessibilityService para monitorear cambios en la app de primer plano para el modo Primer Plano Inteligente. La API se usará para detectar cuándo cambias entre apps y actualizar automáticamente las reglas del firewall en consecuencia. No se recopilan ni transmiten datos personales.</string>
+    <string name="accept">Aceptar</string>
+    <string name="decline">Rechazar</string>
     <string name="firewall_mode_whitelist">Lista blanca</string>
     <string name="firewall_mode_whitelist_description">Bloquear todas las apps por defecto, permitir apps seleccionadas</string>
     <string name="whitelist_info_system_apps_warning">Cuando "Mostrar apps del sistema" está desactivado, las apps del sistema no serán bloqueadas por el firewall en modo Lista blanca.\n\nSi has activado "Mostrar apps del sistema" y estás usando el modo Lista blanca, esta combinación no ha sido completamente probada. Úsala con precaución.</string>
