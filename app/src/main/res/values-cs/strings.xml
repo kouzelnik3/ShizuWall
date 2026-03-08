@@ -57,8 +57,6 @@
     <string name="grant_permission">Povolit oprávnění</string>
     <string name="favorites_title">Oblíbené</string>
     <string name="favorites_message">Dlouhým stisknutím aplikace ji přidáte do oblíbených pro rychlý přístup.</string>
-    <string name="app_visibility_title">Inteligentní filtrování aplikací</string>
-    <string name="app_visibility_message">ShizuWall automaticky filtruje aplikace, které nemají povolení k přístupu na internet. Díky tomu zůstává váš seznam přehledný a zaměřený na aplikace, které skutečně vyžadují kontrolu brány firewall.</string>
     <string name="shizuku_required_title">Shizuku režim</string>
     <string name="shizuku_required_message">Vývojář nenese odpovědnost za žádné negativní důsledky. Před pokračováním nainstalujte a aktivujte Shizuku.</string>
     <string name="onboarding_mode_selection_title">Zvolte Pracovní režim</string>
@@ -216,6 +214,7 @@
     <string name="sort_name_asc">A-Z</string>
     <string name="sort_name_desc">Z-A</string>
     <string name="sort_install_time">Nejdřív nejnovější aplikace</string>
+    <string name="app_filtering_note">Aplikace bez oprávnění k přístupu k internetu se v seznamu nezobrazují.</string>
     <string name="failed_to_update_rules_count">Nepodařilo se aktualizovat pravidla pro %d aplikací</string>
     <string name="failed_to_unblock_count">Nepodařilo se odblokovat %d aplikací</string>
     <string name="all_apps_unselected">Všechny aplikace nezaškrtnuté</string>

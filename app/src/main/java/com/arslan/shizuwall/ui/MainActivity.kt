@@ -403,7 +403,7 @@ class MainActivity : BaseActivity() {
                         }
 
                         appListAdapter.setSelectionEnabled(!state.enabled || firewallMode.allowsDynamicSelection())
-                        if (state.enabled) showDimOverlay() else hideDimOverlay()
+                        applyListInteractionState()
 
                         updateSelectedCount()
                         updateSelectAllCheckbox()
@@ -489,13 +489,9 @@ class MainActivity : BaseActivity() {
         suppressToggleListener = false
 
         // Ensure adapter and dim reflect saved firewall state
-        appListAdapter.setSelectionEnabled(!isFirewallEnabled)
+        appListAdapter.setSelectionEnabled(!isFirewallEnabled || firewallMode.allowsDynamicSelection())
         updateInteractiveViews()
-        if (isFirewallEnabled) {
-            showDimOverlay()
-        } else {
-            hideDimOverlay()
-        }
+        applyListInteractionState()
 
         // ensure the toggle is disabled if firewall is off AND there are no selected apps
         // (allows the toggle to remain enabled when firewall is active)
@@ -547,7 +543,8 @@ class MainActivity : BaseActivity() {
             val enabled = loadFirewallEnabled()
             appListAdapter.setSelectionEnabled(!enabled || firewallMode.allowsDynamicSelection())
             updateInteractiveViews()
-            if (enabled) showDimOverlay() else hideDimOverlay()
+            isFirewallEnabled = enabled
+            applyListInteractionState()
         } else {
             showDimOverlay(force = true)
             suppressToggleListener = true
@@ -2002,8 +1999,8 @@ class MainActivity : BaseActivity() {
             } finally {
                 firewallProgress.visibility = android.view.View.GONE
                 firewallToggle.isEnabled = true
-                hideDimOverlay()
                 isFirewallProcessRunning = false
+                applyListInteractionState()
             }
         }
     }
@@ -2052,6 +2049,10 @@ class MainActivity : BaseActivity() {
         }
 
         if (packageNames.isEmpty()) {
+            return Pair(successful, failed)
+        }
+
+        if (firewallMode == FirewallMode.SMART_FOREGROUND) {
             return Pair(successful, failed)
         }
 
@@ -2134,6 +2135,21 @@ class MainActivity : BaseActivity() {
         recyclerView.isClickable = true
         appListAdapter.setSelectionEnabled(true)
         updateInteractiveViews()
+    }
+
+    // Keep list interactivity and dim state consistent with current firewall mode/state.
+    private fun applyListInteractionState() {
+        if (isFirewallProcessRunning) {
+            showDimOverlay(force = true)
+            return
+        }
+
+        val shouldLockSelection = isFirewallEnabled && !firewallMode.allowsDynamicSelection()
+        if (shouldLockSelection) {
+            showDimOverlay()
+        } else {
+            hideDimOverlay()
+        }
     }
 
     // Called by packageBroadcastReceiver when a package is removed.

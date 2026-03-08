@@ -54,8 +54,6 @@
     <string name="grant_permission">権限を許可</string>
     <string name="favorites_title">お気に入り</string>
     <string name="favorites_message">アプリを長押しすると、クイックアクセスのためにお気に入りに追加できます。</string>
-    <string name="app_visibility_title">スマートアプリフィルタリング</string>
-    <string name="app_visibility_message">ShizuWall は、インターネット権限を持たないアプリを自動的に除外します。これにより、リストが整理され、ファイアウォール制御が必要なアプリのみに集中できます。</string>
     <string name="shizuku_required_title">Shizuku モード</string>
     <string name="shizuku_required_message">開発者は、発生したいかなる悪影響についても責任を負いません。続行する前に Shizuku をインストールして起動してください。</string>
     <string name="onboarding_mode_selection_title">動作モードの選択</string>
@@ -213,6 +211,7 @@
     <string name="sort_name_asc">A-Z</string>
     <string name="sort_name_desc">Z-A</string>
     <string name="sort_install_time">新しい順</string>
+    <string name="app_filtering_note">インターネットアクセス権限のないアプリは一覧に表示されません。</string>
     <string name="failed_to_update_rules_count">%d 個のアプリのルールの更新に失敗しました</string>
     <string name="failed_to_unblock_count">%d 個のアプリのブロック解除に失敗しました</string>
     <string name="all_apps_unselected">すべてのアプリの選択が解除されました</string>
