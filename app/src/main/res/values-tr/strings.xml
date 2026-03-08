@@ -56,8 +56,6 @@
     <string name="grant_permission">İzin Ver</string>
     <string name="favorites_title">Favoriler</string>
     <string name="favorites_message">Hızlı erişim için bir uygulamaya uzun basın ve favorilerinize ekleyin.</string>
-    <string name="app_visibility_title">Akıllı Uygulama Filtreleme</string>
-    <string name="app_visibility_message">ShizuWall, internet izni olmayan uygulamaları otomatik olarak filtreler. Bu, listenizi temiz tutar ve gerçekten güvenlik duvarı kontrolüne ihtiyaç duyan uygulamalara odaklanmanızı sağlar.</string>
     <string name="shizuku_required_title">Shizuku Modu</string>
     <string name="shizuku_required_message">Geliştirici herhangi bir olumsuz sonuçtan sorumlu değildir. Lütfen devam etmeden önce Shizuku\'yu kurun ve etkinleştirin.</string>
     <string name="onboarding_mode_selection_title">Çalışma Modunu Seçin</string>
@@ -210,6 +208,7 @@
     <string name="sort_name_asc">A-Z</string>
     <string name="sort_name_desc">Z-A</string>
     <string name="sort_install_time">En yeni önce</string>
+    <string name="app_filtering_note">İnternet erişim izni bulunmayan uygulamalar listede gösterilmez.</string>
     <string name="daemon_kill">Daemon\'ı Durdur</string>
     <string name="daemon_installing">Yükleniyor...</string>
     <string name="failed_to_update_rules_count">%d uygulama için kurallar güncellenemedi</string>

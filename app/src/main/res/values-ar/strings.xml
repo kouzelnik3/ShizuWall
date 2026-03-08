@@ -57,8 +57,6 @@
     <string name="grant_permission">منح الإذن</string>
     <string name="favorites_title">المفضلة</string>
     <string name="favorites_message">اضغط مطولًا على تطبيق لإضافته إلى مفضلاتك للوصول السريع.</string>
-    <string name="app_visibility_title">تصفية ذكية للتطبيقات</string>
-    <string name="app_visibility_message">يقوم ShizuWall تلقائيًا بتصفية التطبيقات التي لا تملك إذن الوصول إلى الإنترنت. هذا سيبقي قائمتك نظيفة ومركزة على التطبيقات التي تحتاج فعليًا إلى التحكم في الجدار الناري.</string>
     <string name="shizuku_required_title">وضع Shizuku</string>
     <string name="shizuku_required_message">المطور غير مسؤول عن أي عواقب سلبية. يرجى تثبيت وتفعيل Shizuku قبل المتابعة.</string>
     <string name="onboarding_mode_selection_title">اختر وضع العمل</string>
@@ -218,6 +216,7 @@
     <string name="sort_install_time">أحدث التطبيقات أولاً</string>
     <string name="failed_to_update_rules_count">فشل تحديث القواعد لـ %d تطبيقات</string>
     <string name="failed_to_unblock_count">فشل إلغاء الحظر لـ %d تطبيقات</string>
+        <string name="app_filtering_note">لا يتم عرض التطبيقات التي لا تملك إذن الوصول إلى الإنترنت في القائمة.</string>
     <string name="all_apps_unselected">تم إلغاء تحديد جميع التطبيقات</string>
     <string name="failed_to_unblock_app">فشل إلغاء حظر %s</string>
     <string name="notification_permission_required_title">إذن الإشعارات مطلوب</string>

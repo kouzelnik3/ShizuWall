@@ -55,8 +55,6 @@
     <string name="grant_permission">授予权限</string>
     <string name="favorites_title">收藏夹</string>
     <string name="favorites_message">长按应用以将其添加到收藏夹以快速访问。</string>
-    <string name="app_visibility_title">智能应用过滤</string>
-    <string name="app_visibility_message">ShizuWall 自动过滤掉没有网络权限的应用。这可以保持列表整洁，并专注于真正需要防火墙控制的应用。</string>
     <string name="shizuku_required_title">Shizuku 模式</string>
     <string name="shizuku_required_message">开发者不对任何负面后果负责。请在继续之前安装并激活 Shizuku。</string>
     <string name="onboarding_mode_selection_title">选择工作模式</string>
@@ -211,6 +209,7 @@
     <string name="sort_name_asc">A-Z</string>
     <string name="sort_name_desc">Z-A</string>
     <string name="sort_install_time">最新安装优先</string>
+    <string name="app_filtering_note">未获得互联网访问权限的应用不会显示在列表中。</string>
     <string name="failed_to_update_rules_count">无法更新 %d 个应用的规则</string>
     <string name="failed_to_unblock_count">无法取消阻止 %d 个应用</string>
     <string name="all_apps_unselected">已取消选择所有应用</string>
