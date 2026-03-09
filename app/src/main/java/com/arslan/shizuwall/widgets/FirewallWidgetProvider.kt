@@ -108,8 +108,9 @@ class FirewallWidgetProvider : AppWidgetProvider() {
         }
 
         private fun loadSelectedApps(context: Context, sharedPreferences: SharedPreferences): List<String> {
+            val selfPkg = context.packageName
             return sharedPreferences.getStringSet(MainActivity.KEY_SELECTED_APPS, emptySet())
-                ?.filterNot { ShizukuPackageResolver.isShizukuPackage(context, it) }
+                ?.filterNot { ShizukuPackageResolver.isShizukuPackage(context, it) || it == selfPkg }
                 ?.toList() ?: emptyList()
         }
 

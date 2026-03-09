@@ -165,11 +165,18 @@ class FirewallTileService : TileService() {
     }
 
     private suspend fun applyEnableFirewall(packageNames: List<String>) {
+        val firewallMode = FirewallMode.fromName(
+            sharedPreferences.getString(MainActivity.KEY_FIREWALL_MODE, FirewallMode.DEFAULT.name)
+        )
         withContext(Dispatchers.IO) {
             val successful = enableFirewall(packageNames)
-            if (successful.isNotEmpty()) {
+            if (successful.isNotEmpty() || firewallMode.allowsDynamicSelection()) {
                 saveFirewallEnabled(true)
                 saveActivePackages(successful.toSet())
+            } else {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@FirewallTileService, getString(R.string.failed_to_enable_firewall), Toast.LENGTH_SHORT).show()
+                }
             }
         }
         updateTile()
