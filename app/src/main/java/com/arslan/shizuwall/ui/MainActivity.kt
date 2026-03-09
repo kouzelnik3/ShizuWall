@@ -1958,6 +1958,8 @@ class MainActivity : BaseActivity() {
                 }
             }
 
+            val showedLadbRecoveryDialog = enable && maybeShowLadbDaemonRecoveryDialog(failed, lastOperationErrorDetails)
+
             // Handle failures: unselect failed apps and show error dialog
             if (failed.isNotEmpty()) {
                 val skipErrorDialog = sharedPreferences.getBoolean(KEY_SKIP_ERROR_DIALOG, false)
@@ -1980,7 +1982,9 @@ class MainActivity : BaseActivity() {
                     saveSelectedApps()
                     sortAndFilterApps(preserveScrollPosition = false)
                 }
-                showOperationErrorsDialog(failed, lastOperationErrorDetails)
+                if (!showedLadbRecoveryDialog) {
+                    showOperationErrorsDialog(failed, lastOperationErrorDetails)
+                }
             }
             } finally {
                 firewallProgress.visibility = android.view.View.GONE
@@ -2251,7 +2255,9 @@ class MainActivity : BaseActivity() {
             .setPositiveButton(getString(R.string.ok), null)
 
         // show details button only if we have any details for the failed packages
-        val hasDetails = failedPackages.any { errorDetails[it]?.isNotEmpty() == true } || errorDetails.containsKey("_chain3")
+        val hasDetails = failedPackages.any { errorDetails[it]?.isNotEmpty() == true } ||
+            errorDetails.containsKey("_chain3") ||
+            errorDetails.containsKey("_daemon_log")
         if (hasDetails) {
             builder.setNeutralButton(getString(R.string.details)) { _, _ ->
                 showErrorDetailsDialog(failedPackages, errorDetails)
@@ -2270,6 +2276,10 @@ class MainActivity : BaseActivity() {
         val chain3Msg = errorDetails["_chain3"] ?: errorDetails.values.firstOrNull { it.contains("no command found set chain 3", ignoreCase = true) }
         if (chain3Msg != null) {
             dialogMessage.append("\n\n${getString(R.string.android11_unsupported_hint)}")
+        }
+
+        if (!errorDetails["_daemon_log"].isNullOrBlank()) {
+            dialogMessage.append("\n\n${getString(R.string.ladb_daemon_log_detected_hint)}")
         }
 
         selectedAppsRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -2295,6 +2305,119 @@ class MainActivity : BaseActivity() {
         dialog.show()
     }
 
+    private suspend fun maybeShowLadbDaemonRecoveryDialog(
+        failedPackages: List<String>,
+        errorDetails: MutableMap<String, String>
+    ): Boolean {
+        val daemonLogs = loadRecentDaemonLogsForDiagnostics()
+        if (!daemonLogs.isNullOrBlank()) {
+            errorDetails["_daemon_log"] = daemonLogs
+        }
+
+        if (!hasLadbDaemonRecoveryError(errorDetails, daemonLogs)) {
+            return false
+        }
+
+        val diagnosis = buildLadbDaemonRecoveryMessage(errorDetails, daemonLogs)
+
+        val builder = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.ladb_daemon_restart_required_title)
+            .setMessage(diagnosis)
+            .setPositiveButton(R.string.open_ladb_setup) { _, _ ->
+                try {
+                    startActivity(Intent(this, com.arslan.shizuwall.LadbSetupActivity::class.java))
+                } catch (_: Exception) {
+                }
+            }
+            .setNegativeButton(R.string.cancel, null)
+
+        if (failedPackages.isNotEmpty()) {
+            builder.setNeutralButton(R.string.details) { _, _ ->
+                showErrorDetailsDialog(failedPackages, errorDetails)
+            }
+        }
+
+        builder.show()
+        return true
+    }
+
+    private fun hasLadbDaemonRecoveryError(errorDetails: Map<String, String>, daemonLogs: String?): Boolean {
+        val combined = buildList {
+            addAll(errorDetails.values)
+            if (!daemonLogs.isNullOrBlank()) add(daemonLogs)
+        }
+
+        return combined.any { error ->
+            val normalizedError = error.lowercase()
+            normalizedError.contains("unauthorized") ||
+                normalizedError.contains("failed to authorizate daemon") ||
+                normalizedError.contains("daemon not responding") ||
+                normalizedError.contains("daemon not responing") ||
+                normalizedError.contains("token file") ||
+                normalizedError.contains("token")
+        }
+    }
+
+    private suspend fun loadRecentDaemonLogsForDiagnostics(): String? {
+        return try {
+            com.arslan.shizuwall.daemon.PersistentDaemonManager(this).readRecentDaemonLogs(20)
+                ?.lineSequence()
+                ?.filter { it.isNotBlank() }
+                ?.takeLast(8)
+                ?.joinToString("\n")
+                ?.trim()
+                ?.ifBlank { null }
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun buildLadbDaemonRecoveryMessage(errorDetails: Map<String, String>, daemonLogs: String?): String {
+        val reasons = linkedSetOf<String>()
+        val combined = buildList {
+            addAll(errorDetails.values)
+            if (!daemonLogs.isNullOrBlank()) add(daemonLogs)
+        }
+
+        combined.forEach { error ->
+            val normalizedError = error.lowercase()
+            when {
+                normalizedError.contains("unauthorized") ||
+                    normalizedError.contains("failed to authorizate daemon") -> {
+                    reasons.add(getString(R.string.ladb_daemon_restart_reason_auth))
+                }
+
+                normalizedError.contains("daemon not responding") ||
+                    normalizedError.contains("daemon not responing") ||
+                    normalizedError.contains("timeout") ||
+                    normalizedError.contains("connection refused") -> {
+                    reasons.add(getString(R.string.ladb_daemon_restart_reason_unresponsive))
+                }
+
+                normalizedError.contains("token file") || normalizedError.contains("token") -> {
+                    reasons.add(getString(R.string.ladb_daemon_restart_reason_token))
+                }
+            }
+        }
+
+        val builder = StringBuilder(getString(R.string.ladb_daemon_restart_required_message))
+        if (reasons.isNotEmpty()) {
+            builder.append("\n\n")
+            builder.append(getString(R.string.ladb_daemon_restart_reason_prefix))
+            builder.append("\n")
+            builder.append(reasons.joinToString("\n") { "- $it" })
+        }
+
+        if (!daemonLogs.isNullOrBlank()) {
+            builder.append("\n\n")
+            builder.append(getString(R.string.ladb_daemon_restart_log_prefix))
+            builder.append("\n")
+            builder.append(daemonLogs)
+        }
+
+        return builder.toString()
+    }
+
     private fun showErrorDetailsDialog(failedPackages: List<String>, errorDetails: Map<String, String> = emptyMap()) {
         val failedApps = appList.filter { it.packageName in failedPackages }
         if (failedApps.isEmpty()) return
@@ -2315,7 +2438,10 @@ class MainActivity : BaseActivity() {
         messageView.text = getString(R.string.operation_failed_message, failedApps.size)
 
         val list = failedApps.map { ai ->
-            val err = errorDetails[ai.packageName] ?: errorDetails["_chain3"] ?: getString(R.string.no_error_details)
+            val err = errorDetails[ai.packageName]
+                ?: errorDetails["_chain3"]
+                ?: errorDetails["_daemon_log"]
+                ?: getString(R.string.no_error_details)
             ErrorEntry(ai.appName, ai.packageName, err)
         }
 
