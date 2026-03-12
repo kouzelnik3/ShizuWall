@@ -304,4 +304,25 @@
     <string name="floating_button_notification_text">Toque no botão flutuante para alternar o firewall</string>
     <string name="floating_button_content_description">Alternar firewall</string>
     <string name="overlay_permission_required">A permissão de sobreposição é necessária para o botão flutuante</string>
+    <string name="scroll_to_top">Rolar para o topo</string>
+    <string name="retry">Tentar novamente</string>
+    <string name="select">Selecionar</string>
+    <string name="select_all_apps_confirm">Selecionar %d aplicativos?</string>
+    <string name="apply_root_rules_after_reboot">Aplicar regras do firewall após reiniciar</string>
+    <string name="apply_root_rules_after_reboot_description">Reaplicar as últimas regras ativas do firewall com root depois que a inicialização terminar</string>
+    <string name="working_mode_root">Root (su)</string>
+    <string name="root_not_found_message">Root não encontrado. Permita que o ShizuWall acesse as permissões de root.</string>
+    <string name="double_tap_or_long_press">Toque duas vezes para selecionar tudo, pressione e segure para desmarcar tudo</string>
+    <string name="ladb_daemon_restart_required_title">Reiniciar daemon do LADB</string>
+    <string name="ladb_daemon_restart_required_message">Não foi possível ativar o firewall porque o daemon do LADB falhou na autorização ou parou de responder. Abra a configuração do LADB, ative o Modo avançado e use Parar daemon e Iniciar daemon.</string>
+    <string name="ladb_daemon_restart_reason_prefix">Problemas detectados:</string>
+    <string name="ladb_daemon_restart_reason_auth">A autorização do daemon falhou. O token do daemon no app e o daemon em execução podem estar fora de sincronia.</string>
+    <string name="ladb_daemon_restart_reason_unresponsive">O daemon não está respondendo ou o socket dele está recusando conexões.</string>
+    <string name="ladb_daemon_restart_reason_token">Os logs do daemon mencionam um problema de token ou a ausência do arquivo de token.</string>
+    <string name="ladb_daemon_restart_log_prefix">Log recente do daemon:</string>
+    <string name="ladb_daemon_log_detected_hint">Os logs recentes do daemon estão disponíveis em Detalhes.</string>
+    <string name="firewall_reboot_apply_failed_message">Falha ao reaplicar as regras do firewall após reiniciar. Toque para abrir o app.</string>
+    <string name="accessibility_auto_granting">Ativando o serviço de acessibilidade...</string>
+    <string name="accessibility_auto_grant_failed">Não foi possível ativar automaticamente o serviço de acessibilidade. Ative-o manualmente em Configurações.</string>
+    <string name="open_settings">Abrir Configurações</string>
 </resources>

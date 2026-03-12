@@ -321,4 +321,11 @@
     <string name="floating_button_notification_text">Klepnutím na plovoucí tlačítko přepnete firewall</string>
     <string name="floating_button_content_description">Přepnout firewall</string>
     <string name="overlay_permission_required">Pro plovoucí tlačítko je vyžadováno oprávnění k překrytí</string>
+    <string name="retry">Zkusit znovu</string>
+    <string name="select">Vybrat</string>
+    <string name="select_all_apps_confirm">Vybrat %d aplikací?</string>
+    <string name="double_tap_or_long_press">Dvojitým klepnutím vyberete vše, dlouhým stiskem zrušíte výběr všeho</string>
+    <string name="accessibility_auto_granting">Povoluje se služba přístupnosti...</string>
+    <string name="accessibility_auto_grant_failed">Službu přístupnosti se nepodařilo povolit automaticky. Povolte ji prosím ručně v Nastavení.</string>
+    <string name="open_settings">Otevřít Nastavení</string>
 </resources>

@@ -306,4 +306,25 @@
     <string name="floating_button_notification_text">フローティングボタンをタップしてファイアウォールを切り替えます</string>
     <string name="floating_button_content_description">ファイアウォールを切り替え</string>
     <string name="overlay_permission_required">フローティングボタンにはオーバーレイ権限が必要です</string>
+    <string name="scroll_to_top">一番上へスクロール</string>
+    <string name="retry">再試行</string>
+    <string name="select">選択</string>
+    <string name="select_all_apps_confirm">%d 個のアプリを選択しますか？</string>
+    <string name="apply_root_rules_after_reboot">再起動後にファイアウォールルールを適用</string>
+    <string name="apply_root_rules_after_reboot_description">起動完了後、最後に有効だったファイアウォールルールを root で再適用します</string>
+    <string name="working_mode_root">Root (su)</string>
+    <string name="root_not_found_message">Root が見つかりません。ShizuWall に root 権限へのアクセスを許可してください。</string>
+    <string name="double_tap_or_long_press">ダブルタップで全選択、長押しで全選択解除</string>
+    <string name="ladb_daemon_restart_required_title">LADB デーモンを再起動</string>
+    <string name="ladb_daemon_restart_required_message">LADB デーモンの認証に失敗したか応答しなくなったため、ファイアウォールを有効にできませんでした。LADB セットアップを開き、詳細モードを有効にしてから、デーモン停止 と デーモン開始 を使用してください。</string>
+    <string name="ladb_daemon_restart_reason_prefix">検出された問題:</string>
+    <string name="ladb_daemon_restart_reason_auth">デーモンの認証に失敗しました。アプリ内のデーモントークンと実行中のデーモンが同期していない可能性があります。</string>
+    <string name="ladb_daemon_restart_reason_unresponsive">デーモンが応答していないか、ソケットが接続を拒否しています。</string>
+    <string name="ladb_daemon_restart_reason_token">デーモンログにトークンの問題、またはトークンファイルの欠落が記録されています。</string>
+    <string name="ladb_daemon_restart_log_prefix">最近のデーモンログ:</string>
+    <string name="ladb_daemon_log_detected_hint">最近のデーモンログは 詳細 で確認できます。</string>
+    <string name="firewall_reboot_apply_failed_message">再起動後にファイアウォールルールを再適用できませんでした。タップしてアプリを開いてください。</string>
+    <string name="accessibility_auto_granting">ユーザー補助サービスを有効化しています...</string>
+    <string name="accessibility_auto_grant_failed">ユーザー補助サービスを自動で有効化できませんでした。設定で手動で有効にしてください。</string>
+    <string name="open_settings">設定を開く</string>
 </resources>

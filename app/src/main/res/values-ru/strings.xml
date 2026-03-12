@@ -306,4 +306,25 @@
     <string name="floating_button_notification_text">Нажмите на плавающую кнопку, чтобы переключить брандмауэр</string>
     <string name="floating_button_content_description">Переключить брандмауэр</string>
     <string name="overlay_permission_required">Для плавающей кнопки требуется разрешение на отображение поверх других окон</string>
+    <string name="scroll_to_top">Прокрутить вверх</string>
+    <string name="retry">Повторить</string>
+    <string name="select">Выбрать</string>
+    <string name="select_all_apps_confirm">Выбрать %d приложений?</string>
+    <string name="apply_root_rules_after_reboot">Применять правила брандмауэра после перезагрузки</string>
+    <string name="apply_root_rules_after_reboot_description">Повторно применить последние активные правила брандмауэра с root после завершения загрузки</string>
+    <string name="working_mode_root">Root (su)</string>
+    <string name="root_not_found_message">Root не найден. Пожалуйста, разрешите ShizuWall доступ к root-правам.</string>
+    <string name="double_tap_or_long_press">Дважды нажмите, чтобы выбрать все, удерживайте, чтобы снять выделение со всего</string>
+    <string name="ladb_daemon_restart_required_title">Перезапустить демон LADB</string>
+    <string name="ladb_daemon_restart_required_message">Не удалось включить брандмауэр, потому что демон LADB не прошел авторизацию или перестал отвечать. Откройте настройку LADB, включите расширенный режим, затем используйте Остановить демон и Запустить демон.</string>
+    <string name="ladb_daemon_restart_reason_prefix">Обнаруженные проблемы:</string>
+    <string name="ladb_daemon_restart_reason_auth">Сбой авторизации демона. Токен демона в приложении и запущенный демон могут быть не синхронизированы.</string>
+    <string name="ladb_daemon_restart_reason_unresponsive">Демон не отвечает или его сокет отклоняет подключения.</string>
+    <string name="ladb_daemon_restart_reason_token">В журналах демона упоминается проблема с токеном или отсутствие файла токена.</string>
+    <string name="ladb_daemon_restart_log_prefix">Недавний журнал демона:</string>
+    <string name="ladb_daemon_log_detected_hint">Недавние журналы демона доступны в разделе Детали.</string>
+    <string name="firewall_reboot_apply_failed_message">Не удалось повторно применить правила брандмауэра после перезагрузки. Нажмите, чтобы открыть приложение.</string>
+    <string name="accessibility_auto_granting">Включение службы специальных возможностей...</string>
+    <string name="accessibility_auto_grant_failed">Не удалось автоматически включить службу специальных возможностей. Пожалуйста, включите ее вручную в настройках.</string>
+    <string name="open_settings">Открыть настройки</string>
 </resources>

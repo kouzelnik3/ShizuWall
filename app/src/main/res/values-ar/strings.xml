@@ -307,4 +307,25 @@
     <string name="floating_button_notification_text">اضغط على الزر العائم لتغيير حالة الجدار الناري</string>
     <string name="floating_button_content_description">تغيير حالة الجدار الناري</string>
     <string name="overlay_permission_required">إذن العرض فوق التطبيقات الأخرى مطلوب للزر العائم</string>
+    <string name="scroll_to_top">التمرير إلى الأعلى</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="select">اختيار</string>
+    <string name="select_all_apps_confirm">هل تريد اختيار %d تطبيقات؟</string>
+    <string name="apply_root_rules_after_reboot">تطبيق قواعد الجدار الناري بعد إعادة التشغيل</string>
+    <string name="apply_root_rules_after_reboot_description">إعادة تطبيق آخر قواعد جدار ناري كانت نشطة بعد اكتمال الإقلاع باستخدام root</string>
+    <string name="working_mode_root">Root (su)</string>
+    <string name="root_not_found_message">لم يتم العثور على root. يرجى السماح لتطبيق ShizuWall بالوصول إلى صلاحيات root.</string>
+    <string name="double_tap_or_long_press">انقر نقراً مزدوجاً لتحديد الكل، واضغط مطولاً لإلغاء تحديد الكل</string>
+    <string name="ladb_daemon_restart_required_title">إعادة تشغيل خدمة LADB</string>
+    <string name="ladb_daemon_restart_required_message">تعذر تفعيل الجدار الناري لأن خدمة LADB فشلت في التفويض أو توقفت عن الاستجابة. افتح إعداد LADB، فعّل الوضع المتقدم، ثم استخدم إيقاف الخدمة وبدء الخدمة.</string>
+    <string name="ladb_daemon_restart_reason_prefix">المشكلات المكتشفة:</string>
+    <string name="ladb_daemon_restart_reason_auth">فشل تفويض الخدمة. قد يكون رمز الخدمة داخل التطبيق والخدمة قيد التشغيل غير متزامنين.</string>
+    <string name="ladb_daemon_restart_reason_unresponsive">الخدمة لا تستجيب أو أن المقبس الخاص بها يرفض الاتصالات.</string>
+    <string name="ladb_daemon_restart_reason_token">تشير سجلات الخدمة إلى مشكلة في الرمز أو إلى غياب ملف الرمز.</string>
+    <string name="ladb_daemon_restart_log_prefix">سجل الخدمة الأخير:</string>
+    <string name="ladb_daemon_log_detected_hint">سجلات الخدمة الأخيرة متاحة في قسم التفاصيل.</string>
+    <string name="firewall_reboot_apply_failed_message">فشلت إعادة تطبيق قواعد الجدار الناري بعد إعادة التشغيل. اضغط لفتح التطبيق.</string>
+    <string name="accessibility_auto_granting">جارٍ تفعيل خدمة إمكانية الوصول...</string>
+    <string name="accessibility_auto_grant_failed">فشل تفعيل خدمة إمكانية الوصول تلقائياً. يرجى تفعيلها يدوياً من الإعدادات.</string>
+    <string name="open_settings">فتح الإعدادات</string>
 </resources>
