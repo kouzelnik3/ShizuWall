@@ -34,6 +34,7 @@ class OnboardingPageAdapter(
         private val messageText: TextView = itemView.findViewById(R.id.page_message)
         private val actionButton: MaterialButton = itemView.findViewById(R.id.page_button)
         private val secondaryButton: MaterialButton = itemView.findViewById(R.id.page_button_secondary)
+        private val tertiaryButton: MaterialButton = itemView.findViewById(R.id.page_button_tertiary)
 
         fun bind(page: OnboardingPage) {
             // Show/hide image based on whether imageResId is provided
@@ -61,6 +62,20 @@ class OnboardingPageAdapter(
                 }
             } else {
                 secondaryButton.visibility = View.GONE
+            }
+
+            if (page.tertiaryButtonText != null && page.onTertiaryButtonClick != null) {
+                tertiaryButton.visibility = View.VISIBLE
+                tertiaryButton.text = page.tertiaryButtonText
+                tertiaryButton.isEnabled = page.isTertiaryButtonEnabled
+                tertiaryButton.alpha = if (page.isTertiaryButtonEnabled) 1.0f else 0.5f
+                tertiaryButton.setOnClickListener { 
+                    if (page.isTertiaryButtonEnabled) {
+                        page.onTertiaryButtonClick.invoke()
+                    }
+                }
+            } else {
+                tertiaryButton.visibility = View.GONE
             }
         }
     }

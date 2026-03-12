@@ -80,6 +80,8 @@ class OnboardingActivity : BaseActivity() {
                 secondaryButtonText = getString(R.string.use_ladb) + 
                     if (!BuildConfig.HAS_DAEMON) getString(R.string.ladb_not_supported_fdroid) else "",
                 onSecondaryButtonClick = { setWorkingMode("LADB") },
+                tertiaryButtonText = getString(R.string.use_root),
+                onTertiaryButtonClick = { setWorkingMode("ROOT") },
                 isModeSelectionPage = true,
                 imageResId = R.drawable.ic_settings,
                 isSecondaryButtonEnabled = BuildConfig.HAS_DAEMON
@@ -173,6 +175,14 @@ class OnboardingActivity : BaseActivity() {
                 onButtonClick = { finishOnboarding() },
                 imageResId = R.drawable.adb_24px
             )
+        } else if (mode == "ROOT") {
+            pages[lastPageIndex] = OnboardingPage(
+                title = getString(R.string.working_mode_root),
+                message = getString(R.string.root_onboarding_message),
+                buttonText = getString(R.string.get_started),
+                onButtonClick = { finishOnboarding() },
+                imageResId = R.drawable.ic_settings
+            )
         } else {
             pages[lastPageIndex] = OnboardingPage(
                 title = getString(R.string.shizuku_required_title),
@@ -197,6 +207,9 @@ data class OnboardingPage(
     val isModeSelectionPage: Boolean = false,
     val secondaryButtonText: String? = null,
     val onSecondaryButtonClick: (() -> Unit)? = null,
+    val tertiaryButtonText: String? = null,
+    val onTertiaryButtonClick: (() -> Unit)? = null,
     val imageResId: Int? = null,
-    val isSecondaryButtonEnabled: Boolean = true
+    val isSecondaryButtonEnabled: Boolean = true,
+    val isTertiaryButtonEnabled: Boolean = true
 )

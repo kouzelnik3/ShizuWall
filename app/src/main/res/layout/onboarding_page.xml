@@ -49,4 +49,13 @@
         android:visibility="gone"
         android:text="Secondary Button" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/page_button_tertiary"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        android:text="Tertiary Button" />
+
 </LinearLayout>

@@ -103,7 +103,8 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/sort"
             android:scaleType="center"
-            android:padding="13dp" />
+            android:padding="13dp"
+            app:tint="?attr/colorPrimary" />
 
         <ImageButton
             android:id="@+id/settingsButton"
@@ -119,39 +120,46 @@
 
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/scrollTopButton"
+    <!-- Right-side controls: scroll-to-top chip + selected count badge -->
+    <LinearLayout
+        android:id="@+id/rightBarControls"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="@string/scroll_to_top"
-        app:srcCompat="@drawable/arrow_upward_24px"
-        app:fabSize="mini"
-        app:layout_constraintBottom_toBottomOf="@id/recyclerView"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/selectedCountText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/selected_count_zero"
-        android:textSize="13sp"
-        android:textColor="?attr/colorPrimary"
-        android:minWidth="36dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:gravity="center"
-        android:background="@drawable/selected_count_badge"
-        android:clickable="true"
-        android:focusable="true"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/searchContainer"
-        app:layout_constraintBottom_toBottomOf="@id/categoryContainer" />
+        app:layout_constraintBottom_toBottomOf="@id/categoryContainer">
+
+        <ImageView
+            android:id="@+id/scrollTopButton"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginEnd="6dp"
+            android:src="@drawable/arrow_upward_24px"
+            android:background="@drawable/selected_count_badge"
+            android:padding="7dp"
+            android:scaleType="fitCenter"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/scroll_to_top"
+            app:tint="?attr/colorPrimary" />
+
+        <TextView
+            android:id="@+id/selectedCountText"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:text="@string/selected_count_zero"
+            android:textSize="13sp"
+            android:textColor="?attr/colorPrimary"
+            android:gravity="center"
+            android:background="@drawable/selected_count_badge"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </LinearLayout>
 
     <HorizontalScrollView
         android:id="@+id/categoryContainer"
@@ -166,7 +174,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/selectedCountText"
+        app:layout_constraintEnd_toStartOf="@id/rightBarControls"
         app:layout_constraintTop_toBottomOf="@id/searchContainer">
 
         <com.google.android.material.chip.ChipGroup
