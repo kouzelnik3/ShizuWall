@@ -99,7 +99,7 @@
             android:name=".services.AppMonitorService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="dataSync" />
+            android:foregroundServiceType="specialUse" />
 
         <service
             android:name=".services.FirewallTileService"
