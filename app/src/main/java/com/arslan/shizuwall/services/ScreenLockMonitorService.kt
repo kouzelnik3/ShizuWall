@@ -45,6 +45,8 @@ class ScreenLockMonitorService : Service() {
             )
             val shouldRun = enabled && mode == FirewallMode.SCREEN_LOCK_MODE
 
+            ScreenLockModeWatchdogWorker.sync(appContext, shouldRun)
+
             val serviceIntent = Intent(appContext, ScreenLockMonitorService::class.java)
             if (shouldRun) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
