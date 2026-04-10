@@ -185,8 +185,8 @@ class ForegroundWifiIndicatorService : Service() {
                         moved = true
                     }
                     if (moved) {
-                        params.x = (initialX + dx).coerceAtLeast(0)
-                        params.y = (initialY + dy).coerceAtLeast(0)
+                        params.x = initialX + dx
+                        params.y = initialY + dy
                         windowManager?.updateViewLayout(floatingView, params)
                         prefs.edit()
                             .putInt(MainActivity.KEY_WIFI_INDICATOR_X, params.x)
@@ -218,12 +218,18 @@ class ForegroundWifiIndicatorService : Service() {
             sizePx,
             sizePx,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             PixelFormat.TRANSLUCENT
         ).apply {
             gravity = Gravity.TOP or Gravity.START
             x = prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_X, 24)
             y = prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_Y, 120)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                layoutInDisplayCutoutMode =
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            }
         }
     }
 
@@ -234,8 +240,8 @@ class ForegroundWifiIndicatorService : Service() {
         val sizePx = prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_SIZE, 42).coerceIn(24, 180)
         params.width = sizePx
         params.height = sizePx
-        params.x = prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_X, 24).coerceAtLeast(0)
-        params.y = prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_Y, 120).coerceAtLeast(0)
+        params.x = prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_X, 24).coerceIn(-600, 3000)
+        params.y = prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_Y, 120).coerceIn(-600, 4000)
         try {
             wm.updateViewLayout(view, params)
         } catch (_: Exception) {

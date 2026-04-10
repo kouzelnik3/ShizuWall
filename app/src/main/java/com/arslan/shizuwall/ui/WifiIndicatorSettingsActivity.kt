@@ -51,7 +51,7 @@ class WifiIndicatorSettingsActivity : BaseActivity() {
             prefs.edit().putInt(MainActivity.KEY_WIFI_INDICATOR_X, value).apply()
             valueX.text = value.toString()
         }
-        setupSlider(sliderY, 0, 3000, prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_Y, 120)) { value ->
+        setupSlider(sliderY, -600, 3000, prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_Y, 120)) { value ->
             prefs.edit().putInt(MainActivity.KEY_WIFI_INDICATOR_Y, value).apply()
             valueY.text = value.toString()
         }

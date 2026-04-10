@@ -99,7 +99,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:valueFrom="0"
+                    android:valueFrom="-600"
                     android:valueTo="3000"
                     android:stepSize="1" />
             </LinearLayout>
