@@ -11,6 +11,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -52,6 +53,8 @@ class ForegroundWifiIndicatorService : Service() {
     private var floatingView: View? = null
     private var indicatorDot: View? = null
     private var currentForegroundPackage: String? = null
+    private var lastScreenWidth = 0
+    private var lastScreenHeight = 0
 
     private val prefsListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         if (key == MainActivity.KEY_FIREWALL_ENABLED ||
@@ -81,6 +84,10 @@ class ForegroundWifiIndicatorService : Service() {
     override fun onCreate() {
         super.onCreate()
         prefs = getSharedPreferences(MainActivity.PREF_NAME, Context.MODE_PRIVATE)
+
+        val metrics = resources.displayMetrics
+        lastScreenWidth = metrics.widthPixels
+        lastScreenHeight = metrics.heightPixels
 
         createNotificationChannel()
         startForeground(NOTIFICATION_ID, createNotification())
@@ -292,5 +299,38 @@ class ForegroundWifiIndicatorService : Service() {
         val bg: Drawable = dot.background ?: return
         bg.mutate().setTint(color)
         dot.backgroundTintList = ColorStateList.valueOf(color)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val metrics = resources.displayMetrics
+        val newWidth = metrics.widthPixels
+        val newHeight = metrics.heightPixels
+
+        if (newWidth != lastScreenWidth || newHeight != lastScreenHeight) {
+            val sizePx = prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_SIZE, 42)
+            var currentX = prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_X, 24)
+            var currentY = prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_Y, 120)
+
+            val isRight = currentX > lastScreenWidth / 2
+            val isBottom = currentY > lastScreenHeight / 2
+
+            if (isRight) {
+                val distanceToRight = lastScreenWidth - currentX - sizePx
+                currentX = newWidth - distanceToRight - sizePx
+            }
+            if (isBottom) {
+                val distanceToBottom = lastScreenHeight - currentY - sizePx
+                currentY = newHeight - distanceToBottom - sizePx
+            }
+
+            prefs.edit()
+                .putInt(MainActivity.KEY_WIFI_INDICATOR_X, currentX)
+                .putInt(MainActivity.KEY_WIFI_INDICATOR_Y, currentY)
+                .apply()
+
+            lastScreenWidth = newWidth
+            lastScreenHeight = newHeight
+        }
     }
 }
