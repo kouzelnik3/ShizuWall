@@ -60,7 +60,7 @@ class BootReceiver : BroadcastReceiver() {
         val enabled = readBoolean(dpPrefs, normalPrefs, MainActivity.KEY_FIREWALL_ENABLED, false)
         val savedElapsed = readLong(dpPrefs, normalPrefs, MainActivity.KEY_FIREWALL_SAVED_ELAPSED, -1L)
         val appMonitorEnabled = readBoolean(dpPrefs, normalPrefs, MainActivity.KEY_APP_MONITOR_ENABLED, false)
-        val indicatorEnabled = readBoolean(dpPrefs, normalPrefs, MainActivity.KEY_WIFI_INDICATOR_ENABLED, false)
+        val indicatorEnabled = readBoolean(dpPrefs, normalPrefs, MainActivity.KEY_FIREWALL_INDICATOR_ENABLED, false)
         val floatingButtonEnabled = readBoolean(dpPrefs, normalPrefs, com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false)
         Log.d(TAG, "prefs: enabled=$enabled, savedElapsed=$savedElapsed, appMonitorEnabled=$appMonitorEnabled, indicatorEnabled=$indicatorEnabled, floatingButtonEnabled=$floatingButtonEnabled")
 
@@ -74,7 +74,7 @@ class BootReceiver : BroadcastReceiver() {
         }
 
         if (indicatorEnabled) {
-            com.arslan.shizuwall.services.ForegroundWifiIndicatorService.start(context)
+            com.arslan.shizuwall.services.ForegroundFirewallIndicatorService.start(context)
         }
 
         if (floatingButtonEnabled) {

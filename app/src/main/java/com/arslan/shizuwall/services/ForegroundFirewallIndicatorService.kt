@@ -28,14 +28,14 @@ import androidx.core.app.NotificationCompat
 import com.arslan.shizuwall.R
 import com.arslan.shizuwall.ui.MainActivity
 
-class ForegroundWifiIndicatorService : Service() {
+class ForegroundFirewallIndicatorService : Service() {
 
     companion object {
-        const val CHANNEL_ID = "foreground_wifi_indicator_channel"
+        const val CHANNEL_ID = "foreground_firewall_indicator_channel"
         const val NOTIFICATION_ID = 4010
 
         fun start(context: Context) {
-            val intent = Intent(context, ForegroundWifiIndicatorService::class.java)
+            val intent = Intent(context, ForegroundFirewallIndicatorService::class.java)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 context.startForegroundService(intent)
             } else {
@@ -44,7 +44,7 @@ class ForegroundWifiIndicatorService : Service() {
         }
 
         fun stop(context: Context) {
-            context.stopService(Intent(context, ForegroundWifiIndicatorService::class.java))
+            context.stopService(Intent(context, ForegroundFirewallIndicatorService::class.java))
         }
     }
 
@@ -59,9 +59,9 @@ class ForegroundWifiIndicatorService : Service() {
     private val prefsListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         if (key == MainActivity.KEY_FIREWALL_ENABLED ||
             key == MainActivity.KEY_SELECTED_APPS ||
-            key == MainActivity.KEY_WIFI_INDICATOR_X ||
-            key == MainActivity.KEY_WIFI_INDICATOR_Y ||
-            key == MainActivity.KEY_WIFI_INDICATOR_SIZE ||
+            key == MainActivity.KEY_FIREWALL_INDICATOR_X ||
+            key == MainActivity.KEY_FIREWALL_INDICATOR_Y ||
+            key == MainActivity.KEY_FIREWALL_INDICATOR_SIZE ||
             key == MainActivity.KEY_LAST_FOREGROUND_APP
         ) {
             applyOverlayPositionAndSize()
@@ -93,7 +93,7 @@ class ForegroundWifiIndicatorService : Service() {
         startForeground(NOTIFICATION_ID, createNotification())
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
-            Toast.makeText(this, R.string.wifi_indicator_overlay_permission_required, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.firewall_indicator_overlay_permission_required, Toast.LENGTH_SHORT).show()
             stopSelf()
             return
         }
@@ -132,10 +132,10 @@ class ForegroundWifiIndicatorService : Service() {
             val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                getString(R.string.wifi_indicator_notification_channel_name),
+                getString(R.string.firewall_indicator_notification_channel_name),
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = getString(R.string.wifi_indicator_notification_channel_description)
+                description = getString(R.string.firewall_indicator_notification_channel_description)
                 setShowBadge(false)
             }
             nm.createNotificationChannel(channel)
@@ -150,8 +150,8 @@ class ForegroundWifiIndicatorService : Service() {
             PendingIntent.FLAG_IMMUTABLE
         )
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle(getString(R.string.wifi_indicator_notification_title))
-            .setContentText(getString(R.string.wifi_indicator_notification_text))
+            .setContentTitle(getString(R.string.firewall_indicator_notification_title))
+            .setContentText(getString(R.string.firewall_indicator_notification_text))
             .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
@@ -161,8 +161,8 @@ class ForegroundWifiIndicatorService : Service() {
 
     private fun showOverlay() {
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
-        floatingView = LayoutInflater.from(this).inflate(R.layout.overlay_wifi_indicator, null)
-        indicatorDot = floatingView?.findViewById(R.id.wifiIndicatorDot)
+        floatingView = LayoutInflater.from(this).inflate(R.layout.overlay_firewall_indicator, null)
+        indicatorDot = floatingView?.findViewById(R.id.firewallIndicatorDot)
 
         val params = createLayoutParams()
         val touchSlop = ViewConfiguration.get(this).scaledTouchSlop
@@ -196,8 +196,8 @@ class ForegroundWifiIndicatorService : Service() {
                         params.y = initialY + dy
                         windowManager?.updateViewLayout(floatingView, params)
                         prefs.edit()
-                            .putInt(MainActivity.KEY_WIFI_INDICATOR_X, params.x)
-                            .putInt(MainActivity.KEY_WIFI_INDICATOR_Y, params.y)
+                            .putInt(MainActivity.KEY_FIREWALL_INDICATOR_X, params.x)
+                            .putInt(MainActivity.KEY_FIREWALL_INDICATOR_Y, params.y)
                             .apply()
                     }
                     true
@@ -220,7 +220,7 @@ class ForegroundWifiIndicatorService : Service() {
     }
 
     private fun createLayoutParams(): WindowManager.LayoutParams {
-        val sizePx = prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_SIZE, 42)
+        val sizePx = prefs.getInt(MainActivity.KEY_FIREWALL_INDICATOR_SIZE, 42)
         return WindowManager.LayoutParams(
             sizePx,
             sizePx,
@@ -231,8 +231,8 @@ class ForegroundWifiIndicatorService : Service() {
             PixelFormat.TRANSLUCENT
         ).apply {
             gravity = Gravity.TOP or Gravity.START
-            x = prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_X, 24)
-            y = prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_Y, 120)
+            x = prefs.getInt(MainActivity.KEY_FIREWALL_INDICATOR_X, 24)
+            y = prefs.getInt(MainActivity.KEY_FIREWALL_INDICATOR_Y, 120)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 layoutInDisplayCutoutMode =
                     WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
@@ -244,11 +244,11 @@ class ForegroundWifiIndicatorService : Service() {
         val view = floatingView ?: return
         val wm = windowManager ?: return
         val params = view.layoutParams as? WindowManager.LayoutParams ?: return
-        val sizePx = prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_SIZE, 42).coerceIn(24, 180)
+        val sizePx = prefs.getInt(MainActivity.KEY_FIREWALL_INDICATOR_SIZE, 42).coerceIn(24, 180)
         params.width = sizePx
         params.height = sizePx
-        params.x = prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_X, 24).coerceIn(-600, 3000)
-        params.y = prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_Y, 120).coerceIn(-600, 4000)
+        params.x = prefs.getInt(MainActivity.KEY_FIREWALL_INDICATOR_X, 24).coerceIn(-600, 3000)
+        params.y = prefs.getInt(MainActivity.KEY_FIREWALL_INDICATOR_Y, 120).coerceIn(-600, 4000)
         try {
             wm.updateViewLayout(view, params)
         } catch (_: Exception) {
@@ -308,9 +308,9 @@ class ForegroundWifiIndicatorService : Service() {
         val newHeight = metrics.heightPixels
 
         if (newWidth != lastScreenWidth || newHeight != lastScreenHeight) {
-            val sizePx = prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_SIZE, 42)
-            var currentX = prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_X, 24)
-            var currentY = prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_Y, 120)
+            val sizePx = prefs.getInt(MainActivity.KEY_FIREWALL_INDICATOR_SIZE, 42)
+            var currentX = prefs.getInt(MainActivity.KEY_FIREWALL_INDICATOR_X, 24)
+            var currentY = prefs.getInt(MainActivity.KEY_FIREWALL_INDICATOR_Y, 120)
 
             val isRight = currentX > lastScreenWidth / 2
             val isBottom = currentY > lastScreenHeight / 2
@@ -325,8 +325,8 @@ class ForegroundWifiIndicatorService : Service() {
             }
 
             prefs.edit()
-                .putInt(MainActivity.KEY_WIFI_INDICATOR_X, currentX)
-                .putInt(MainActivity.KEY_WIFI_INDICATOR_Y, currentY)
+                .putInt(MainActivity.KEY_FIREWALL_INDICATOR_X, currentX)
+                .putInt(MainActivity.KEY_FIREWALL_INDICATOR_Y, currentY)
                 .apply()
 
             lastScreenWidth = newWidth

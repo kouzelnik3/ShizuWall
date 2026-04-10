@@ -176,8 +176,8 @@ class FirewallTileService : TileService() {
                 saveActivePackages(successful.toSet())
                 
                 withContext(Dispatchers.Main) {
-                    if (sharedPreferences.getBoolean(MainActivity.KEY_WIFI_INDICATOR_ENABLED, false)) {
-                        ForegroundWifiIndicatorService.start(this@FirewallTileService)
+                    if (sharedPreferences.getBoolean(MainActivity.KEY_FIREWALL_INDICATOR_ENABLED, false)) {
+                        ForegroundFirewallIndicatorService.start(this@FirewallTileService)
                     }
                     if (sharedPreferences.getBoolean(FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false)) {
                         FloatingButtonService.start(this@FirewallTileService)

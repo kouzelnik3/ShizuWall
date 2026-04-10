@@ -12,7 +12,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.slider.Slider
 import com.arslan.shizuwall.R
 
-class WifiIndicatorSettingsActivity : BaseActivity() {
+class FirewallIndicatorSettingsActivity : BaseActivity() {
 
     private lateinit var prefs: SharedPreferences
     private lateinit var sliderX: Slider
@@ -33,12 +33,12 @@ class WifiIndicatorSettingsActivity : BaseActivity() {
         prefs = getSharedPreferences(MainActivity.PREF_NAME, Context.MODE_PRIVATE)
 
         enableEdgeToEdge()
-        setContentView(R.layout.activity_wifi_indicator_settings)
+        setContentView(R.layout.activity_firewall_indicator_settings)
 
-        val toolbar = findViewById<MaterialToolbar>(R.id.toolbarWifiIndicator)
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbarFirewallIndicator)
         toolbar.setNavigationOnClickListener { finish() }
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.wifiIndicatorSettingsRoot)) { view, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.firewallIndicatorSettingsRoot)) { view, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             val toolbarParams = toolbar.layoutParams as android.view.ViewGroup.MarginLayoutParams
             toolbarParams.topMargin = systemBars.top
@@ -60,16 +60,16 @@ class WifiIndicatorSettingsActivity : BaseActivity() {
         valueY = findViewById(R.id.tvIndicatorYValue)
         valueSize = findViewById(R.id.tvIndicatorSizeValue)
 
-        setupSlider(sliderX, 0, 2000, prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_X, 24)) { value ->
-            prefs.edit().putInt(MainActivity.KEY_WIFI_INDICATOR_X, value).apply()
+        setupSlider(sliderX, 0, 2000, prefs.getInt(MainActivity.KEY_FIREWALL_INDICATOR_X, 24)) { value ->
+            prefs.edit().putInt(MainActivity.KEY_FIREWALL_INDICATOR_X, value).apply()
             valueX.text = value.toString()
         }
-        setupSlider(sliderY, -600, 3000, prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_Y, 120)) { value ->
-            prefs.edit().putInt(MainActivity.KEY_WIFI_INDICATOR_Y, value).apply()
+        setupSlider(sliderY, -600, 3000, prefs.getInt(MainActivity.KEY_FIREWALL_INDICATOR_Y, 120)) { value ->
+            prefs.edit().putInt(MainActivity.KEY_FIREWALL_INDICATOR_Y, value).apply()
             valueY.text = value.toString()
         }
-        setupSlider(sliderSize, 24, 180, prefs.getInt(MainActivity.KEY_WIFI_INDICATOR_SIZE, 42)) { value ->
-            prefs.edit().putInt(MainActivity.KEY_WIFI_INDICATOR_SIZE, value).apply()
+        setupSlider(sliderSize, 24, 180, prefs.getInt(MainActivity.KEY_FIREWALL_INDICATOR_SIZE, 42)) { value ->
+            prefs.edit().putInt(MainActivity.KEY_FIREWALL_INDICATOR_SIZE, value).apply()
             valueSize.text = value.toString()
         }
 

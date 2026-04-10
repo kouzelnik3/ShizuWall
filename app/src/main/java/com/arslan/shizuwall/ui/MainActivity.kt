@@ -98,10 +98,10 @@ class MainActivity : BaseActivity() {
         const val DEFAULT_SCREEN_LOCK_DELAY_SECONDS = 2
         const val KEY_SMART_FOREGROUND_APP = "smart_foreground_app"  // Current foreground app in smart mode
         const val KEY_LAST_FOREGROUND_APP = "last_foreground_app"
-        const val KEY_WIFI_INDICATOR_ENABLED = "wifi_indicator_enabled"
-        const val KEY_WIFI_INDICATOR_X = "wifi_indicator_x"
-        const val KEY_WIFI_INDICATOR_Y = "wifi_indicator_y"
-        const val KEY_WIFI_INDICATOR_SIZE = "wifi_indicator_size"
+        const val KEY_FIREWALL_INDICATOR_ENABLED = "firewall_indicator_enabled"
+        const val KEY_FIREWALL_INDICATOR_X = "firewall_indicator_x"
+        const val KEY_FIREWALL_INDICATOR_Y = "firewall_indicator_y"
+        const val KEY_FIREWALL_INDICATOR_SIZE = "firewall_indicator_size"
         const val KEY_AUTO_ENABLE_ON_SHIZUKU_START = "auto_enable_on_shizuku_start"
         const val KEY_APPLY_ROOT_RULES_AFTER_REBOOT = "apply_root_rules_after_reboot"
         const val KEY_SHOW_SETUP_PROMPT = "show_setup_prompt"
@@ -324,9 +324,9 @@ class MainActivity : BaseActivity() {
             }
         }
 
-        // Start Foreground Wifi Indicator if enabled
-        if (sharedPreferences.getBoolean(KEY_WIFI_INDICATOR_ENABLED, false)) {
-            com.arslan.shizuwall.services.ForegroundWifiIndicatorService.start(this)
+        // Start Foreground Firewall Indicator if enabled
+        if (sharedPreferences.getBoolean(KEY_FIREWALL_INDICATOR_ENABLED, false)) {
+            com.arslan.shizuwall.services.ForegroundFirewallIndicatorService.start(this)
         }
 
         // Start Floating Button Service if enabled
@@ -585,7 +585,7 @@ class MainActivity : BaseActivity() {
         loadInstalledApps()
         
         // Auto-enable accessibility service if revoked (e.g. after debug APK reinstall)
-        val isIndicatorEnabled = sharedPreferences.getBoolean(KEY_WIFI_INDICATOR_ENABLED, false)
+        val isIndicatorEnabled = sharedPreferences.getBoolean(KEY_FIREWALL_INDICATOR_ENABLED, false)
         if (firewallMode == FirewallMode.SMART_FOREGROUND || isIndicatorEnabled) {
             if (!ForegroundDetectionService.isServiceEnabled(this)) {
                 // Try to auto-enable via Shizuku/LADB shell
@@ -1981,8 +1981,8 @@ class MainActivity : BaseActivity() {
                         firewallToggle.isChecked = true
                         suppressToggleListener = false
                         
-                        if (sharedPreferences.getBoolean(KEY_WIFI_INDICATOR_ENABLED, false)) {
-                            com.arslan.shizuwall.services.ForegroundWifiIndicatorService.start(this@MainActivity)
+                        if (sharedPreferences.getBoolean(KEY_FIREWALL_INDICATOR_ENABLED, false)) {
+                            com.arslan.shizuwall.services.ForegroundFirewallIndicatorService.start(this@MainActivity)
                         }
                         if (sharedPreferences.getBoolean(com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false)) {
                             com.arslan.shizuwall.services.FloatingButtonService.start(this@MainActivity)

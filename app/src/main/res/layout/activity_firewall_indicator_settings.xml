@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/wifiIndicatorSettingsRoot"
+    android:id="@+id/firewallIndicatorSettingsRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbarWifiIndicator"
+        android:id="@+id/toolbarFirewallIndicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="@string/wifi_indicator_settings_title"
+        app:title="@string/firewall_indicator_settings_title"
         app:navigationIcon="@drawable/ic_arrow_back_24" />
 
     <LinearLayout
@@ -22,7 +22,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/wifi_indicator_settings_description"
+            android:text="@string/firewall_indicator_settings_description"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="14sp"
             android:layout_marginBottom="16dp" />
@@ -44,7 +44,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/wifi_indicator_x"
+                    android:text="@string/firewall_indicator_x"
                     android:textStyle="bold" />
 
                 <TextView
@@ -113,7 +113,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/wifi_indicator_y"
+                    android:text="@string/firewall_indicator_y"
                     android:textStyle="bold" />
 
                 <TextView
@@ -181,7 +181,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/wifi_indicator_size"
+                    android:text="@string/firewall_indicator_size"
                     android:textStyle="bold" />
 
                 <TextView

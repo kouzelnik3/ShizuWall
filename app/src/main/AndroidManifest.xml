@@ -43,7 +43,7 @@
             android:parentActivityName=".ui.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.WifiIndicatorSettingsActivity"
+            android:name=".ui.FirewallIndicatorSettingsActivity"
             android:label="Indicator Settings"
             android:parentActivityName=".ui.SettingsActivity"
             android:exported="false" />
@@ -130,7 +130,7 @@
             android:foregroundServiceType="specialUse" />
 
         <service
-            android:name=".services.ForegroundWifiIndicatorService"
+            android:name=".services.ForegroundFirewallIndicatorService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="specialUse" />
