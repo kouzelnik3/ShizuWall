@@ -364,4 +364,16 @@
     <string name="decrease">Azalt</string>
     <string name="increase">Artır</string>
     <string name="notification_permission_background_request">Arka planda aktif kalması için izin verin.</string>
+
+    <string name="screen_lock_delay_value">Kilitten %1$d saniye sonra etkinleştir</string>
+    <string name="screen_lock_mode_notification_text">Güvenlik duvarı kurallarını uygulamak için kilit durumunu izler</string>
+    <string name="screen_lock_mode_notification_channel_name">Ekran Kilidi Modu (Servis)</string>
+    <string name="firewall_mode_screen_lock_description">Cihaz kilitlendiğinde seçili uygulamaları engeller</string>
+    <string name="screen_lock_mode_operation_failed">Ekran Kilidi Modu işlemi başarısız oldu</string>
+    <string name="adb_broadcast_quick_reference">Kopyalamaya hazır değerler ve komutlar ile hızlı referans.</string>
+    <string name="firewall_mode_screen_lock">Ekran Kilidi Modu</string>
+    <string name="screen_lock_delay_dialog_title">Ekran Kilidi Gecikmesi</string>
+    <string name="screen_lock_mode_notification_title">Ekran Kilidi Modu</string>
+    <string name="screen_lock_mode_notification_channel_description">Ekran kilidi otomasyonu için arka plan servisi</string>
+    <string name="screen_lock_delay_title">Kilit Gecikmesi</string>
 </resources>
