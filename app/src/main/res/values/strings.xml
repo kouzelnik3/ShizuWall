@@ -72,6 +72,7 @@
     <string name="welcome_message">Block unwanted network connections without root or vpn</string>
     <string name="next">Next</string>
     <string name="notification_permission_title">Notification Permission</string>
+    <string name="notification_permission_background_request">Please grant permission to keep running in the background.</string>
     <string name="notification_permission_message">We need notification permission to keep you informed about firewall status if you reboot while firewall is active.</string>
     <string name="grant_permission">Grant Permission</string>
     <string name="favorites_title">Favorites</string>
@@ -360,4 +361,22 @@
     <string name="floating_button_notification_text">Tap the floating button to toggle firewall</string>
     <string name="floating_button_content_description">Toggle firewall</string>
     <string name="overlay_permission_required">Overlay permission is required for the floating button</string>
+
+    <!-- Foreground Firewall Indicator -->
+    <string name="firewall_indicator">Foreground Firewall Indicator</string>
+    <string name="firewall_indicator_description">Shows if the current foreground app is firewalled</string>
+    <string name="firewall_indicator_settings">Indicator settings</string>
+    <string name="firewall_indicator_settings_title">Indicator Settings</string>
+    <string name="firewall_indicator_settings_description">Adjust foreground indicator position and size.</string>
+    <string name="firewall_indicator_x">X Coordinate</string>
+    <string name="firewall_indicator_y">Y Coordinate</string>
+    <string name="firewall_indicator_size">Indicator Size</string>
+    <string name="firewall_indicator_content_description">Foreground firewall indicator</string>
+    <string name="firewall_indicator_notification_channel_name">Firewall Indicator (Service)</string>
+    <string name="firewall_indicator_notification_channel_description">Background service for foreground firewall indicator</string>
+    <string name="firewall_indicator_notification_title">Foreground Firewall Indicator</string>
+    <string name="firewall_indicator_notification_text">Monitoring foreground app firewall state</string>
+    <string name="firewall_indicator_overlay_permission_required">Overlay permission is required for the firewall indicator</string>
+    <string name="decrease">Decrease</string>
+    <string name="increase">Increase</string>
 </resources>

@@ -113,7 +113,7 @@
     <string name="firewall_enabled_adaptive">Firewall aktivován (Adaptivní režim)</string>
     <string name="failed_to_enable_firewall">Nepodařilo se povolit bránu firewall pro žádné aplikace</string>
     <string name="failed_to_disable_firewall">Nepodařilo se deaktivovat bránu firewall pro žádnou aplikaci</string>
-    <string name="screen_lock_mode_operation_failed">Režim zamknutí obrazovky selhal</string>
+    <string name="screen_lock_mode_operation_failed">Operace selhala</string>
     <string name="operation_failed_for_apps">Operace se nezdařila pro %d aplikací</string>
     <string name="operation_failed_message">Operace se nezdařila u následujících %d aplikací. Byly odznačeny.</string>
     <string name="details">Detaily</string>
@@ -351,12 +351,32 @@
     <string name="double_tap_or_long_press">Dvojitým klepnutím vyberete vše, dlouhým stiskem zrušíte výběr všeho</string>
     <string name="accessibility_auto_granting">Povoluje se služba přístupnosti...</string>
     <string name="accessibility_auto_grant_failed">Službu přístupnosti se nepodařilo povolit automaticky. Povolte ji prosím ručně v Nastavení.</string>
-    <string name="screen_lock_delay_title">Zpoždění uzamknutí</string>
-    <string name="screen_lock_delay_value">Povolit po %1$d vteřinách zamknutí</string>
-    <string name="screen_lock_delay_dialog_title">Zpoždění uzamknutí obrazovky</string>
-    <string name="screen_lock_mode_notification_channel_name">Režim uzamknutí obrazovky (služba)</string>
-    <string name="screen_lock_mode_notification_channel_description">Služba na pozadí pro automatizaci zamykání obrazovkyn</string>
+    <string name="screen_lock_delay_title">Zpoždění uzamčení</string>
+    <string name="screen_lock_delay_value">Povolit po %1$d sekundách od uzamčení</string>
+    <string name="screen_lock_delay_dialog_title">Zpoždění uzamčení obrazovky</string>
+    <string name="screen_lock_mode_notification_channel_name">Režim uzamčení obrazovky (Služba)</string>
+    <string name="screen_lock_mode_notification_channel_description">Služba na pozadí pro automatizaci uzamčení</string>
     <string name="screen_lock_mode_notification_title">Režim uzamčení obrazovky</string>
-    <string name="screen_lock_mode_notification_text">Monitorování uzamykání/odemykání pro použití pravidel firewallu</string>
+    <string name="screen_lock_mode_notification_text">Sledování uzamčení/odemčení pro aplikaci pravidel</string>
     <string name="open_settings">Otevřít Nastavení</string>
+    <string name="notification_permission_background_request">Udělte prosím oprávnění k běhu na pozadí.</string>
+
+    <!-- Auto-added missing translations (English fallback) -->
+    <string name="firewall_indicator_content_description">Indikátor brány firewall v popředí</string>
+    <string name="firewall_indicator_x">Souřadnice X</string>
+    <string name="firewall_indicator_settings_title">Nastavení indikátoru</string>
+    <string name="firewall_indicator_description">Zobrazuje, zda je aktuální aplikace blokována</string>
+    <string name="firewall_indicator_overlay_permission_required">Vyžadováno oprávnění pro zobrazení přes jiné aplikace</string>
+    <string name="firewall_indicator_size">Velikost indikátoru</string>
+    <string name="decrease">Zmenšit</string>
+    <string name="adb_broadcast_quick_reference">Stručná referenční příručka s připravenými příkazy.</string>
+    <string name="firewall_indicator_settings_description">Úprava polohy a velikosti indikátoru.</string>
+    <string name="firewall_indicator_notification_text">Sledování stavu brány firewall</string>
+    <string name="firewall_indicator_notification_channel_description">Služba na pozadí pro indikátor</string>
+    <string name="increase">Zvětšit</string>
+    <string name="firewall_indicator_notification_channel_name">Indikátor brány firewall (Služba)</string>
+    <string name="firewall_indicator">Indikátor brány firewall</string>
+    <string name="firewall_indicator_y">Souřadnice Y</string>
+    <string name="firewall_indicator_settings">Nastavení indikátoru</string>
+    <string name="firewall_indicator_notification_title">Indikátor brány firewall</string>
 </resources>

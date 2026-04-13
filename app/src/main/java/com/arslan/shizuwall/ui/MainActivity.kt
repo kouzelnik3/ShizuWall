@@ -97,6 +97,11 @@ class MainActivity : BaseActivity() {
         const val KEY_SCREEN_LOCK_DELAY_SECONDS = "screen_lock_delay_seconds"
         const val DEFAULT_SCREEN_LOCK_DELAY_SECONDS = 2
         const val KEY_SMART_FOREGROUND_APP = "smart_foreground_app"  // Current foreground app in smart mode
+        const val KEY_LAST_FOREGROUND_APP = "last_foreground_app"
+        const val KEY_FIREWALL_INDICATOR_ENABLED = "firewall_indicator_enabled"
+        const val KEY_FIREWALL_INDICATOR_X = "firewall_indicator_x"
+        const val KEY_FIREWALL_INDICATOR_Y = "firewall_indicator_y"
+        const val KEY_FIREWALL_INDICATOR_SIZE = "firewall_indicator_size"
         const val KEY_AUTO_ENABLE_ON_SHIZUKU_START = "auto_enable_on_shizuku_start"
         const val KEY_APPLY_ROOT_RULES_AFTER_REBOOT = "apply_root_rules_after_reboot"
         const val KEY_SHOW_SETUP_PROMPT = "show_setup_prompt"
@@ -317,6 +322,16 @@ class MainActivity : BaseActivity() {
             } else {
                 startService(monitorIntent)
             }
+        }
+
+        // Start Foreground Firewall Indicator if enabled
+        if (sharedPreferences.getBoolean(KEY_FIREWALL_INDICATOR_ENABLED, false)) {
+            com.arslan.shizuwall.services.ForegroundFirewallIndicatorService.start(this)
+        }
+
+        // Start Floating Button Service if enabled
+        if (sharedPreferences.getBoolean(com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false)) {
+            com.arslan.shizuwall.services.FloatingButtonService.start(this)
         }
 
 
@@ -570,7 +585,8 @@ class MainActivity : BaseActivity() {
         loadInstalledApps()
         
         // Auto-enable accessibility service if revoked (e.g. after debug APK reinstall)
-        if (firewallMode == FirewallMode.SMART_FOREGROUND) {
+        val isIndicatorEnabled = sharedPreferences.getBoolean(KEY_FIREWALL_INDICATOR_ENABLED, false)
+        if (firewallMode == FirewallMode.SMART_FOREGROUND || isIndicatorEnabled) {
             if (!ForegroundDetectionService.isServiceEnabled(this)) {
                 // Try to auto-enable via Shizuku/LADB shell
                 lifecycleScope.launch {
@@ -1964,6 +1980,13 @@ class MainActivity : BaseActivity() {
                         suppressToggleListener = true
                         firewallToggle.isChecked = true
                         suppressToggleListener = false
+                        
+                        if (sharedPreferences.getBoolean(KEY_FIREWALL_INDICATOR_ENABLED, false)) {
+                            com.arslan.shizuwall.services.ForegroundFirewallIndicatorService.start(this@MainActivity)
+                        }
+                        if (sharedPreferences.getBoolean(com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false)) {
+                            com.arslan.shizuwall.services.FloatingButtonService.start(this@MainActivity)
+                        }
                         
                         if (firewallMode.allowsDynamicSelection()) {
                             appListAdapter.setSelectionEnabled(true)
