@@ -291,6 +291,7 @@ class MainActivity : BaseActivity() {
                 appListAdapter.setSelectionEnabled(firewallMode.allowsDynamicSelection() || !isFirewallEnabled)
                 updateInteractiveViews()
             }
+            appListAdapter.setHybridModeEnabled(firewallMode == FirewallMode.HYBRID)
         }
     }
 
@@ -582,6 +583,7 @@ class MainActivity : BaseActivity() {
             firewallToggle.isChecked = isEnablingProcess
             suppressToggleListener = false
         }
+        appListAdapter.setHybridModeEnabled(firewallMode == FirewallMode.HYBRID)
         loadInstalledApps()
         
         // Auto-enable accessibility service if revoked (e.g. after debug APK reinstall)
@@ -1033,7 +1035,7 @@ class MainActivity : BaseActivity() {
 
                 val idx = appList.indexOfFirst { it.packageName == appInfo.packageName }
                 if (idx != -1) {
-                    appList[idx] = appList[idx].copy(isSelected = appInfo.isSelected)
+                    appList[idx] = appInfo
                 }
                 updateSelectedCount()
                 saveSelectedApps()
@@ -1099,6 +1101,7 @@ class MainActivity : BaseActivity() {
                 toggleFavorite(appInfo)
             }
         )
+        appListAdapter.setHybridModeEnabled(firewallMode == FirewallMode.HYBRID)
         recyclerView.adapter = appListAdapter
         defaultItemAnimator = recyclerView.itemAnimator
 
@@ -1784,7 +1787,8 @@ class MainActivity : BaseActivity() {
                         isSelected = selectedPackages.contains(packageName),
                         isSystem = obj.optBoolean("isSystem", false),
                         isFavorite = favoritePackages.contains(packageName),
-                        installTime = obj.optLong("installTime", 0L)
+                        installTime = obj.optLong("installTime", 0L),
+                        appFirewallMode = obj.optInt("appFirewallMode", 0)
                     )
                 )
             }
@@ -1810,6 +1814,7 @@ class MainActivity : BaseActivity() {
                     put("packageName", app.packageName)
                     put("isSystem", app.isSystem)
                     put("installTime", app.installTime)
+                    put("appFirewallMode", app.appFirewallMode)
                 }
             )
         }

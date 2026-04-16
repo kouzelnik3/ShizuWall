@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.android.material.button.MaterialButton
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
@@ -60,13 +61,23 @@ class AppListAdapter(
         }
     }
 
+    private var isHybridMode: Boolean = false
+
+    fun setHybridModeEnabled(enabled: Boolean) {
+        if (isHybridMode != enabled) {
+            isHybridMode = enabled
+            notifyItemRangeChanged(0, itemCount)
+        }
+    }
+
     inner class AppViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val card: MaterialCardView = itemView as MaterialCardView
         val appIcon: ImageView = itemView.findViewById(R.id.appIcon)
         val appName: TextView = itemView.findViewById(R.id.appName)
         val packageName: TextView = itemView.findViewById(R.id.packageName)
-        val checkbox: CheckBox = itemView.findViewById(R.id.appCheckbox)
+        val appSwitch: com.google.android.material.materialswitch.MaterialSwitch = itemView.findViewById(R.id.appSwitch)
         val favoriteIcon: ImageView = itemView.findViewById(R.id.favoriteIcon)
+        val modeDropdownText: MaterialButton = itemView.findViewById(R.id.modeDropdownText)
 
         fun bind(appInfo: AppInfo) {
             // Load icon async
@@ -100,9 +111,21 @@ class AppListAdapter(
 
             favoriteIcon.visibility = if (appInfo.isFavorite) View.VISIBLE else View.GONE
 
+            if (appInfo.isSelected && isHybridMode) {
+                modeDropdownText.visibility = View.VISIBLE
+                val modeStr = when (appInfo.appFirewallMode) {
+                    1 -> "Smart Foreground"
+                    2 -> "Screen Lock"
+                    else -> "Default Block"
+                }
+                modeDropdownText.text = modeStr
+            } else {
+                modeDropdownText.visibility = View.GONE
+            }
+
             // Avoid triggering listener when recycling views
-            checkbox.setOnCheckedChangeListener(null)
-            checkbox.isChecked = appInfo.isSelected
+            appSwitch.setOnCheckedChangeListener(null)
+            appSwitch.isChecked = appInfo.isSelected
 
             val surfaceColor = MaterialColors.getColor(itemView, com.google.android.material.R.attr.colorSurface)
             val surfaceVariantColor = MaterialColors.getColor(itemView, com.google.android.material.R.attr.colorSurfaceVariant)
@@ -115,25 +138,41 @@ class AppListAdapter(
             card.setCardBackgroundColor(cardBgColor)
 
             if (selectionEnabled) {
-                checkbox.isEnabled = true
-                checkbox.setOnCheckedChangeListener { _, isChecked ->
+                appSwitch.isEnabled = true
+                appSwitch.setOnCheckedChangeListener { _, isChecked ->
                     onAppClick(appInfo.copy(isSelected = isChecked))
                 }
                 itemView.isClickable = true
                 itemView.setOnClickListener {
-                    checkbox.isChecked = !checkbox.isChecked
+                    appSwitch.isChecked = !appSwitch.isChecked
                 }
                 itemView.setOnLongClickListener {
                     onAppLongClick(appInfo)
                     true
                 }
+                
+                modeDropdownText.setOnClickListener { view ->
+                    val popupMenu = android.widget.PopupMenu(view.context, view)
+                    popupMenu.menu.add(0, 0, 0, "Default Block")
+                    popupMenu.menu.add(0, 1, 1, "Smart Foreground")
+                    popupMenu.menu.add(0, 2, 2, "Screen Lock")
+                    popupMenu.setOnMenuItemClickListener { menuItem ->
+                        val newMode = menuItem.itemId
+                        if (appInfo.appFirewallMode != newMode) {
+                            onAppClick(appInfo.copy(appFirewallMode = newMode))
+                        }
+                        true
+                    }
+                    popupMenu.show()
+                }
             } else {
                 // disable interactions while firewall active
-                checkbox.isEnabled = false
-                checkbox.setOnCheckedChangeListener(null)
+                appSwitch.isEnabled = false
+                appSwitch.setOnCheckedChangeListener(null)
                 itemView.setOnClickListener(null)
                 itemView.setOnLongClickListener(null)
                 itemView.isClickable = false
+                modeDropdownText.setOnClickListener(null)
             }
         }
     }

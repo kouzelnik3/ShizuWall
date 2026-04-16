@@ -13,7 +13,8 @@ enum class FirewallMode {
     ADAPTIVE,
     SCREEN_LOCK_MODE,
     SMART_FOREGROUND,
-    WHITELIST;
+    WHITELIST,
+    HYBRID;
 
     companion object {
         /**

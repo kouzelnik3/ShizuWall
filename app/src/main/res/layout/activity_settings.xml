@@ -539,6 +539,25 @@
                             android:textSize="12sp"
                             android:textColor="?android:attr/textColorSecondary" />
 
+                        <!-- Hybrid Mode -->
+                        <com.google.android.material.radiobutton.MaterialRadioButton
+                            android:id="@+id/radioModeHybrid"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Hybrid Mode"
+                            android:textSize="15sp"
+                            android:textColor="?android:attr/textColorPrimary" />
+
+                        <TextView
+                            android:id="@+id/tvHybridModeDescription"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="32dp"
+                            android:text="Configure mode individually per app"
+                            android:textSize="12sp"
+                            android:textColor="?android:attr/textColorSecondary" />
+
                         <LinearLayout
                             android:id="@+id/warningContainer"
                             android:layout_width="match_parent"
