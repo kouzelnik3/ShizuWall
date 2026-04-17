@@ -113,12 +113,12 @@ class AppListAdapter(
 
             if (appInfo.isSelected && isHybridMode) {
                 modeDropdownText.visibility = View.VISIBLE
-                val modeStr = when (appInfo.appFirewallMode) {
-                    1 -> "Smart Foreground"
-                    2 -> "Screen Lock"
-                    else -> "Default Block"
+                val emoji = when (appInfo.appFirewallMode) {
+                    1 -> "📱"
+                    2 -> "🔒"
+                    else -> "🚫"
                 }
-                modeDropdownText.text = modeStr
+                modeDropdownText.text = emoji
             } else {
                 modeDropdownText.visibility = View.GONE
             }
@@ -153,9 +153,9 @@ class AppListAdapter(
                 
                 modeDropdownText.setOnClickListener { view ->
                     val popupMenu = android.widget.PopupMenu(view.context, view)
-                    popupMenu.menu.add(0, 0, 0, "Default Block")
-                    popupMenu.menu.add(0, 1, 1, "Smart Foreground")
-                    popupMenu.menu.add(0, 2, 2, "Screen Lock")
+                    popupMenu.menu.add(0, 0, 0, "🚫 Default Block")
+                    popupMenu.menu.add(0, 1, 1, "📱 Smart Foreground")
+                    popupMenu.menu.add(0, 2, 2, "🔒 Screen Lock")
                     popupMenu.setOnMenuItemClickListener { menuItem ->
                         val newMode = menuItem.itemId
                         if (appInfo.appFirewallMode != newMode) {
