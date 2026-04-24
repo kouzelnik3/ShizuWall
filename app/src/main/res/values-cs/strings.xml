@@ -315,7 +315,7 @@
     <string name="firewall_mode_hybrid">Hybridní režim</string>
     <string name="firewall_mode_hybrid_description">Nastavit režim individuálně pro každou aplikaci</string>
     <string name="hybrid_mode_default_block">Výchozí blokování</string>
-    <string name="hybrid_mode_smart_foreground">Chytrý popředí</string>
+    <string name="hybrid_mode_smart_foreground">Chytré popředí</string>
     <string name="hybrid_mode_screen_lock">Zámek obrazovky</string>
     <string name="smart_foreground_service_description">Sleduje aplikaci v popředí pro správu pravidel brány firewall</string>
     <string name="smart_foreground_notification_channel_name">Inteligentní popředí (služba)</string>
