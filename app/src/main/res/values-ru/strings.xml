@@ -319,6 +319,11 @@
     <string name="firewall_mode_whitelist_description">Блокировать все приложения по умолчанию, разрешить выбранные приложения</string>
     <string name="whitelist_info_system_apps_warning">Когда "Показать системные приложения" отключено, системные приложения не будут заблокированы брандмауэром в режиме Белого списка.\n\nЕсли вы включили "Показать системные приложения" и используете режим Белого списка, эта комбинация не была полностью протестирована. Используйте с осторожностью.</string>
     <string name="firewall_mode_change_disabled">Невозможно изменить режим брандмауэра, пока он включен. Пожалуйста, сначала отключите брандмауэр.</string>
+    <string name="firewall_mode_hybrid">Гибридный режим</string>
+    <string name="firewall_mode_hybrid_description">Настроить режим индивидуально для каждого приложения</string>
+    <string name="hybrid_mode_default_block">Блокировка по умолчанию</string>
+    <string name="hybrid_mode_smart_foreground">Умный передний план</string>
+    <string name="hybrid_mode_screen_lock">Блокировка экрана</string>
     <string name="floating_button">Плавающая кнопка брандмауэра</string>
     <string name="floating_button_description">Показывать перетаскиваемую наложенную кнопку для включения брандмауэра из любого места</string>
     <string name="floating_button_notification_channel_name">Плавающая кнопка (Служба)</string>

@@ -211,7 +211,7 @@
     <string name="ladb_notification_permission_required">A permissão de notificação é necessária para mostrar o prompt do código de pareamento.</string>
     <string name="set_ladb_title">Configuração LADB e Daemon</string>
     <string name="set_ladb_summary">Pareie o LADB e instale o daemon de segundo plano persistente</string>
-    <string name="ladb_logs_title">Logs</string>
+    <string name="ladb_logs_title">Registros</string>
     <string name="ladb_logs_empty">Ainda não há logs. Realize operações LADB para ver os logs aqui.</string>
     <string name="ladb_clear_logs">Limpar Logs</string>
     <string name="ladb_copy_logs">Copiar Logs</string>
@@ -317,6 +317,11 @@
     <string name="firewall_mode_whitelist_description">Bloquear todos os apps por padrão, permitir apps selecionados</string>
     <string name="whitelist_info_system_apps_warning">Quando "Mostrar apps do sistema" está desativado, os apps do sistema não serão bloqueados pelo firewall no modo Lista branca.\n\nSe você ativou "Mostrar apps do sistema" e está usando o modo Lista branca, esta combinação não foi totalmente testada. Use com cuidado.</string>
     <string name="firewall_mode_change_disabled">Não é possível alterar o modo de firewall enquanto está ativado. Por favor, desative o firewall primeiro.</string>
+    <string name="firewall_mode_hybrid">Modo Híbrido</string>
+    <string name="firewall_mode_hybrid_description">Configurar modo individualmente por aplicativo</string>
+    <string name="hybrid_mode_default_block">Bloqueio Padrão</string>
+    <string name="hybrid_mode_smart_foreground">Primeiro Plano Inteligente</string>
+    <string name="hybrid_mode_screen_lock">Bloqueio de Tela</string>
     <string name="floating_button">Botão Flutuante de Firewall</string>
     <string name="floating_button_description">Mostrar um botão de sobreposição arrastável para alternar o firewall de qualquer lugar</string>
     <string name="floating_button_notification_channel_name">Botão Flutuante (Serviço)</string>

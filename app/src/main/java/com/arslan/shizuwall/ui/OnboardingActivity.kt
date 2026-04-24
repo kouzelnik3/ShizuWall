@@ -16,6 +16,7 @@ import android.content.res.Configuration
 import com.arslan.shizuwall.R
 import com.arslan.shizuwall.BuildConfig
 import com.arslan.shizuwall.adapters.OnboardingPageAdapter
+import rikka.shizuku.Shizuku
 
 class OnboardingActivity : BaseActivity() {
 
@@ -164,6 +165,12 @@ class OnboardingActivity : BaseActivity() {
             .edit()
             .putString(MainActivity.KEY_WORKING_MODE, mode)
             .apply()
+        
+        if (mode == "SHIZUKU") {
+            try {
+                rikka.shizuku.Shizuku.requestPermission(0)
+            } catch (ignore: Exception) {}
+        }
 
         // Update the last page based on the selected mode
         val lastPageIndex = pages.size - 1

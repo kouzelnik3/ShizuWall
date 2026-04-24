@@ -11,7 +11,7 @@
     <string name="cat_selected">Seleccionadas</string>
     <string name="cat_unselected">No seleccionadas</string>
     <string name="cat_user">Usuario</string>
-    <string name="enable_firewall">Firewall</string>
+    <string name="enable_firewall">Cortafuegos</string>
     <string name="font_default">Predeterminado</string>
     <string name="font_ndot">Ndot</string>
     <string name="select_all">Seleccionar todo</string>
@@ -61,7 +61,7 @@
     <string name="no_apps_selected">No hay aplicaciones seleccionadas</string>
     <string name="shizuku_not_running">Shizuku no se está ejecutando</string>
     <string name="shizuku_permission_required">Se requiere permiso de Shizuku</string>
-    <string name="firewall">Firewall</string>
+    <string name="firewall">Cortafuegos</string>
     <string name="welcome_title">Bienvenido a ShizuWall</string>
     <string name="welcome_message">Bloquea conexiones de red no deseadas sin root ni vpn</string>
     <string name="next">Siguiente</string>
@@ -125,7 +125,7 @@
     <string name="use_dynamic_color_description">Aplicar colores de fondo de pantalla al tema de la app</string>
     <string name="use_amoled_black">Usar tema AMOLED</string>
     <string name="use_amoled_black_description">Negro puro para pantallas OLED</string>
-    <string name="firewall_section">Firewall</string>
+    <string name="firewall_section">Cortafuegos</string>
     <string name="skip_enable_confirmation_description">No preguntar al activar el firewall</string>
     <string name="adaptive_mode">Modo Adaptativo</string>
     <string name="adaptive_mode_description">Aplicar reglas al instante. El firewall se mantiene activo.</string>
@@ -319,6 +319,11 @@
     <string name="firewall_mode_whitelist_description">Bloquear todas las apps por defecto, permitir apps seleccionadas</string>
     <string name="whitelist_info_system_apps_warning">Cuando "Mostrar apps del sistema" está desactivado, las apps del sistema no serán bloqueadas por el firewall en modo Lista blanca.\n\nSi has activado "Mostrar apps del sistema" y estás usando el modo Lista blanca, esta combinación no ha sido completamente probada. Úsala con precaución.</string>
     <string name="firewall_mode_change_disabled">No se puede cambiar el modo de firewall mientras está activado. Por favor, desactiva el firewall primero.</string>
+    <string name="firewall_mode_hybrid">Modo Híbrido</string>
+    <string name="firewall_mode_hybrid_description">Configurar modo individualmente por aplicación</string>
+    <string name="hybrid_mode_default_block">Bloqueo Predeterminado</string>
+    <string name="hybrid_mode_smart_foreground">Primer Plano Inteligente</string>
+    <string name="hybrid_mode_screen_lock">Bloqueo de Pantalla</string>
     <string name="floating_button">Botón flotante de firewall</string>
     <string name="floating_button_description">Mostrar un botón superpuesto arrastrable para activar el firewall desde cualquier lugar</string>
     <string name="floating_button_notification_channel_name">Botón flotante (Servicio)</string>

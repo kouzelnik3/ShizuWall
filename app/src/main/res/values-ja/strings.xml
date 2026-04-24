@@ -319,6 +319,11 @@
     <string name="firewall_mode_whitelist_description">デフォルトですべてのアプリをブロックし、選択されたアプリを許可</string>
     <string name="whitelist_info_system_apps_warning">"システムアプリを表示"が無効の場合、ホワイトリストモードでシステムアプリはファイアウォールの対象になりません。\n\n"システムアプリを表示"を有効にしてホワイトリストモードを使用している場合、この組み合わせは十分にテストされていません。注意して使用してください。</string>
     <string name="firewall_mode_change_disabled">ファイアウォールが有効になっている間はモードを変更できません。まずファイアウォールを無効にしてください。</string>
+    <string name="firewall_mode_hybrid">ハイブリッドモード</string>
+    <string name="firewall_mode_hybrid_description">アプリごとにモードを個別に設定</string>
+    <string name="hybrid_mode_default_block">デフォルトブロック</string>
+    <string name="hybrid_mode_smart_foreground">スマートフォアグラウンド</string>
+    <string name="hybrid_mode_screen_lock">画面ロック</string>
     <string name="floating_button">フローティング・ファイアウォール・ボタン</string>
     <string name="floating_button_description">どこからでもファイアウォールを切り替えるためのドラッグ可能なオーバーレイボタンを表示します</string>
     <string name="floating_button_notification_channel_name">フローティングボタン (サービス)</string>

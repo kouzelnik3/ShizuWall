@@ -113,10 +113,11 @@ class MainActivity : BaseActivity() {
         const val EXTRA_ACTIVE_PACKAGES = "com.arslan.shizuwall.EXTRA_ACTIVE_PACKAGES"
 
         const val ACTION_FIREWALL_CONTROL = "shizuwall.CONTROL" 
-        const val EXTRA_PACKAGES_CSV = "apps" 
+        const val EXTRA_PACKAGES_CSV = "apps"
 
         const val KEY_FIREWALL_UPDATE_TS = "firewall_update_ts"
         const val KEY_APP_MONITOR_ENABLED = "app_monitor_enabled"
+        const val KEY_APP_MODES = "app_modes_json"
         private const val KEY_APPS_CACHE_JSON = "apps_cache_json_v1"
 
 
@@ -291,6 +292,7 @@ class MainActivity : BaseActivity() {
                 appListAdapter.setSelectionEnabled(firewallMode.allowsDynamicSelection() || !isFirewallEnabled)
                 updateInteractiveViews()
             }
+            appListAdapter.setHybridModeEnabled(firewallMode == FirewallMode.HYBRID)
         }
     }
 
@@ -582,11 +584,12 @@ class MainActivity : BaseActivity() {
             firewallToggle.isChecked = isEnablingProcess
             suppressToggleListener = false
         }
+        appListAdapter.setHybridModeEnabled(firewallMode == FirewallMode.HYBRID)
         loadInstalledApps()
         
         // Auto-enable accessibility service if revoked (e.g. after debug APK reinstall)
         val isIndicatorEnabled = sharedPreferences.getBoolean(KEY_FIREWALL_INDICATOR_ENABLED, false)
-        if (firewallMode == FirewallMode.SMART_FOREGROUND || isIndicatorEnabled) {
+        if (firewallMode == FirewallMode.SMART_FOREGROUND || firewallMode == FirewallMode.HYBRID || isIndicatorEnabled) {
             if (!ForegroundDetectionService.isServiceEnabled(this)) {
                 // Try to auto-enable via Shizuku/LADB shell
                 lifecycleScope.launch {
@@ -1033,7 +1036,7 @@ class MainActivity : BaseActivity() {
 
                 val idx = appList.indexOfFirst { it.packageName == appInfo.packageName }
                 if (idx != -1) {
-                    appList[idx] = appList[idx].copy(isSelected = appInfo.isSelected)
+                    appList[idx] = appInfo
                 }
                 updateSelectedCount()
                 saveSelectedApps()
@@ -1099,6 +1102,7 @@ class MainActivity : BaseActivity() {
                 toggleFavorite(appInfo)
             }
         )
+        appListAdapter.setHybridModeEnabled(firewallMode == FirewallMode.HYBRID)
         recyclerView.adapter = appListAdapter
         defaultItemAnimator = recyclerView.itemAnimator
 
@@ -1683,6 +1687,8 @@ class MainActivity : BaseActivity() {
                 }
 
                 val favoritePackages = loadFavoriteApps()
+                val modesStr = sharedPreferences.getString(KEY_APP_MODES, "{}")
+                val modesJson = try { JSONObject(modesStr!!) } catch (e: Exception) { JSONObject() }
                 
                 // Process packages in parallel chunks for better performance
                 val chunkSize = 50
@@ -1711,8 +1717,9 @@ class MainActivity : BaseActivity() {
                             val isSelected = savedSelected.contains(packageName)
                             val isFavorite = favoritePackages.contains(packageName)
                             val installTime = packageInfo.firstInstallTime
+                            val appMode = modesJson.optInt(packageName, 0)
 
-                            chunkResult.add(AppInfo(appName, packageName, isSelected, isSystemApp, isFavorite, installTime))
+                            chunkResult.add(AppInfo(appName, packageName, isSelected, isSystemApp, isFavorite, installTime, appMode))
                         }
                         chunkResult
                     }
@@ -1768,6 +1775,8 @@ class MainActivity : BaseActivity() {
         val json = sharedPreferences.getString(KEY_APPS_CACHE_JSON, null) ?: return false
         val selectedPackages = loadSelectedApps()
         val favoritePackages = loadFavoriteApps()
+        val modesStr = sharedPreferences.getString(KEY_APP_MODES, "{}")
+        val modesJson = try { JSONObject(modesStr!!) } catch (e: Exception) { JSONObject() }
 
         val cachedList = try {
             val arr = JSONArray(json)
@@ -1784,7 +1793,8 @@ class MainActivity : BaseActivity() {
                         isSelected = selectedPackages.contains(packageName),
                         isSystem = obj.optBoolean("isSystem", false),
                         isFavorite = favoritePackages.contains(packageName),
-                        installTime = obj.optLong("installTime", 0L)
+                        installTime = obj.optLong("installTime", 0L),
+                        appFirewallMode = modesJson.optInt(packageName, 0)
                     )
                 )
             }
@@ -1810,6 +1820,7 @@ class MainActivity : BaseActivity() {
                     put("packageName", app.packageName)
                     put("isSystem", app.isSystem)
                     put("installTime", app.installTime)
+                    put("appFirewallMode", app.appFirewallMode)
                 }
             )
         }
@@ -1829,9 +1840,16 @@ class MainActivity : BaseActivity() {
             .filter { it.isSelected && !ShizukuPackageResolver.isShizukuPackage(this, it.packageName) }
             .map { it.packageName }
             .toSet()
+            
+        val modesJson = JSONObject()
+        appList.filter { it.appFirewallMode != 0 }.forEach {
+            modesJson.put(it.packageName, it.appFirewallMode)
+        }
+            
         sharedPreferences.edit()
             .putStringSet(KEY_SELECTED_APPS, selectedPackages)
             .putInt(KEY_SELECTED_COUNT, selectedPackages.size)
+            .putString(KEY_APP_MODES, modesJson.toString())
             .apply()
     }
 
@@ -1909,12 +1927,26 @@ class MainActivity : BaseActivity() {
     private fun applyFirewallState(enable: Boolean, packageNames: List<String>) {
         if (enable && packageNames.isEmpty() && !firewallMode.allowsDynamicSelection()) return
 
-        val effectivePackageNames = if (
-            enable &&
-            firewallMode == FirewallMode.SCREEN_LOCK_MODE &&
-            !ScreenLockModeReceiver.isDeviceLocked(this)
-        ) {
-            emptyList()
+        val effectivePackageNames = if (enable) {
+            if (firewallMode == FirewallMode.SCREEN_LOCK_MODE && !ScreenLockModeReceiver.isDeviceLocked(this)) {
+                emptyList()
+            } else if (firewallMode == FirewallMode.HYBRID) {
+                val appModesStr = sharedPreferences.getString(KEY_APP_MODES, "{}")
+                val appModes = try { JSONObject(appModesStr!!) } catch (e: Exception) { JSONObject() }
+                val isLocked = ScreenLockModeReceiver.isDeviceLocked(this)
+                packageNames.filter {
+                    val mode = appModes.optInt(it, 0)
+                    when (mode) {
+                        1 -> false // SMART_FOREGROUND app -> handled dynamically by accessibility service
+                        2 -> isLocked // SCREEN_LOCK app -> block if screen locked
+                        else -> true // DEFAULT app -> block immediately
+                    }
+                }
+            } else if (firewallMode == FirewallMode.SMART_FOREGROUND) {
+                emptyList()
+            } else {
+                packageNames
+            }
         } else {
             packageNames
         }
@@ -1928,7 +1960,7 @@ class MainActivity : BaseActivity() {
             updateInteractiveViews()
             showDimOverlay(force = true)
             
-            if (enable && firewallMode == FirewallMode.SMART_FOREGROUND) {
+            if (enable && (firewallMode == FirewallMode.SMART_FOREGROUND || firewallMode == FirewallMode.HYBRID)) {
                 if (!ForegroundDetectionService.isServiceEnabled(this@MainActivity)) {
                     val granted = ForegroundDetectionService.enableServiceViaShell(this@MainActivity)
                     if (granted) {
@@ -2147,7 +2179,7 @@ class MainActivity : BaseActivity() {
         lastOperationErrorDetails.clear()
 
         val toUnblock = packageNames.toMutableList()
-        if (firewallMode == FirewallMode.SMART_FOREGROUND) {
+        if (firewallMode == FirewallMode.SMART_FOREGROUND || firewallMode == FirewallMode.HYBRID) {
             val currentFgApp = sharedPreferences.getString(MainActivity.KEY_SMART_FOREGROUND_APP, null)
             if (!currentFgApp.isNullOrEmpty() && !toUnblock.contains(currentFgApp)) {
                 toUnblock.add(currentFgApp)
@@ -2168,7 +2200,7 @@ class MainActivity : BaseActivity() {
         }
         runCommandDetailed("cmd connectivity set-chain3-enabled false")
 
-        if (firewallMode == FirewallMode.SMART_FOREGROUND) {
+        if (firewallMode == FirewallMode.SMART_FOREGROUND || firewallMode == FirewallMode.HYBRID) {
             sharedPreferences.edit()
                 .putString(MainActivity.KEY_SMART_FOREGROUND_APP, "")
                 .putStringSet(MainActivity.KEY_ACTIVE_PACKAGES, emptySet())

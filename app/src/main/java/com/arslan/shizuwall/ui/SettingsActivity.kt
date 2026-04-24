@@ -113,6 +113,7 @@ class SettingsActivity : BaseActivity() {
     private lateinit var radioModeScreenLock: RadioButton
     private lateinit var radioModeSmartForeground: RadioButton
     private lateinit var radioModeWhitelist: RadioButton
+    private lateinit var radioModeHybrid: RadioButton
     private lateinit var cardScreenLockDelay: com.google.android.material.card.MaterialCardView
     private lateinit var layoutScreenLockDelay: LinearLayout
     private lateinit var tvScreenLockDelayValue: TextView
@@ -278,6 +279,7 @@ class SettingsActivity : BaseActivity() {
         radioModeScreenLock = findViewById(R.id.radioModeScreenLock)
         radioModeSmartForeground = findViewById(R.id.radioModeSmartForeground)
         radioModeWhitelist = findViewById(R.id.radioModeWhitelist)
+        radioModeHybrid = findViewById(R.id.radioModeHybrid)
         cardScreenLockDelay = findViewById(R.id.cardScreenLockDelay)
         layoutScreenLockDelay = findViewById(R.id.layoutScreenLockDelay)
         tvScreenLockDelayValue = findViewById(R.id.tvScreenLockDelayValue)
@@ -316,6 +318,7 @@ class SettingsActivity : BaseActivity() {
             FirewallMode.SCREEN_LOCK_MODE -> radioGroupFirewallMode.check(R.id.radioModeScreenLock)
             FirewallMode.SMART_FOREGROUND -> radioGroupFirewallMode.check(R.id.radioModeSmartForeground)
             FirewallMode.WHITELIST -> radioGroupFirewallMode.check(R.id.radioModeWhitelist)
+            FirewallMode.HYBRID -> radioGroupFirewallMode.check(R.id.radioModeHybrid)
             else -> radioGroupFirewallMode.check(R.id.radioModeDefault)
         }
         updateScreenLockDelaySummary()
@@ -388,8 +391,8 @@ class SettingsActivity : BaseActivity() {
         val showSkipConfirm = mode == FirewallMode.DEFAULT
         cardSkipConfirm.visibility = if (showSkipConfirm) View.VISIBLE else View.GONE
 
-        cardScreenLockDelay.visibility = if (mode == FirewallMode.SCREEN_LOCK_MODE) View.VISIBLE else View.GONE
-        if (mode == FirewallMode.SCREEN_LOCK_MODE) {
+        cardScreenLockDelay.visibility = if (mode == FirewallMode.SCREEN_LOCK_MODE || mode == FirewallMode.HYBRID) View.VISIBLE else View.GONE
+        if (mode == FirewallMode.SCREEN_LOCK_MODE || mode == FirewallMode.HYBRID) {
             updateScreenLockDelaySummary()
         }
         
@@ -399,8 +402,8 @@ class SettingsActivity : BaseActivity() {
             sharedPreferences.edit().putBoolean("skip_enable_confirm", true).apply()
         }
         
-        // Show warning for Smart Foreground if accessibility not enabled
-        if (mode == FirewallMode.SMART_FOREGROUND) {
+        // Show warning for Smart Foreground / Hybrid if accessibility not enabled
+        if (mode == FirewallMode.SMART_FOREGROUND || mode == FirewallMode.HYBRID) {
             val accessibilityEnabled = ForegroundDetectionService.isServiceEnabled(this)
             warningContainer.visibility = if (!accessibilityEnabled) View.VISIBLE else View.GONE
             // Reset retry loading state
@@ -423,6 +426,7 @@ class SettingsActivity : BaseActivity() {
         radioModeScreenLock.isEnabled = !isFirewallEnabled
         radioModeSmartForeground.isEnabled = !isFirewallEnabled
         radioModeWhitelist.isEnabled = !isFirewallEnabled
+        radioModeHybrid.isEnabled = !isFirewallEnabled
         
         // Update alpha for visual feedback
         val targetAlpha = if (isFirewallEnabled) 0.5f else 1f
@@ -454,6 +458,7 @@ class SettingsActivity : BaseActivity() {
                     FirewallMode.SCREEN_LOCK_MODE -> radioGroupFirewallMode.check(R.id.radioModeScreenLock)
                     FirewallMode.SMART_FOREGROUND -> radioGroupFirewallMode.check(R.id.radioModeSmartForeground)
                     FirewallMode.WHITELIST -> radioGroupFirewallMode.check(R.id.radioModeWhitelist)
+                    FirewallMode.HYBRID -> radioGroupFirewallMode.check(R.id.radioModeHybrid)
                     else -> radioGroupFirewallMode.check(R.id.radioModeDefault)
                 }
                 return@setOnCheckedChangeListener
@@ -464,6 +469,7 @@ class SettingsActivity : BaseActivity() {
                 R.id.radioModeScreenLock -> FirewallMode.SCREEN_LOCK_MODE
                 R.id.radioModeSmartForeground -> FirewallMode.SMART_FOREGROUND
                 R.id.radioModeWhitelist -> FirewallMode.WHITELIST
+                R.id.radioModeHybrid -> FirewallMode.HYBRID
                 else -> FirewallMode.DEFAULT
             }
             
@@ -473,8 +479,8 @@ class SettingsActivity : BaseActivity() {
             TransitionManager.beginDelayedTransition(findViewById(R.id.settingsRoot), AutoTransition())
             updateFirewallModeUI(newMode)
             
-            // Handle accessibility for Smart Foreground mode
-            if (newMode == FirewallMode.SMART_FOREGROUND) {
+            // Handle accessibility for Smart Foreground / Hybrid mode
+            if (newMode == FirewallMode.SMART_FOREGROUND || newMode == FirewallMode.HYBRID) {
                 if (!ForegroundDetectionService.isServiceEnabled(this)) {
                     // Check dialog status
                     val dialogShown = sharedPreferences.getBoolean("accessibility_dialog_shown", false)
