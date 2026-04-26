@@ -493,6 +493,7 @@ class ForegroundDetectionService : AccessibilityService() {
 
     private fun publishObservedForegroundApp(packageName: String) {
         if (packageName == lastObservedForegroundPackage) return
+        if (shouldAlwaysSkipPackage(packageName)) return
         val previous = lastObservedForegroundPackage
         lastObservedForegroundPackage = packageName
         sharedPreferences.edit().putString(MainActivity.KEY_LAST_FOREGROUND_APP, packageName).apply()
