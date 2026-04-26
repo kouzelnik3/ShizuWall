@@ -174,7 +174,7 @@
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@drawable/android_24px"
+                        android:src="@drawable/light_off_24dp"
                         app:tint="?attr/colorPrimary"
                         android:layout_marginEnd="16dp"
                         android:contentDescription="@null" />
