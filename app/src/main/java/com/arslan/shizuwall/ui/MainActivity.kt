@@ -1037,60 +1037,46 @@ class MainActivity : BaseActivity() {
                 sortAndFilterApps(preserveScrollPosition = true)
 
                 // Apply rule immediately if firewall is enabled
-                // Skip for HYBRID mode with Smart Foreground (1) or Screen Lock (2) - handled dynamically
-                val isHybridSmartOrLock = firewallMode == FirewallMode.HYBRID && appInfo.appFirewallMode != 0
-                if (isFirewallEnabled && firewallMode.allowsDynamicSelection() && !isHybridSmartOrLock) {
+                // Skip for HYBRID mode - Smart Foreground and Screen Lock handled dynamically
+                if (isFirewallEnabled && firewallMode == FirewallMode.HYBRID && appInfo.appFirewallMode != 0) {
+                    // HYBRID mode with per-app mode - reconcile services immediately
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        // Reconcile screen lock state if switching to/from Screen Lock mode
+                        if (appInfo.appFirewallMode == 2) {
+                            ScreenLockMonitorService.sync(this@MainActivity)
+                        }
+                    }
+                } else if (isFirewallEnabled && firewallMode.allowsDynamicSelection()) {
                     val pkg = appInfo.packageName
                     val isSelected = appInfo.isSelected
-                    
-                    // Check if this is a mode switch TO Screen Lock (2) - don't block immediately  
-                    val isSwitchingToScreenLock = appInfo.appFirewallMode == 2
                     
                     lifecycleScope.launch(Dispatchers.IO) {
                         lastOperationErrorDetails.clear()
                         
-                        // When switching to Screen Lock mode, unblock immediately (service will block when screen locks)
-                        if (isSwitchingToScreenLock && isSelected) {
-                            runCommandDetailed("cmd connectivity set-package-networking-enabled true $pkg")
-                            activeFirewallPackages.remove(pkg)
-                            saveActivePackages(activeFirewallPackages)
+                        val shouldBlock = if (firewallMode == FirewallMode.WHITELIST) !isSelected else isSelected
+                        val res = if (shouldBlock) {
+                            runCommandDetailed("cmd connectivity set-package-networking-enabled false $pkg")
                         } else {
-                            val shouldBlock = if (firewallMode == FirewallMode.WHITELIST) !isSelected else isSelected
-                            val res = if (shouldBlock) {
-                                runCommandDetailed("cmd connectivity set-package-networking-enabled false $pkg")
-                            } else {
-                                runCommandDetailed("cmd connectivity set-package-networking-enabled true $pkg")
-                            }
-                            val success = res.isEffectivelySuccess
-                            
-                            withContext(Dispatchers.Main) {
-                                if (success) {
-                                    if (shouldBlock) {
-                                        activeFirewallPackages.add(pkg)
-                                    } else {
-                                        activeFirewallPackages.remove(pkg)
-                                    }
-                                    saveActivePackages(activeFirewallPackages)
+                            runCommandDetailed("cmd connectivity set-package-networking-enabled true $pkg")
+                        }
+                        val success = res.isEffectivelySuccess
+                        
+                        withContext(Dispatchers.Main) {
+                            if (success) {
+                                if (shouldBlock) {
+                                    activeFirewallPackages.add(pkg)
                                 } else {
-                                    // Operation failed
-                                    if (shouldBlock) {
-                                        // Failed to block
-                                        val skipErrorDialog = sharedPreferences.getBoolean(KEY_SKIP_ERROR_DIALOG, false)
-                                        val keepErrorAppsSelected = sharedPreferences.getBoolean(KEY_KEEP_ERROR_APPS_SELECTED, false)
+                                    activeFirewallPackages.remove(pkg)
+                                }
+                                saveActivePackages(activeFirewallPackages)
+                            } else {
+                                // Operation failed
+                                if (shouldBlock) {
+                                    // Failed to block
+                                    val skipErrorDialog = sharedPreferences.getBoolean(KEY_SKIP_ERROR_DIALOG, false)
+                                    val keepErrorAppsSelected = sharedPreferences.getBoolean(KEY_KEEP_ERROR_APPS_SELECTED, false)
 
-                                        if (!(skipErrorDialog && keepErrorAppsSelected)) {
-                                            val revertIdx = appList.indexOfFirst { it.packageName == pkg }
-                                            if (revertIdx != -1) {
-                                                appList[revertIdx] = appList[revertIdx].copy(isSelected = !isSelected)
-                                            }
-                                            updateSelectedCount()
-                                            saveSelectedApps()
-                                            sortAndFilterApps(preserveScrollPosition = true)
-                                        }
-                                        lastOperationErrorDetails[pkg] = res.stderr.ifEmpty { res.stdout }
-                                        showOperationErrorsDialog(listOf(pkg), lastOperationErrorDetails)
-                                    } else {
-                                        // Failed to unblock
+                                    if (!(skipErrorDialog && keepErrorAppsSelected)) {
                                         val revertIdx = appList.indexOfFirst { it.packageName == pkg }
                                         if (revertIdx != -1) {
                                             appList[revertIdx] = appList[revertIdx].copy(isSelected = !isSelected)
@@ -1098,8 +1084,19 @@ class MainActivity : BaseActivity() {
                                         updateSelectedCount()
                                         saveSelectedApps()
                                         sortAndFilterApps(preserveScrollPosition = true)
-                                        Toast.makeText(this@MainActivity, getString(R.string.failed_to_unblock_app, appInfo.appName), Toast.LENGTH_SHORT).show()
                                     }
+                                    lastOperationErrorDetails[pkg] = res.stderr.ifEmpty { res.stdout }
+                                    showOperationErrorsDialog(listOf(pkg), lastOperationErrorDetails)
+                                } else {
+                                    // Failed to unblock
+                                    val revertIdx = appList.indexOfFirst { it.packageName == pkg }
+                                    if (revertIdx != -1) {
+                                        appList[revertIdx] = appList[revertIdx].copy(isSelected = !isSelected)
+                                    }
+                                    updateSelectedCount()
+                                    saveSelectedApps()
+                                    sortAndFilterApps(preserveScrollPosition = true)
+                                    Toast.makeText(this@MainActivity, getString(R.string.failed_to_unblock_app, appInfo.appName), Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }
