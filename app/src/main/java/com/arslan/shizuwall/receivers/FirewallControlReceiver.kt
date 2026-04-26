@@ -226,7 +226,7 @@ class FirewallControlReceiver : BroadcastReceiver() {
                     if (globalCommandSuccess) {
                         for (pkg in packages) {
                             val blockResult = execShell("cmd connectivity set-package-networking-enabled false $pkg")
-                            if (blockResult.success) {
+                            if (blockResult.isEffectivelySuccess) {
                                 successful.add(pkg)
                             } else if (mode == "LADB") {
                                 appendLadbFailureLog(context, "Failed to block package $pkg", blockResult)
@@ -237,13 +237,16 @@ class FirewallControlReceiver : BroadcastReceiver() {
                         }
                         // In Whitelist mode, explicitly allow whitelisted apps to ensure they have internet access
                         for (pkg in whitelistAllowApps) {
-                            execShell("cmd connectivity set-package-networking-enabled true $pkg")
+                            val allowResult = execShell("cmd connectivity set-package-networking-enabled true $pkg")
+                            if (!allowResult.isEffectivelySuccess && mode == "LADB") {
+                                appendLadbFailureLog(context, "Failed to allow package $pkg", allowResult)
+                            }
                         }
                     }
                 } else {
                     for (pkg in packages) {
                         val allowResult = execShell("cmd connectivity set-package-networking-enabled true $pkg")
-                        if (allowResult.success) {
+                        if (allowResult.isEffectivelySuccess) {
                             successful.add(pkg)
                         } else if (mode == "LADB") {
                             appendLadbFailureLog(context, "Failed to unblock package $pkg", allowResult)

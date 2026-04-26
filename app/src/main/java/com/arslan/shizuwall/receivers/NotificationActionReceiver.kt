@@ -70,7 +70,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val result = ShellExecutorProvider.forContext(context).exec("cmd connectivity set-package-networking-enabled true $packageName")
-                if (result.success) {
+                if (result.isEffectivelySuccess) {
                     val prefs = context.getSharedPreferences(MainActivity.PREF_NAME, Context.MODE_PRIVATE)
                     val activePkgs = prefs.getStringSet(MainActivity.KEY_ACTIVE_PACKAGES, emptySet())?.toMutableSet() ?: mutableSetOf()
                     activePkgs.remove(packageName)

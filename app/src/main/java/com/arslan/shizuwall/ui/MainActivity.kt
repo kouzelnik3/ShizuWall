@@ -220,7 +220,8 @@ class MainActivity : BaseActivity() {
 
                 val selectedAppsList = appList.filter { targetPkgs.contains(it.packageName) }
                 if (lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-                    showFirewallConfirmDialog(if (selectedAppsList.isNotEmpty()) selectedAppsList else emptyList())
+                    val allowPkgs = getWhitelistAllowPackages(selectedPkgs)
+                    showFirewallConfirmDialog(if (selectedAppsList.isNotEmpty()) selectedAppsList else emptyList(), targetPkgs, allowPkgs)
                 } else {
                     pendingAutoEnable = true
                     pendingAutoEnableSelectedApps = selectedPkgs
@@ -990,7 +991,7 @@ class MainActivity : BaseActivity() {
                                         val cmd = if (shouldBlock) "cmd connectivity set-package-networking-enabled false $pkg"
                                                   else "cmd connectivity set-package-networking-enabled true $pkg"
                                         val res = runCommandDetailed(cmd)
-                                        if (res.success) successful.add(pkg)
+                                        if (res.isEffectivelySuccess) successful.add(pkg)
                                         else {
                                             failed.add(pkg)
                                             lastOperationErrorDetails[pkg] = res.stderr.ifEmpty { res.stdout }
@@ -1057,7 +1058,7 @@ class MainActivity : BaseActivity() {
                             } else {
                                 runCommandDetailed("cmd connectivity set-package-networking-enabled true $pkg")
                             }
-                        val success = res.success
+                        val success = res.isEffectivelySuccess
                         
                         withContext(Dispatchers.Main) {
                             if (success) {
@@ -1145,7 +1146,7 @@ class MainActivity : BaseActivity() {
                                     "cmd connectivity set-package-networking-enabled true $pkg"
                                 }
                                 val res = runCommandDetailed(cmd)
-                                if (res.success) successful.add(pkg)
+                                if (res.isEffectivelySuccess) successful.add(pkg)
                                 else {
                                     failed.add(pkg)
                                     lastOperationErrorDetails[pkg] = res.stderr.ifEmpty { res.stdout }
@@ -1543,7 +1544,7 @@ class MainActivity : BaseActivity() {
         // If user opted to skip the confirmation, directly apply the firewall
         val prefsLocal = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         if (prefsLocal.getBoolean(KEY_SKIP_ENABLE_CONFIRM, false)) {
-            applyFirewallState(true, selectedApps.map { it.packageName }, whitelistAllowApps)
+            applyFirewallState(true, blockPkgs, whitelistAllowApps)
             return
         }
 
@@ -1552,7 +1553,7 @@ class MainActivity : BaseActivity() {
             .setView(dialogView)
             .setCancelable(false)
             .setPositiveButton(getString(R.string.enable)) { _, _ ->
-                applyFirewallState(true, selectedApps.map { it.packageName }, whitelistAllowApps)
+                applyFirewallState(true, blockPkgs, whitelistAllowApps)
             }
             .setNegativeButton(getString(R.string.cancel)) { _, _ ->
                 suppressToggleListener = true
@@ -2162,7 +2163,7 @@ class MainActivity : BaseActivity() {
         for (packageName in packageNames) {
             val cmd = "cmd connectivity set-package-networking-enabled false $packageName"
             val res = runCommandDetailed(cmd)
-            if (res.success) {
+            if (res.isEffectivelySuccess) {
                 successful.add(packageName)
             } else {
                 failed.add(packageName)
@@ -2195,7 +2196,7 @@ class MainActivity : BaseActivity() {
             // In any mode, these are apps that were explicitly BLOCKED by us. 
             // When disabling the firewall, we must restore them to TRUE (unblocked).
             val res = runCommandDetailed("cmd connectivity set-package-networking-enabled true $packageName")
-            if (res.success) {
+            if (res.isEffectivelySuccess) {
                 successful.add(packageName)
             } else {
                 failed.add(packageName)
