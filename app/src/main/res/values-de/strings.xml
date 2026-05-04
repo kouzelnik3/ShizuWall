@@ -294,6 +294,7 @@
     
     <string name="firewall_mode_focus_tracker">Fokus-Tracker</string>
     <string name="firewall_mode_focus_tracker_description">Die Firewall aktivieren, wenn ShizuWall nicht im Vordergrund ist, und deaktivieren, wenn es im Vordergrund ist.</string>
+    <string name="focus_tracker_info_enabled">Der Fokus-Tracker-Modus blockiert ausgewählte Apps, wenn Sie ShizuWall verlassen, und erlaubt sie, wenn Sie sich in ShizuWall befinden.\n\nDie erforderliche Barrierefreiheitsberechtigung wird automatisch erteilt, wenn Sie die Firewall aktivieren.</string>
     
     <string name="smart_foreground_requires_accessibility">Erfordert Barrierefreiheits-Berechtigung</string>
     <string name="smart_foreground_service_description">Überwacht die Vordergrund-App zur Verwaltung der Firewall-Regeln</string>
@@ -320,8 +321,7 @@
     <string name="do_not_show_again">Nicht mehr anzeigen</string>
     <string name="select_font">Schriftart auswählen</string>
     <string name="apply">Anwenden</string>
-    <string name="accessibility_permission_title">Barrierefreiheitsberechtigung erforderlich</string>
-    <string name="accessibility_permission_message">Diese App benötigt die AccessibilityService-API, um Vordergrund-App-Änderungen für den Smart-Vordergrund-Modus zu überwachen. Die API wird verwendet, um zu erkennen, wann Sie zwischen Apps wechseln, und die Firewall-Regeln automatisch zu aktualisieren. Es werden keine persönlichen Daten gesammelt oder übertragen.</string>
+
     <string name="accept">Akzeptieren</string>
     <string name="decline">Ablehnen</string>
     <string name="firewall_mode_whitelist">Ausnahmeliste</string>
@@ -359,8 +359,7 @@
     <string name="ladb_daemon_restart_log_prefix">Aktuelles Daemon-Protokoll:</string>
     <string name="ladb_daemon_log_detected_hint">Aktuelle Daemon-Protokolle sind unter Details verfügbar.</string>
     <string name="firewall_reboot_apply_failed_message">Die Firewall-Regeln konnten nach dem Neustart nicht erneut angewendet werden. Tippen Sie, um die App zu öffnen.</string>
-    <string name="accessibility_auto_granting">Bedienungshilfedienst wird aktiviert...</string>
-    <string name="accessibility_auto_grant_failed">Der Bedienungshilfedienst konnte nicht automatisch aktiviert werden. Bitte aktivieren Sie ihn manuell in den Einstellungen.</string>
+
     <string name="open_settings">Einstellungen öffnen</string>
     <string name="notification_permission_background_request">Bitte erteilen Sie die Berechtigung, weiterhin im Hintergrund ausgeführt zu werden.</string>
 

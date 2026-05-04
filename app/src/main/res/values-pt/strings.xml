@@ -294,6 +294,7 @@
     
     <string name="firewall_mode_focus_tracker">Rastreador de Foco</string>
     <string name="firewall_mode_focus_tracker_description">Ativar a firewall quando o ShizuWall não estiver em foco e desativá-la quando estiver em foco.</string>
+    <string name="focus_tracker_info_enabled">O modo Rastreador de Foco bloqueia os apps selecionados quando você sai do ShizuWall e os permite quando está dentro do ShizuWall.\n\nA permissão de Acessibilidade necessária é concedida automaticamente quando você ativa o firewall.</string>
     
     <string name="smart_foreground_requires_accessibility">Requer permissão de Acessibilidade</string>
     <string name="smart_foreground_service_description">Monitora o app em primeiro plano para gerenciar regras do firewall</string>
@@ -320,8 +321,7 @@
     <string name="do_not_show_again">Não mostrar novamente</string>
     <string name="select_font">Selecionar fonte</string>
     <string name="apply">Aplicar</string>
-    <string name="accessibility_permission_title">Permissão de Acessibilidade Necessária</string>
-    <string name="accessibility_permission_message">Este app requer a API AccessibilityService para monitorar mudanças na app em primeiro plano para o modo Primeiro Plano Inteligente. A API será usada para detectar quando você alterna entre apps e atualizar automaticamente as regras do firewall em conformidade. Nenhum dado pessoal é coletado ou transmitido.</string>
+
     <string name="accept">Aceitar</string>
     <string name="decline">Recusar</string>
     <string name="firewall_mode_whitelist">Lista branca</string>
@@ -359,8 +359,7 @@
     <string name="ladb_daemon_restart_log_prefix">Log recente do daemon:</string>
     <string name="ladb_daemon_log_detected_hint">Os logs recentes do daemon estão disponíveis em Detalhes.</string>
     <string name="firewall_reboot_apply_failed_message">Falha ao reaplicar as regras do firewall após reiniciar. Toque para abrir o app.</string>
-    <string name="accessibility_auto_granting">Ativando o serviço de acessibilidade...</string>
-    <string name="accessibility_auto_grant_failed">Não foi possível ativar automaticamente o serviço de acessibilidade. Ative-o manualmente em Configurações.</string>
+
     <string name="open_settings">Abrir Configurações</string>
     <string name="notification_permission_background_request">Por favor, conceda permissão para continuar executando em segundo plano.</string>
 

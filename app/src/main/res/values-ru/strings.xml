@@ -296,6 +296,7 @@
 
     <string name="firewall_mode_focus_tracker">Отслеживание фокуса</string>
     <string name="firewall_mode_focus_tracker_description">Включать брандмауэр, когда ShizuWall не находится в фокусе, и отключать, когда он находится в фокусе.</string>
+    <string name="focus_tracker_info_enabled">Режим отслеживания фокуса блокирует выбранные приложения, когда вы покидаете ShizuWall, и разрешает их, когда вы находитесь внутри ShizuWall.\n\nТребуемое разрешение специальных возможностей предоставляется автоматически при включении брандмауэра.</string>
     
     <string name="smart_foreground_requires_accessibility">Требуется разрешение на специальные возможности</string>
     <string name="smart_foreground_service_description">Отслеживает приложение на переднем плане для управления правилами брандмауэра</string>
@@ -322,8 +323,7 @@
     <string name="do_not_show_again">Не показывать снова</string>
     <string name="select_font">Выбрать шрифт</string>
     <string name="apply">Применить</string>
-    <string name="accessibility_permission_title">Требуется разрешение на специальные возможности</string>
-    <string name="accessibility_permission_message">Это приложение требует API AccessibilityService для мониторинга изменений приложения на переднем плане для режима Умного переднего плана. API будет использоваться для обнаружения, когда вы переключаетесь между приложениями, и автоматического обновления правил брандмауэра соответственно. Личные данные не собираются и не передаются.</string>
+
     <string name="accept">Принять</string>
     <string name="decline">Отклонить</string>
     <string name="firewall_mode_whitelist">Белый список</string>
@@ -361,8 +361,7 @@
     <string name="ladb_daemon_restart_log_prefix">Недавний журнал демона:</string>
     <string name="ladb_daemon_log_detected_hint">Недавние журналы демона доступны в разделе Детали.</string>
     <string name="firewall_reboot_apply_failed_message">Не удалось повторно применить правила брандмауэра после перезагрузки. Нажмите, чтобы открыть приложение.</string>
-    <string name="accessibility_auto_granting">Включение службы специальных возможностей...</string>
-    <string name="accessibility_auto_grant_failed">Не удалось автоматически включить службу специальных возможностей. Пожалуйста, включите ее вручную в настройках.</string>
+
     <string name="open_settings">Открыть настройки</string>
     <string name="notification_permission_background_request">Пожалуйста, предоставьте разрешение для продолжения работы в фоновом режиме.</string>
 

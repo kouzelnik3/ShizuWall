@@ -294,6 +294,7 @@
     
     <string name="firewall_mode_focus_tracker">Odak Takipçisi</string>
     <string name="firewall_mode_focus_tracker_description">ShizuWall odak dışı olduğunda güvenlik duvarını etkinleştir, odaklandığında ise devre dışı bırak.</string>
+    <string name="focus_tracker_info_enabled">Odak Takipçisi modu, ShizuWall\'dan çıktığınızda seçili uygulamaları engeller ve ShizuWall içindeyken izin verir.\n\nGerekli Erişilebilirlik izni, güvenlik duvarını etkinleştirdiğinizde otomatik olarak verilir.</string>
     
     <string name="smart_foreground_requires_accessibility">Erişilebilirlik izni gereklidir</string>
     <string name="smart_foreground_service_description">Güvenlik duvarı kurallarını yönetmek için ön plan uygulamasını izler</string>
@@ -320,8 +321,7 @@
     <string name="do_not_show_again">Bir daha gösterme</string>
     <string name="select_font">Yazı Tipi Seç</string>
     <string name="apply">Uygula</string>
-    <string name="accessibility_permission_title">Erişilebilirlik İzni Gerekli</string>
-    <string name="accessibility_permission_message">Bu uygulama, Akıllı Ön Plan modu için ön plan uygulama değişikliklerini izlemek üzere AccessibilityService API\'sine ihtiyaç duyar. API, uygulamalar arasında geçiş yaptığınızda algılamak ve güvenlik duvarı kurallarını otomatik olarak güncellemek için kullanılacaktır. Kişisel veri toplanmaz veya iletilmez.</string>
+
     <string name="accept">Kabul Et</string>
     <string name="decline">Reddet</string>
     <string name="firewall_mode_whitelist">Beyaz Liste</string>
@@ -359,8 +359,7 @@
     <string name="ladb_daemon_restart_log_prefix">Son daemon günlüğü:</string>
     <string name="ladb_daemon_log_detected_hint">Son daemon günlükleri Ayrıntılar bölümünde mevcut.</string>
     <string name="firewall_reboot_apply_failed_message">Yeniden başlatma sonrası güvenlik duvarı kuralları yeniden uygulanamadı. Uygulamayı açmak için dokunun.</string>
-    <string name="accessibility_auto_granting">Erişilebilirlik servisi etkinleştiriliyor...</string>
-    <string name="accessibility_auto_grant_failed">Erişilebilirlik servisi otomatik olarak etkinleştirilemedi. Lütfen Ayarlar\'dan manuel olarak etkinleştirin.</string>
+
     <string name="open_settings">Ayarları Aç</string>
 
     <string name="decrease">Azalt</string>

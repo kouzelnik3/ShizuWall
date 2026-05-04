@@ -296,6 +296,7 @@
     
     <string name="firewall_mode_focus_tracker">フォーカス・トラッカー</string>
     <string name="firewall_mode_focus_tracker_description">ShizuWallがアクティブでないときはファイアウォールを有効にし、アクティブなときは無効にする。</string>
+    <string name="focus_tracker_info_enabled">フォーカス・トラッカー・モードは、ShizuWallから離れたときに選択したアプリをブロックし、ShizuWall内にいるときは許可します。\n\n必要なユーザー補助権限は、ファイアウォールを有効にすると自動的に付与されます。</string>
     
     <string name="smart_foreground_requires_accessibility">ユーザー補助の権限が必要です</string>
     <string name="smart_foreground_service_description">ファイアウォールルールを管理するためにフォアグラウンドアプリを監視します</string>
@@ -322,8 +323,7 @@
     <string name="do_not_show_again">今後表示しない</string>
     <string name="select_font">フォントを選択</string>
     <string name="apply">適用</string>
-    <string name="accessibility_permission_title">ユーザー補助権限が必要です</string>
-    <string name="accessibility_permission_message">このアプリは、スマートフォアグラウンドモードでフォアグラウンドアプリの変更を監視するためにAccessibilityService APIが必要です。APIは、アプリ間で切り替えたときに検知し、ファイアウォールルールを自動的に更新するために使用されます。個人データは収集または送信されません。</string>
+
     <string name="accept">受け入れる</string>
     <string name="decline">拒否</string>
     <string name="firewall_mode_whitelist">ホワイトリスト</string>
@@ -361,8 +361,7 @@
     <string name="ladb_daemon_restart_log_prefix">最近のデーモンログ:</string>
     <string name="ladb_daemon_log_detected_hint">最近のデーモンログは 詳細 で確認できます。</string>
     <string name="firewall_reboot_apply_failed_message">再起動後にファイアウォールルールを再適用できませんでした。タップしてアプリを開いてください。</string>
-    <string name="accessibility_auto_granting">ユーザー補助サービスを有効化しています...</string>
-    <string name="accessibility_auto_grant_failed">ユーザー補助サービスを自動で有効化できませんでした。設定で手動で有効にしてください。</string>
+
     <string name="open_settings">設定を開く</string>
     <string name="notification_permission_background_request">バックグラウンドで実行し続けるには権限を付与してください。</string>
 
