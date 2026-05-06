@@ -1,0 +1,5 @@
+Hybrid Firewall Mode: New firewall mode combining Smart Foreground, Default and Screen Lock logic (#79)
+Focus Tracker Feature: Enhanced tracking for focused applications (#94)
+Screen Lock Mode: Blocks selected apps when screen is locked
+AMOLED Theme Support: Dark theme with pure black background for OLED displays
+Quick Settings Tile: Long press now opens settings screen (#90)
