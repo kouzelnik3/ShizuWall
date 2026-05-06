@@ -122,6 +122,9 @@ class AppListAdapter(
             // Set icon based on selection state
             val iconRes = if (appInfo.isSelected) R.drawable.check_circle_24dp else R.drawable.circle_24dp
             appSwitch.setImageResource(iconRes)
+            appSwitch.contentDescription = itemView.context.getString(
+                if (appInfo.isSelected) R.string.app_switch_selected else R.string.app_switch_unselected
+            )
             val tintColor = if (appInfo.isSelected) {
                 MaterialColors.getColor(itemView, android.R.attr.colorPrimary)
             } else {
