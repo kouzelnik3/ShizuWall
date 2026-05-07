@@ -1,1 +1,1 @@
-A lightweight, privacy focused Android firewall application that blocks network connections for selected apps **without requiring root access or VPN**. ShizuWall leverages Shizuku to provide powerful network control capabilities. Requires Android 11 (API 30) or higher.
+A lightweight, privacy focused Android firewall application that blocks network connections for selected apps without requiring VPN. ShizuWall leverages Shizuku to provide powerful network control capabilities. Requires Android 11 (API 30) or higher.

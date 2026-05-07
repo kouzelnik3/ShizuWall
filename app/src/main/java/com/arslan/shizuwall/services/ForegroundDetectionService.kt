@@ -30,8 +30,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.coroutineScope
 import android.util.Log
+import com.arslan.shizuwall.utils.ShizukuPackageResolver
 
 /**
  * AccessibilityService that monitors foreground app changes for Smart Foreground mode.
@@ -267,7 +267,7 @@ class ForegroundDetectionService : AccessibilityService() {
                         .putString(MainActivity.KEY_SMART_FOREGROUND_APP, "")
                         .putStringSet(MainActivity.KEY_ACTIVE_PACKAGES, emptySet())
                         .apply()
-                } else if (cachedFirewallMode == FirewallMode.SMART_FOREGROUND || cachedFirewallMode == FirewallMode.HYBRID) {
+                } else if (cachedFirewallMode == FirewallMode.SMART_FOREGROUND || cachedFirewallMode == FirewallMode.HYBRID || cachedFirewallMode == FirewallMode.FOCUS_TRACKER) {
                     startForegroundService()
                 }
             }
@@ -409,6 +409,9 @@ class ForegroundDetectionService : AccessibilityService() {
         if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return
 
         val packageName = event.packageName?.toString() ?: return
+
+        // Skip self for non-focus-tracker modes to avoid processing our own windows.
+        if (packageName == this.packageName && cachedFirewallMode != FirewallMode.FOCUS_TRACKER) return
 
         // Skip same-package events immediately (no debounce needed).
         if (packageName == currentForegroundPackage) return
@@ -676,20 +679,14 @@ class ForegroundDetectionService : AccessibilityService() {
         }
     }
 
-    // Version 1
     private suspend fun applyFocusTrackerRules(executor: ShellExecutor, isFocused: Boolean) {
         val pkgs = selectedPackages.toList()
         val shouldEnableNetworking = isFocused
 
-        // Run commands in parallel for faster execution
-        coroutineScope {
-            pkgs.forEach { pkg ->
-                if (pkg == packageName || pkg.contains("shizuku", ignoreCase = true)) return@forEach
-
-                launch(Dispatchers.IO) {
-                    executor.exec("cmd connectivity set-package-networking-enabled $shouldEnableNetworking $pkg")
-                }
-            }
+        // Run commands sequentially to avoid race conditions on the shell executor
+        for (pkg in pkgs) {
+            if (pkg == packageName || ShizukuPackageResolver.isShizukuPackage(this, pkg)) continue
+            executor.exec("cmd connectivity set-package-networking-enabled $shouldEnableNetworking $pkg")
         }
 
         val activePkgs = if (!isFocused) selectedPackages else emptySet()

@@ -71,7 +71,7 @@ class AppListAdapter(
         val appIcon: ImageView = itemView.findViewById(R.id.appIcon)
         val appName: TextView = itemView.findViewById(R.id.appName)
         val packageName: TextView = itemView.findViewById(R.id.packageName)
-        val appSwitch: com.google.android.material.materialswitch.MaterialSwitch = itemView.findViewById(R.id.appSwitch)
+        val appSwitch: ImageView = itemView.findViewById(R.id.appSwitch)
         val favoriteIcon: ImageView = itemView.findViewById(R.id.favoriteIcon)
         val modeDropdownText: MaterialButton = itemView.findViewById(R.id.modeDropdownText)
 
@@ -119,9 +119,18 @@ class AppListAdapter(
                 modeDropdownText.visibility = View.GONE
             }
 
-            // Avoid triggering listener when recycling views
-            appSwitch.setOnCheckedChangeListener(null)
-            appSwitch.isChecked = appInfo.isSelected
+            // Set icon based on selection state
+            val iconRes = if (appInfo.isSelected) R.drawable.check_circle_24dp else R.drawable.circle_24dp
+            appSwitch.setImageResource(iconRes)
+            appSwitch.contentDescription = itemView.context.getString(
+                if (appInfo.isSelected) R.string.app_switch_selected else R.string.app_switch_unselected
+            )
+            val tintColor = if (appInfo.isSelected) {
+                MaterialColors.getColor(itemView, android.R.attr.colorPrimary)
+            } else {
+                MaterialColors.getColor(itemView, com.google.android.material.R.attr.colorOnSurfaceVariant)
+            }
+            appSwitch.imageTintList = android.content.res.ColorStateList.valueOf(tintColor)
 
             val surfaceColor = MaterialColors.getColor(itemView, com.google.android.material.R.attr.colorSurface)
             val surfaceVariantColor = MaterialColors.getColor(itemView, com.google.android.material.R.attr.colorSurfaceVariant)
@@ -134,13 +143,15 @@ class AppListAdapter(
             card.setCardBackgroundColor(cardBgColor)
 
             if (selectionEnabled) {
+                val isCurrentlySelected = appInfo.isSelected
                 appSwitch.isEnabled = true
-                appSwitch.setOnCheckedChangeListener { _, isChecked ->
-                    onAppClick(appInfo.copy(isSelected = isChecked))
-                }
+                appSwitch.alpha = 1.0f
                 itemView.isClickable = true
                 itemView.setOnClickListener {
-                    appSwitch.isChecked = !appSwitch.isChecked
+                    onAppClick(appInfo.copy(isSelected = !isCurrentlySelected))
+                }
+                appSwitch.setOnClickListener {
+                    onAppClick(appInfo.copy(isSelected = !isCurrentlySelected))
                 }
                 itemView.setOnLongClickListener {
                     onAppLongClick(appInfo)
@@ -153,7 +164,7 @@ class AppListAdapter(
             } else {
                 // disable interactions while firewall active
                 appSwitch.isEnabled = false
-                appSwitch.setOnCheckedChangeListener(null)
+                appSwitch.alpha = 0.4f
                 itemView.setOnClickListener(null)
                 itemView.setOnLongClickListener(null)
                 itemView.isClickable = false

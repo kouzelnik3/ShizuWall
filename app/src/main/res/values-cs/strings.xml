@@ -7,6 +7,8 @@
     <string name="skip_enable_dialog">Přeskočit potvrzení povolení</string>
     <string name="github_button_desc">Otevřít GitHub repozitář</string>
     <string name="app_icon_desc">Ikona aplikace</string>
+    <string name="app_switch_selected">Vybráno</string>
+    <string name="app_switch_unselected">Nevybráno</string>
     <string name="cat_system">Systém</string>
     <string name="cat_selected">Vybráno</string>
     <string name="cat_unselected">Nevybráno</string>
@@ -315,6 +317,7 @@
     
     <string name="firewall_mode_focus_tracker">Focus Tracker</string>
     <string name="firewall_mode_focus_tracker_description">Zapnout bránu firewall, když není ShizuWall aktivní, a vypnout ji, když je aktivní.</string>
+    <string name="focus_tracker_info_enabled">Režim Focus Tracker blokuje vybrané aplikace, když opustíte ShizuWall, a povoluje je, když jste uvnitř ShizuWall.\n\nPožadované oprávnění přístupnosti je přiděleno automaticky při zapnutí brány firewall.</string>
     
     <string name="smart_foreground_requires_accessibility">Vyžaduje oprávnění přístupnosti</string>
     <string name="firewall_mode_change_disabled">Nelze změnit režim brány firewall, když je brána firewall aktivní. Nejprve ji deaktivujte.</string>
@@ -347,8 +350,7 @@
     <string name="do_not_show_again">Znovu nezobrazovat</string>
     <string name="select_font">Vybrat písmo</string>
     <string name="apply">Aplikovat</string>
-    <string name="accessibility_permission_title">Vyžadováno oprávnění k přístupnosti</string>
-    <string name="accessibility_permission_message">Tato aplikace vyžaduje rozhraní AccessibilityService API ke sledování změn aplikací na popředí pro režim inteligentního popředí. Rozhraní API bude použito k detekci přepínání mezi aplikacemi a k automatické aktualizaci pravidel brány firewall. Nejsou shromažďovány ani přenášeny žádné osobní údaje.</string>
+
     <string name="accept">Přijmout</string>
     <string name="decline">Odmítnout</string>
 
@@ -365,8 +367,7 @@
     <string name="select">Vybrat</string>
     <string name="select_all_apps_confirm">Vybrat %d aplikací?</string>
     <string name="double_tap_or_long_press">Dvojitým klepnutím vyberete vše, dlouhým stiskem zrušíte výběr všeho</string>
-    <string name="accessibility_auto_granting">Povoluje se služba přístupnosti...</string>
-    <string name="accessibility_auto_grant_failed">Službu přístupnosti se nepodařilo povolit automaticky. Povolte ji prosím ručně v Nastavení.</string>
+
     <string name="screen_lock_delay_title">Zpoždění uzamčení</string>
     <string name="screen_lock_delay_value">Povolit po %1$d sekundách od uzamčení</string>
     <string name="screen_lock_delay_dialog_title">Zpoždění uzamčení obrazovky</string>

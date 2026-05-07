@@ -7,6 +7,8 @@
     <string name="skip_enable_dialog">Omitir confirmación de activación</string>
     <string name="github_button_desc">Abrir repositorio de GitHub</string>
     <string name="app_icon_desc">Icono de la aplicación</string>
+    <string name="app_switch_selected">Seleccionada</string>
+    <string name="app_switch_unselected">No seleccionada</string>
     <string name="cat_system">Sistema</string>
     <string name="cat_selected">Seleccionadas</string>
     <string name="cat_unselected">No seleccionadas</string>
@@ -296,6 +298,7 @@
     
     <string name="firewall_mode_focus_tracker">Rastreador de enfoque</string>
     <string name="firewall_mode_focus_tracker_description">Activar el cortafuegos cuando ShizuWall no esté activo, y desactivarlo cuando esté activo.</string>
+    <string name="focus_tracker_info_enabled">El modo Rastreador de enfoque bloquea las apps seleccionadas cuando sales de ShizuWall y las permite cuando estás dentro de ShizuWall.\n\nEl permiso de Accesibilidad requerido se otorga automáticamente cuando activas el cortafuegos.</string>
     
     <string name="smart_foreground_requires_accessibility">Requiere permiso de Accesibilidad</string>
     <string name="smart_foreground_service_description">Monitorea la app en primer plano para gestionar reglas del firewall</string>
@@ -322,8 +325,7 @@
     <string name="do_not_show_again">No mostrar de nuevo</string>
     <string name="select_font">Seleccionar fuente</string>
     <string name="apply">Aplicar</string>
-    <string name="accessibility_permission_title">Permiso de Accesibilidad Requerido</string>
-    <string name="accessibility_permission_message">Esta app requiere la API de AccessibilityService para monitorear cambios en la app de primer plano para el modo Primer Plano Inteligente. La API se usará para detectar cuándo cambias entre apps y actualizar automáticamente las reglas del firewall en consecuencia. No se recopilan ni transmiten datos personales.</string>
+
     <string name="accept">Aceptar</string>
     <string name="decline">Rechazar</string>
     <string name="firewall_mode_whitelist">Lista blanca</string>
@@ -361,8 +363,7 @@
     <string name="ladb_daemon_restart_log_prefix">Registro reciente del daemon:</string>
     <string name="ladb_daemon_log_detected_hint">Los registros recientes del daemon están disponibles en Detalles.</string>
     <string name="firewall_reboot_apply_failed_message">No se pudieron volver a aplicar las reglas del firewall después del reinicio. Toca para abrir la app.</string>
-    <string name="accessibility_auto_granting">Activando el servicio de accesibilidad...</string>
-    <string name="accessibility_auto_grant_failed">No se pudo activar automáticamente el servicio de accesibilidad. Actívalo manualmente en Ajustes.</string>
+
     <string name="open_settings">Abrir Ajustes</string>
     <string name="notification_permission_background_request">Por favor, conceda permiso para seguir ejecutándose en segundo plano.</string>
 

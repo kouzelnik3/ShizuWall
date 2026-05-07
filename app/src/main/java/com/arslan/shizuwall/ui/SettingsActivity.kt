@@ -115,11 +115,6 @@ class SettingsActivity : BaseActivity() {
     private lateinit var tvScreenLockDelayValue: TextView
     private lateinit var tvFirewallModeDisabledWarning: TextView
 
-    private lateinit var warningContainer: LinearLayout
-    private lateinit var retryLoadingProgress: android.widget.ProgressBar
-    private lateinit var retryButton: android.widget.ImageButton
-    private var isRetryLoading = false
-
     private val createDocumentLauncher = registerForActivityResult(
         ActivityResultContracts.CreateDocument("application/json")
     ) { uri: Uri? ->
@@ -259,11 +254,6 @@ class SettingsActivity : BaseActivity() {
         layoutScreenLockDelay = findViewById(R.id.layoutScreenLockDelay)
         tvScreenLockDelayValue = findViewById(R.id.tvScreenLockDelayValue)
         tvFirewallModeDisabledWarning = findViewById(R.id.tvFirewallModeDisabledWarning)
-
-        // Initialize the accessibility warning views
-        warningContainer = findViewById(R.id.warningContainer)
-        retryLoadingProgress = findViewById(R.id.retryLoadingProgress)
-        retryButton = findViewById(R.id.retryButton)
     }
 
     private fun loadSettings() {
@@ -368,18 +358,6 @@ class SettingsActivity : BaseActivity() {
             switchSkipConfirm.isChecked = true
             sharedPreferences.edit().putBoolean("skip_enable_confirm", true).apply()
         }
-        
-        // Show warning for Smart Foreground / Hybrid if accessibility not enabled
-        if (mode == FirewallMode.SMART_FOREGROUND || mode == FirewallMode.HYBRID || mode == FirewallMode.FOCUS_TRACKER) {
-            val accessibilityEnabled = ForegroundDetectionService.isServiceEnabled(this)
-            warningContainer.visibility = if (!accessibilityEnabled) View.VISIBLE else View.GONE
-            // Reset retry loading state
-            isRetryLoading = false
-            retryLoadingProgress.visibility = View.GONE
-            retryButton.visibility = View.VISIBLE
-        } else {
-            warningContainer.visibility = View.GONE
-        }
     }
 
     /**
@@ -449,21 +427,10 @@ class SettingsActivity : BaseActivity() {
             TransitionManager.beginDelayedTransition(findViewById(R.id.settingsRoot), AutoTransition())
             updateFirewallModeUI(newMode)
             
-            if (newMode == FirewallMode.SMART_FOREGROUND || newMode == FirewallMode.HYBRID || newMode == FirewallMode.FOCUS_TRACKER) {
-                if (!ForegroundDetectionService.isServiceEnabled(this)) {
-                    val dialogShown = sharedPreferences.getBoolean("accessibility_dialog_shown", false)
-                    val dialogAccepted = sharedPreferences.getBoolean("accessibility_dialog_accepted", false)
-                    
-                    if (!dialogShown || !dialogAccepted) {
-                        showAccessibilityPermissionDialog()
-                    } else {
-                        showAccessibilityAutoGrantDialog(newMode)
-                    }
-                }
-            }
             when (newMode) {
                 FirewallMode.SMART_FOREGROUND -> showSmartForegroundInfoDialog()
                 FirewallMode.HYBRID -> showHybridModeInfoDialog()
+                FirewallMode.FOCUS_TRACKER -> showFocusTrackerInfoDialog()
                 FirewallMode.WHITELIST -> showWhitelistInfoDialog()
                 else -> {}
             }
@@ -708,34 +675,6 @@ class SettingsActivity : BaseActivity() {
             .show()
     }
     
-
-    /**
-     * Show info dialog about Smart Foreground mode.
-     * @param accessibilityGranted true if accessibility was already enabled or just auto-granted
-     */
-    private fun showSmartForegroundInfoDialog(accessibilityGranted: Boolean) {
-        val showPrompt = sharedPreferences.getBoolean("show_smart_foreground_prompt", true)
-        if (!showPrompt) return
-
-        val message = getString(R.string.smart_foreground_info_enabled)
-        
-        val promptView = layoutInflater.inflate(R.layout.dialog_shizuku_prompt, null)
-        val messageText: TextView = promptView.findViewById(R.id.shizuku_prompt_message_text)
-        val checkbox: android.widget.CheckBox = promptView.findViewById(R.id.shizuku_prompt_do_not_show)
-        
-        messageText.text = message
-        checkbox.text = getString(R.string.dont_show_again)
-
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.firewall_mode_smart_foreground)
-            .setView(promptView)
-            .setPositiveButton(R.string.ok) { _, _ ->
-                if (checkbox.isChecked) {
-                    sharedPreferences.edit().putBoolean("show_smart_foreground_prompt", false).apply()
-                }
-            }
-            .show()
-    }
 
     private fun showRootNotFoundDialog() {
         MaterialAlertDialogBuilder(this)
@@ -1593,34 +1532,25 @@ class SettingsActivity : BaseActivity() {
         return file.delete() || !file.exists()
     }
     
-    private fun showAccessibilityPermissionDialog() {
+    private fun showFocusTrackerInfoDialog() {
+        val showPrompt = sharedPreferences.getBoolean("show_focus_tracker_prompt", true)
+        if (!showPrompt) return
+
+        val promptView = layoutInflater.inflate(R.layout.dialog_shizuku_prompt, null)
+        val messageText: TextView = promptView.findViewById(R.id.shizuku_prompt_message_text)
+        val checkbox: android.widget.CheckBox = promptView.findViewById(R.id.shizuku_prompt_do_not_show)
+
+        messageText.text = getString(R.string.focus_tracker_info_enabled)
+        checkbox.text = getString(R.string.dont_show_again)
+
         MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.accessibility_permission_title)
-            .setMessage(R.string.accessibility_permission_message)
-            .setPositiveButton(R.string.open_settings) { _, _ ->
-                sharedPreferences.edit().putBoolean("accessibility_dialog_shown", true).apply()
-                val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                startActivity(intent)
+            .setTitle(R.string.firewall_mode_focus_tracker)
+            .setView(promptView)
+            .setPositiveButton(R.string.ok) { _, _ ->
+                if (checkbox.isChecked) {
+                    sharedPreferences.edit().putBoolean("show_focus_tracker_prompt", false).apply()
+                }
             }
-            .setNegativeButton(R.string.cancel, null)
             .show()
-    }
-
-    private fun showAccessibilityAutoGrantDialog(mode: FirewallMode) {
-        val dialog = MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.accessibility_auto_enable_title)
-            .setMessage(R.string.accessibility_auto_enable_message)
-            .setView(R.layout.dialog_loading)
-            .setCancelable(false)
-            .show()
-
-        lifecycleScope.launch {
-            val success = ForegroundDetectionService.enableServiceViaShell(this@SettingsActivity)
-            dialog.dismiss()
-            if (!success) {
-                Toast.makeText(this@SettingsActivity, R.string.accessibility_manual_enable_needed, Toast.LENGTH_LONG).show()
-            }
-            updateFirewallModeUI(mode)
-        }
     }
 }
