@@ -164,11 +164,14 @@ chmod +x scripts/compile_daemon.sh
 ./scripts/compile_daemon.sh
 ```
 
-## Security Disclaimer
+## Security and Distribution Disclaimer
 
 ShizuWall is provided **"as is"** without warranty of any kind.
 
-By using this app, you acknowledge that it relies on advanced system permissions (Shizuku/ADB/Root), and you accept all related risks. The developer is not responsible for damages such as system instability, data loss, service interruption, or side effects from blocked networking.
+By using this app, you acknowledge that it relies on advanced system permissions (Shizuku/ADB/Root), and you accept all related risks. The developer is not responsible for damages such as system instability, data loss, service interruption or side effects from blocked networking.
+
+**Official Distribution and Third-Party Risks**
+The developers and contributors of ShizuWall assume no liability or responsibility for any damages, security breaches, malware infections or data losses arising from the download, installation, or use of APK files obtained from third-party sources. ShizuWall is officially developed and distributed exclusively through the Google Play Store and its official GitHub repository. ShizuWall does not own, operate or endorse any official website. Any website or third-party platform claiming to offer official ShizuWall downloads is entirely unaffiliated and unauthorized. Users obtaining the application outside of the officially designated channels do so strictly at their own risk.
 
 **ShizuWall is an open-source application. The developer accepts no financial, moral, or legal responsibility for the use of this application. All responsibility belongs to the user.**
 
