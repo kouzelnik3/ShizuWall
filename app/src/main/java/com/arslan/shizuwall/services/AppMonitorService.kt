@@ -1,5 +1,6 @@
 package com.arslan.shizuwall.services
 
+import android.Manifest
 import android.app.*
 import android.content.*
 import android.content.pm.PackageManager
@@ -109,6 +110,10 @@ class AppMonitorService : Service() {
         }
         val appName = pm.getApplicationLabel(appInfo).toString()
         val appIcon = pm.getApplicationIcon(appInfo)
+
+        if (pm.checkPermission(Manifest.permission.INTERNET, packageName) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
 
         val prefs = context.getSharedPreferences(MainActivity.PREF_NAME, Context.MODE_PRIVATE)
         val isFirewallEnabled = prefs.getBoolean(MainActivity.KEY_FIREWALL_ENABLED, false)
