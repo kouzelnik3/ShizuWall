@@ -140,7 +140,12 @@ class SettingsActivity : BaseActivity() {
         }
 
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
-        toolbar.setNavigationOnClickListener { finish() }
+        toolbar.setNavigationOnClickListener {
+            if (isTaskRoot) {
+                startActivity(Intent(this, MainActivity::class.java))
+            }
+            finish()
+        }
 
         toolbar.menu.add(getString(R.string.reset_app_menu)).setOnMenuItemClickListener {
             showResetConfirmationDialog()
