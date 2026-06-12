@@ -136,8 +136,10 @@
     <string name="working_mode_shizuku">Shizuku</string>
     <string name="working_mode_ladb">LADB</string>
     <string name="notifications_section">Notificações</string>
-    <string name="app_monitor_service">Serviço de Monitoramento de Apps</string>
-    <string name="app_monitor_service_description">Detectar novos apps instalados e mostrar uma notificação</string>
+    <string name="app_monitor_service">Notificações de Novos Apps</string>
+    <string name="app_monitor_service_description">Mostrar uma notificação quando um novo app é instalado</string>
+    <string name="auto_firewall_new_apps">Bloquear novos apps automaticamente</string>
+    <string name="auto_firewall_new_apps_description">Bloquear automaticamente apps recém-instalados (exceto no modo lista branca)</string>
     <string name="new_app_installed">Novo app instalado: %s</string>
     <string name="firewall_app">Bloquear App</string>
     <string name="allow_app">Permitir</string>

@@ -116,12 +116,29 @@ class AppMonitorService : Service() {
         }
 
         val prefs = context.getSharedPreferences(MainActivity.PREF_NAME, Context.MODE_PRIVATE)
+        val notificationsEnabled = prefs.getBoolean(MainActivity.KEY_APP_MONITOR_ENABLED, false)
         val isFirewallEnabled = prefs.getBoolean(MainActivity.KEY_FIREWALL_ENABLED, false)
         val firewallMode = FirewallMode.fromName(prefs.getString(MainActivity.KEY_FIREWALL_MODE, FirewallMode.DEFAULT.name))
+        val autoFirewallEnabled = prefs.getBoolean(MainActivity.KEY_AUTO_FIREWALL_NEW_APPS, false)
 
-        // In Whitelist mode, newly installed apps should be automatically blocked
-        // since they are not in the whitelist.
+        // Auto-block path 1: Whitelist mode — new apps are not in the whitelist so block them.
+        // Auto-block path 2: "Auto-firewall new apps" toggle — add to selected list and block.
+        val wasAutoFirewalled = isFirewallEnabled && autoFirewallEnabled && firewallMode != FirewallMode.WHITELIST
         if (isFirewallEnabled && firewallMode == FirewallMode.WHITELIST) {
+            val blockIntent = Intent(context, FirewallControlReceiver::class.java).apply {
+                action = MainActivity.ACTION_FIREWALL_CONTROL
+                putExtra(MainActivity.EXTRA_FIREWALL_ENABLED, true)
+                putExtra(MainActivity.EXTRA_PACKAGES_CSV, packageName)
+            }
+            context.sendBroadcast(blockIntent)
+        } else if (wasAutoFirewalled) {
+            val selected = prefs.getStringSet(MainActivity.KEY_SELECTED_APPS, emptySet())?.toMutableSet() ?: mutableSetOf()
+            if (selected.add(packageName)) {
+                prefs.edit()
+                    .putStringSet(MainActivity.KEY_SELECTED_APPS, selected)
+                    .putInt(MainActivity.KEY_SELECTED_COUNT, selected.size)
+                    .apply()
+            }
             val blockIntent = Intent(context, FirewallControlReceiver::class.java).apply {
                 action = MainActivity.ACTION_FIREWALL_CONTROL
                 putExtra(MainActivity.EXTRA_FIREWALL_ENABLED, true)
@@ -130,11 +147,20 @@ class AppMonitorService : Service() {
             context.sendBroadcast(blockIntent)
         }
 
+        // Show notification only when the notifications toggle is on, or when the app was
+        // auto-firewalled (so the user can tap "Allow" to undo).
+        if (!notificationsEnabled && !wasAutoFirewalled) return
+
         val (actionText, action) = if (isFirewallEnabled) {
-            if (firewallMode == FirewallMode.WHITELIST) {
-                context.getString(R.string.allow_app) to NotificationActionReceiver.ACTION_WHITELIST_APP
-            } else {
-                context.getString(R.string.firewall_app) to NotificationActionReceiver.ACTION_FIREWALL_APP
+            when {
+                wasAutoFirewalled ->
+                    // Auto-firewall added the app to selected list; "Allow" must undo both.
+                    context.getString(R.string.allow_app) to NotificationActionReceiver.ACTION_ALLOW_AND_UNSELECT
+                firewallMode == FirewallMode.WHITELIST ->
+                    // Whitelist mode: "Allow" adds to whitelist (keeps in selected list).
+                    context.getString(R.string.allow_app) to NotificationActionReceiver.ACTION_WHITELIST_APP
+                else ->
+                    context.getString(R.string.firewall_app) to NotificationActionReceiver.ACTION_FIREWALL_APP
             }
         } else {
             context.getString(R.string.add_to_selected_list) to NotificationActionReceiver.ACTION_ADD_TO_LIST

@@ -86,6 +86,7 @@ class SettingsActivity : BaseActivity() {
     private lateinit var switchApplyRootRulesAfterReboot: SwitchCompat
     private lateinit var cardApplyRootRulesAfterReboot: com.google.android.material.card.MaterialCardView
     private lateinit var switchAppMonitor: SwitchCompat
+    private lateinit var switchAutoFirewallNewApps: SwitchCompat
     private lateinit var switchFloatingButton: SwitchCompat
 
     private lateinit var cardAdbBroadcastUsage: com.google.android.material.card.MaterialCardView
@@ -240,6 +241,7 @@ class SettingsActivity : BaseActivity() {
         cardSetLadb = findViewById(R.id.cardSetLadb)
         layoutSetLadb = findViewById(R.id.layoutSetLadb)
         switchAppMonitor = findViewById(R.id.switchAppMonitor)
+        switchAutoFirewallNewApps = findViewById(R.id.switchAutoFirewallNewApps)
         switchFloatingButton = findViewById(R.id.switchFloatingButton)
         // Auto-enable switch (new)
         switchAutoEnableOnShizukuStart = findViewById(R.id.switchAutoEnableOnShizukuStart)
@@ -302,6 +304,7 @@ class SettingsActivity : BaseActivity() {
         switchAutoEnableOnShizukuStart.isChecked = sharedPreferences.getBoolean(MainActivity.KEY_AUTO_ENABLE_ON_SHIZUKU_START, false)
         switchApplyRootRulesAfterReboot.isChecked = sharedPreferences.getBoolean(MainActivity.KEY_APPLY_ROOT_RULES_AFTER_REBOOT, false)
         switchAppMonitor.isChecked = sharedPreferences.getBoolean(MainActivity.KEY_APP_MONITOR_ENABLED, false)
+        switchAutoFirewallNewApps.isChecked = sharedPreferences.getBoolean(MainActivity.KEY_AUTO_FIREWALL_NEW_APPS, false)
         switchFloatingButton.isChecked = sharedPreferences.getBoolean(
             com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false
         )
@@ -524,15 +527,24 @@ class SettingsActivity : BaseActivity() {
                 }
             }
             sharedPreferences.edit().putBoolean(MainActivity.KEY_APP_MONITOR_ENABLED, isChecked).apply()
-            val intent = Intent(this, AppMonitorService::class.java)
+            val autoFirewall = sharedPreferences.getBoolean(MainActivity.KEY_AUTO_FIREWALL_NEW_APPS, false)
             if (isChecked) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startForegroundService(intent)
-                } else {
-                    startService(intent)
-                }
-            } else {
-                stopService(intent)
+                startAppMonitorService()
+            } else if (!autoFirewall) {
+                // Stop only when both features are off
+                stopService(Intent(this, AppMonitorService::class.java))
+            }
+        }
+
+        switchAutoFirewallNewApps.setOnCheckedChangeListener { _, isChecked ->
+            sharedPreferences.edit().putBoolean(MainActivity.KEY_AUTO_FIREWALL_NEW_APPS, isChecked).apply()
+            setResult(RESULT_OK)
+            val notifications = sharedPreferences.getBoolean(MainActivity.KEY_APP_MONITOR_ENABLED, false)
+            if (isChecked) {
+                startAppMonitorService()
+            } else if (!notifications) {
+                // Stop only when both features are off
+                stopService(Intent(this, AppMonitorService::class.java))
             }
         }
 
@@ -637,7 +649,17 @@ class SettingsActivity : BaseActivity() {
         makeCardClickableForSwitch(switchAutoEnableOnShizukuStart)
         makeCardClickableForSwitch(switchApplyRootRulesAfterReboot)
         makeCardClickableForSwitch(switchAppMonitor)
+        makeCardClickableForSwitch(switchAutoFirewallNewApps)
         makeCardClickableForSwitch(switchFloatingButton)
+    }
+
+    private fun startAppMonitorService() {
+        val intent = Intent(this, AppMonitorService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent)
+        } else {
+            startService(intent)
+        }
     }
 
     private fun updateScreenLockDelaySummary() {

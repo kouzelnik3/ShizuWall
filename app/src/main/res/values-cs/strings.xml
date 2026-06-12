@@ -150,8 +150,10 @@
     <string name="working_mode_root">Root (su)</string>
     <string name="root_not_found_message">Root nenalezen, prosím povolte ShizuWall přístup k rootu.</string>
     <string name="notifications_section">Oznámení</string>
-    <string name="app_monitor_service">Služba monitorování aplikací</string>
-    <string name="app_monitor_service_description">Detekovat nově nainstalované aplikace a zobrazit oznámení</string>
+    <string name="app_monitor_service">Oznámení o nových aplikacích</string>
+    <string name="app_monitor_service_description">Zobrazit oznámení při instalaci nové aplikace</string>
+    <string name="auto_firewall_new_apps">Automaticky blokovat nové aplikace</string>
+    <string name="auto_firewall_new_apps_description">Automaticky blokovat nově nainstalované aplikace (kromě režimu whitelist)</string>
     <string name="new_app_installed">Nová aplikace nainstalována: %s</string>
     <string name="firewall_app">Firewall aplikace</string>
     <string name="allow_app">Povolit</string>

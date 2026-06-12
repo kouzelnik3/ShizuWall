@@ -136,8 +136,10 @@
     <string name="working_mode_shizuku">Shizuku</string>
     <string name="working_mode_ladb">LADB (测试版)</string>
     <string name="notifications_section">通知</string>
-    <string name="app_monitor_service">应用监控服务</string>
-    <string name="app_monitor_service_description">检测新安装的应用并显示通知</string>
+    <string name="app_monitor_service">新应用通知</string>
+    <string name="app_monitor_service_description">当新应用安装时显示通知</string>
+    <string name="auto_firewall_new_apps">自动封锁新应用</string>
+    <string name="auto_firewall_new_apps_description">自动封锁新安装的应用（白名单模式除外）</string>
     <string name="new_app_installed">新应用已安装：%s</string>
     <string name="firewall_app">防火墙应用</string>
     <string name="allow_app">允许</string>

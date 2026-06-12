@@ -136,8 +136,10 @@
     <string name="working_mode_shizuku">Shizuku</string>
     <string name="working_mode_ladb">LADB</string>
     <string name="notifications_section">Bildirimler</string>
-    <string name="app_monitor_service">Uygulama İzleme Servisi</string>
-    <string name="app_monitor_service_description">Yeni yüklenen uygulamaları algıla ve bir bildirim göster</string>
+    <string name="app_monitor_service">Yeni Uygulama Bildirimleri</string>
+    <string name="app_monitor_service_description">Yeni bir uygulama yüklendiğinde bildirim göster</string>
+    <string name="auto_firewall_new_apps">Yeni Uygulamaları Otomatik Engelle</string>
+    <string name="auto_firewall_new_apps_description">Yeni yüklenen uygulamaları otomatik olarak engelle (Beyaz Liste modu hariç)</string>
     <string name="new_app_installed">Yeni uygulama yüklendi: %s</string>
     <string name="firewall_app">Uygulamayı Engelle</string>
     <string name="allow_app">İzin Ver</string>

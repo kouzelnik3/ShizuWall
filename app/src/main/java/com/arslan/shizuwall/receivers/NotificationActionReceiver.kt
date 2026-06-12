@@ -19,6 +19,8 @@ class NotificationActionReceiver : BroadcastReceiver() {
         const val ACTION_FIREWALL_APP = "com.arslan.shizuwall.ACTION_FIREWALL_APP"
         const val ACTION_ADD_TO_LIST = "com.arslan.shizuwall.ACTION_ADD_TO_LIST"
         const val ACTION_WHITELIST_APP = "com.arslan.shizuwall.ACTION_WHITELIST_APP"
+        // Used when auto-firewall added the app: allows network AND removes from selected list.
+        const val ACTION_ALLOW_AND_UNSELECT = "com.arslan.shizuwall.ACTION_ALLOW_AND_UNSELECT"
         const val EXTRA_PACKAGE_NAME = "extra_package_name"
     }
 
@@ -36,6 +38,10 @@ class NotificationActionReceiver : BroadcastReceiver() {
             ACTION_WHITELIST_APP -> {
                 val pending = goAsync()
                 whitelistApp(context, packageName, pending)
+            }
+            ACTION_ALLOW_AND_UNSELECT -> {
+                val pending = goAsync()
+                allowAndUnselect(context, packageName, pending)
             }
         }
 
@@ -75,6 +81,29 @@ class NotificationActionReceiver : BroadcastReceiver() {
                     val activePkgs = prefs.getStringSet(MainActivity.KEY_ACTIVE_PACKAGES, emptySet())?.toMutableSet() ?: mutableSetOf()
                     activePkgs.remove(packageName)
                     prefs.edit().putStringSet(MainActivity.KEY_ACTIVE_PACKAGES, activePkgs).apply()
+                }
+            } finally {
+                pending.finish()
+            }
+        }
+        Toast.makeText(context, context.getString(R.string.allowing_app, packageName), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun allowAndUnselect(context: Context, packageName: String, pending: PendingResult) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val result = ShellExecutorProvider.forContext(context).exec("cmd connectivity set-package-networking-enabled true $packageName")
+                if (result.isEffectivelySuccess) {
+                    val prefs = context.getSharedPreferences(MainActivity.PREF_NAME, Context.MODE_PRIVATE)
+                    val selected = prefs.getStringSet(MainActivity.KEY_SELECTED_APPS, emptySet())?.toMutableSet() ?: mutableSetOf()
+                    val active = prefs.getStringSet(MainActivity.KEY_ACTIVE_PACKAGES, emptySet())?.toMutableSet() ?: mutableSetOf()
+                    selected.remove(packageName)
+                    active.remove(packageName)
+                    prefs.edit()
+                        .putStringSet(MainActivity.KEY_SELECTED_APPS, selected)
+                        .putInt(MainActivity.KEY_SELECTED_COUNT, selected.size)
+                        .putStringSet(MainActivity.KEY_ACTIVE_PACKAGES, active)
+                        .apply()
                 }
             } finally {
                 pending.finish()

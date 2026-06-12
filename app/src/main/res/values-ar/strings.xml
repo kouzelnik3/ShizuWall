@@ -144,8 +144,10 @@
     <string name="working_mode_shizuku">Shizuku</string>
     <string name="working_mode_ladb">LADB</string>
     <string name="notifications_section">الإشعارات</string>
-    <string name="app_monitor_service">خدمة مراقبة التطبيقات</string>
-    <string name="app_monitor_service_description">اكتشاف التطبيقات الجديدة المثبتة وإظهار إشعار</string>
+    <string name="app_monitor_service">إشعارات التطبيقات الجديدة</string>
+    <string name="app_monitor_service_description">إظهار إشعار عند تثبيت تطبيق جديد</string>
+    <string name="auto_firewall_new_apps">حظر التطبيقات الجديدة تلقائيًا</string>
+    <string name="auto_firewall_new_apps_description">حظر التطبيقات المثبتة حديثًا تلقائيًا (إلا في وضع القائمة البيضاء)</string>
     <string name="new_app_installed">تم تثبيت تطبيق جديد: %s</string>
     <string name="firewall_app">تطبيق الجدار الناري</string>
     <string name="allow_app">سماح</string>

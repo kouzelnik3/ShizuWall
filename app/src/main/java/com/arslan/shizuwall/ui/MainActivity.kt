@@ -114,6 +114,7 @@ class MainActivity : BaseActivity() {
 
         const val KEY_FIREWALL_UPDATE_TS = "firewall_update_ts"
         const val KEY_APP_MONITOR_ENABLED = "app_monitor_enabled"
+        const val KEY_AUTO_FIREWALL_NEW_APPS = "auto_firewall_new_apps"
         const val KEY_APP_MODES = "app_modes_json"
         private const val KEY_APPS_CACHE_JSON = "apps_cache_json_v1"
 
