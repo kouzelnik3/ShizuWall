@@ -52,14 +52,18 @@
 ## Screenshots
 
 <p align="center">
-  <img src="assets/screenshots/v4.5/1.png" width="30%" />
-  <img src="assets/screenshots/v4.5/2.png" width="30%" />
-  <img src="assets/screenshots/v4.5/3.png" width="30%" />
-  <img src="assets/screenshots/v4.5/4.png" width="30%" />
-  <img src="assets/screenshots/v4.5/5.png" width="30%" />
-  <img src="assets/screenshots/v4.5/6.png" width="30%" />
-  <img src="assets/screenshots/v4.5/7.png" width="30%" />
-  <img src="assets/screenshots/v4.5/8.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/1.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/2.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/3.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/4.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/5.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/6.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/7.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/8.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/9.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/10.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/11.png" width="30%" />
+
 </p>
 
 ## Requirements
