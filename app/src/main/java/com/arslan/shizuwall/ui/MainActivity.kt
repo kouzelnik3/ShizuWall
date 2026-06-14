@@ -2053,11 +2053,9 @@ class MainActivity : BaseActivity() {
 
     /**
      * Last-resort prompt for usage access. The detection service self-grants it via the
-     * privileged shell on start; this only fires when neither the Shizuku binder path
-     * nor usage access is available.
+     * privileged shell on start; this only fires when usage access is missing.
      */
     private fun promptUsageAccessIfNeeded() {
-        if (ForegroundAppResolver.isShizukuPathAvailable(this)) return
         if (ForegroundAppResolver.hasUsageAccess(this)) return
         try {
             startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS))

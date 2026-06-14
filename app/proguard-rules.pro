@@ -125,12 +125,6 @@
 -dontwarn rikka.shizuku.**
 
 #===============================================================================
-# HIDDEN API ACCESS (foreground app detection via IActivityTaskManager)
-#===============================================================================
--keep class org.lsposed.hiddenapibypass.** { *; }
--dontwarn android.app.IActivityTaskManager**
-
-#===============================================================================
 # JSR305 annotations
 #===============================================================================
 -dontwarn javax.annotation.**
