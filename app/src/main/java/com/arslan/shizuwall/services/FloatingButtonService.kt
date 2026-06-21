@@ -66,7 +66,7 @@ class FloatingButtonService : Service() {
 
     private var snappedRight = true   
     private var isTucked = false      
-    private var lastX = 0             )
+    private var lastX = 0
     private var lastY = 0
     private var inactivityJob: Job? = null
     private var xAnimator: android.animation.ValueAnimator? = null
