@@ -24,6 +24,16 @@ class AppMonitorService : Service() {
         const val APP_INSTALL_NOTIFICATION_ID_BASE = 3000
     }
 
+    private lateinit var prefs: SharedPreferences
+
+    private val prefListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == MainActivity.KEY_FIREWALL_ENABLED ||
+            key == MainActivity.KEY_SHOW_FIREWALL_STATUS_NOTIFICATION
+        ) {
+            updateForegroundNotification()
+        }
+    }
+
     private val packageReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == Intent.ACTION_PACKAGE_ADDED) {
@@ -38,22 +48,28 @@ class AppMonitorService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        prefs = getSharedPreferences(MainActivity.PREF_NAME, Context.MODE_PRIVATE)
         createNotificationChannel()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             startForeground(FOREGROUND_NOTIFICATION_ID, createForegroundNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
         } else {
             startForeground(FOREGROUND_NOTIFICATION_ID, createForegroundNotification())
         }
-        
+
         val filter = IntentFilter(Intent.ACTION_PACKAGE_ADDED).apply {
             addDataScheme("package")
         }
         registerReceiver(packageReceiver, filter)
+        prefs.registerOnSharedPreferenceChangeListener(prefListener)
     }
 
     override fun onDestroy() {
         try {
             unregisterReceiver(packageReceiver)
+        } catch (_: Exception) {
+        }
+        try {
+            prefs.unregisterOnSharedPreferenceChangeListener(prefListener)
         } catch (_: Exception) {
         }
         super.onDestroy()
@@ -91,14 +107,36 @@ class AppMonitorService : Service() {
             PendingIntent.FLAG_IMMUTABLE
         )
 
+        val showFirewallStatus = prefs.getBoolean(MainActivity.KEY_SHOW_FIREWALL_STATUS_NOTIFICATION, false)
+        val (title, text) = if (showFirewallStatus) {
+            val firewallEnabled = prefs.getBoolean(MainActivity.KEY_FIREWALL_ENABLED, false)
+            if (firewallEnabled) {
+                getString(R.string.firewall_status_notification_enabled_title) to
+                    getString(R.string.firewall_status_notification_enabled_text)
+            } else {
+                getString(R.string.firewall_status_notification_disabled_title) to
+                    getString(R.string.firewall_status_notification_disabled_text)
+            }
+        } else {
+            getString(R.string.app_monitor_service) to getString(R.string.app_monitor_service_description)
+        }
+
         return NotificationCompat.Builder(this, CHANNEL_ID_SILENT)
-            .setContentTitle(getString(R.string.app_monitor_service))
-            .setContentText(getString(R.string.app_monitor_service_description))
+            .setContentTitle(title)
+            .setContentText(text)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(pendingIntent)
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
+    }
+
+    private fun updateForegroundNotification() {
+        try {
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.notify(FOREGROUND_NOTIFICATION_ID, createForegroundNotification())
+        } catch (_: Exception) {
+        }
     }
 
     private fun showNewAppNotification(context: Context, packageName: String) {

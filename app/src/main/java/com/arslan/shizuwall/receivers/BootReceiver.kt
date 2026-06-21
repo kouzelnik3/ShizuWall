@@ -63,10 +63,11 @@ class BootReceiver : BroadcastReceiver() {
         val savedElapsed = readLong(dpPrefs, normalPrefs, MainActivity.KEY_FIREWALL_SAVED_ELAPSED, -1L)
         val appMonitorEnabled = readBoolean(dpPrefs, normalPrefs, MainActivity.KEY_APP_MONITOR_ENABLED, false)
         val autoFirewallEnabled = readBoolean(dpPrefs, normalPrefs, MainActivity.KEY_AUTO_FIREWALL_NEW_APPS, false)
+        val firewallStatusNotificationEnabled = readBoolean(dpPrefs, normalPrefs, MainActivity.KEY_SHOW_FIREWALL_STATUS_NOTIFICATION, false)
         val floatingButtonEnabled = readBoolean(dpPrefs, normalPrefs, com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false)
-        Log.d(TAG, "prefs: enabled=$enabled, savedElapsed=$savedElapsed, appMonitorEnabled=$appMonitorEnabled, autoFirewallEnabled=$autoFirewallEnabled, floatingButtonEnabled=$floatingButtonEnabled")
+        Log.d(TAG, "prefs: enabled=$enabled, savedElapsed=$savedElapsed, appMonitorEnabled=$appMonitorEnabled, autoFirewallEnabled=$autoFirewallEnabled, firewallStatusNotificationEnabled=$firewallStatusNotificationEnabled, floatingButtonEnabled=$floatingButtonEnabled")
 
-        if (appMonitorEnabled || autoFirewallEnabled) {
+        if (appMonitorEnabled || autoFirewallEnabled || firewallStatusNotificationEnabled) {
             val monitorIntent = Intent(context, AppMonitorService::class.java)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 context.startForegroundService(monitorIntent)

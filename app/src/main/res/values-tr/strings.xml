@@ -140,6 +140,12 @@
     <string name="app_monitor_service_description">Yeni bir uygulama yüklendiğinde bildirim göster</string>
     <string name="auto_firewall_new_apps">Yeni Uygulamaları Otomatik Engelle</string>
     <string name="auto_firewall_new_apps_description">Yeni yüklenen uygulamaları otomatik olarak engelle (Beyaz Liste modu hariç)</string>
+    <string name="firewall_status_notification">Güvenlik Duvarı Durumu Bildirimi</string>
+    <string name="firewall_status_notification_description">Geçerli güvenlik duvarı durumunu kalıcı bir bildirimde göster</string>
+    <string name="firewall_status_notification_enabled_title">Güvenlik duvarı etkin</string>
+    <string name="firewall_status_notification_enabled_text">Uygulama ağ erişimi denetleniyor</string>
+    <string name="firewall_status_notification_disabled_title">Güvenlik duvarı devre dışı</string>
+    <string name="firewall_status_notification_disabled_text">Uygulama ağ erişimi denetlenmiyor</string>
     <string name="new_app_installed">Yeni uygulama yüklendi: %s</string>
     <string name="firewall_app">Uygulamayı Engelle</string>
     <string name="allow_app">İzin Ver</string>

@@ -154,6 +154,12 @@
     <string name="app_monitor_service_description">Zobrazit oznámení při instalaci nové aplikace</string>
     <string name="auto_firewall_new_apps">Automaticky blokovat nové aplikace</string>
     <string name="auto_firewall_new_apps_description">Automaticky blokovat nově nainstalované aplikace (kromě režimu whitelist)</string>
+    <string name="firewall_status_notification">Oznámení o stavu firewallu</string>
+    <string name="firewall_status_notification_description">Zobrazit trvalé oznámení s aktuálním stavem firewallu</string>
+    <string name="firewall_status_notification_enabled_title">Firewall zapnut</string>
+    <string name="firewall_status_notification_enabled_text">Síťový provoz aplikací je řízen</string>
+    <string name="firewall_status_notification_disabled_title">Firewall vypnut</string>
+    <string name="firewall_status_notification_disabled_text">Síťový provoz aplikací není řízen</string>
     <string name="new_app_installed">Nová aplikace nainstalována: %s</string>
     <string name="firewall_app">Firewall aplikace</string>
     <string name="allow_app">Povolit</string>

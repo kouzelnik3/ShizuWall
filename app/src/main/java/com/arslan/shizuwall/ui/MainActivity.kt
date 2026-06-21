@@ -115,6 +115,7 @@ class MainActivity : BaseActivity() {
         const val KEY_FIREWALL_UPDATE_TS = "firewall_update_ts"
         const val KEY_APP_MONITOR_ENABLED = "app_monitor_enabled"
         const val KEY_AUTO_FIREWALL_NEW_APPS = "auto_firewall_new_apps"
+        const val KEY_SHOW_FIREWALL_STATUS_NOTIFICATION = "show_firewall_status_notification"
         const val KEY_APP_MODES = "app_modes_json"
         private const val KEY_APPS_CACHE_JSON = "apps_cache_json_v1"
 
@@ -315,8 +316,10 @@ class MainActivity : BaseActivity() {
 
         setContentView(R.layout.activity_main)
 
-        // Start App Monitor Service if enabled
-        if (sharedPreferences.getBoolean(KEY_APP_MONITOR_ENABLED, false)) {
+        // Start App Monitor Service if any of its features are enabled
+        if (sharedPreferences.getBoolean(KEY_APP_MONITOR_ENABLED, false) ||
+            sharedPreferences.getBoolean(KEY_AUTO_FIREWALL_NEW_APPS, false) ||
+            sharedPreferences.getBoolean(KEY_SHOW_FIREWALL_STATUS_NOTIFICATION, false)) {
             val monitorIntent = Intent(this, AppMonitorService::class.java)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(monitorIntent)

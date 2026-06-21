@@ -87,6 +87,7 @@ class SettingsActivity : BaseActivity() {
     private lateinit var cardApplyRootRulesAfterReboot: com.google.android.material.card.MaterialCardView
     private lateinit var switchAppMonitor: SwitchCompat
     private lateinit var switchAutoFirewallNewApps: SwitchCompat
+    private lateinit var switchFirewallStatusNotification: SwitchCompat
     private lateinit var switchFloatingButton: SwitchCompat
 
     private lateinit var cardAdbBroadcastUsage: com.google.android.material.card.MaterialCardView
@@ -242,6 +243,7 @@ class SettingsActivity : BaseActivity() {
         layoutSetLadb = findViewById(R.id.layoutSetLadb)
         switchAppMonitor = findViewById(R.id.switchAppMonitor)
         switchAutoFirewallNewApps = findViewById(R.id.switchAutoFirewallNewApps)
+        switchFirewallStatusNotification = findViewById(R.id.switchFirewallStatusNotification)
         switchFloatingButton = findViewById(R.id.switchFloatingButton)
         // Auto-enable switch (new)
         switchAutoEnableOnShizukuStart = findViewById(R.id.switchAutoEnableOnShizukuStart)
@@ -305,6 +307,7 @@ class SettingsActivity : BaseActivity() {
         switchApplyRootRulesAfterReboot.isChecked = sharedPreferences.getBoolean(MainActivity.KEY_APPLY_ROOT_RULES_AFTER_REBOOT, false)
         switchAppMonitor.isChecked = sharedPreferences.getBoolean(MainActivity.KEY_APP_MONITOR_ENABLED, false)
         switchAutoFirewallNewApps.isChecked = sharedPreferences.getBoolean(MainActivity.KEY_AUTO_FIREWALL_NEW_APPS, false)
+        switchFirewallStatusNotification.isChecked = sharedPreferences.getBoolean(MainActivity.KEY_SHOW_FIREWALL_STATUS_NOTIFICATION, false)
         switchFloatingButton.isChecked = sharedPreferences.getBoolean(
             com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false
         )
@@ -527,25 +530,13 @@ class SettingsActivity : BaseActivity() {
                 }
             }
             sharedPreferences.edit().putBoolean(MainActivity.KEY_APP_MONITOR_ENABLED, isChecked).apply()
-            val autoFirewall = sharedPreferences.getBoolean(MainActivity.KEY_AUTO_FIREWALL_NEW_APPS, false)
-            if (isChecked) {
-                startAppMonitorService()
-            } else if (!autoFirewall) {
-                // Stop only when both features are off
-                stopService(Intent(this, AppMonitorService::class.java))
-            }
+            syncAppMonitorService()
         }
 
         switchAutoFirewallNewApps.setOnCheckedChangeListener { _, isChecked ->
             sharedPreferences.edit().putBoolean(MainActivity.KEY_AUTO_FIREWALL_NEW_APPS, isChecked).apply()
             setResult(RESULT_OK)
-            val notifications = sharedPreferences.getBoolean(MainActivity.KEY_APP_MONITOR_ENABLED, false)
-            if (isChecked) {
-                startAppMonitorService()
-            } else if (!notifications) {
-                // Stop only when both features are off
-                stopService(Intent(this, AppMonitorService::class.java))
-            }
+            syncAppMonitorService()
         }
 
         radioGroupWorkingMode.setOnCheckedChangeListener { _, checkedId ->
@@ -637,6 +628,15 @@ class SettingsActivity : BaseActivity() {
             }
         }
 
+        switchFirewallStatusNotification.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                checkAndRequestNotificationPermission()
+            }
+            sharedPreferences.edit().putBoolean(MainActivity.KEY_SHOW_FIREWALL_STATUS_NOTIFICATION, isChecked).apply()
+            setResult(RESULT_OK)
+            syncAppMonitorService()
+        }
+
         layoutAdbBroadcastUsage.setOnClickListener { showAdbBroadcastDialog() }
 
         // Make the whole card area toggle the corresponding switches when tapped
@@ -650,6 +650,7 @@ class SettingsActivity : BaseActivity() {
         makeCardClickableForSwitch(switchApplyRootRulesAfterReboot)
         makeCardClickableForSwitch(switchAppMonitor)
         makeCardClickableForSwitch(switchAutoFirewallNewApps)
+        makeCardClickableForSwitch(switchFirewallStatusNotification)
         makeCardClickableForSwitch(switchFloatingButton)
     }
 
@@ -659,6 +660,22 @@ class SettingsActivity : BaseActivity() {
             startForegroundService(intent)
         } else {
             startService(intent)
+        }
+    }
+
+    /**
+     * AppMonitorService is shared by three features (new-app notifications,
+     * auto-firewall new apps, and the persistent firewall-status notification).
+     * Keep it running while any of them is on; stop it once all are off.
+     */
+    private fun syncAppMonitorService() {
+        val anyEnabled = sharedPreferences.getBoolean(MainActivity.KEY_APP_MONITOR_ENABLED, false) ||
+            sharedPreferences.getBoolean(MainActivity.KEY_AUTO_FIREWALL_NEW_APPS, false) ||
+            sharedPreferences.getBoolean(MainActivity.KEY_SHOW_FIREWALL_STATUS_NOTIFICATION, false)
+        if (anyEnabled) {
+            startAppMonitorService()
+        } else {
+            stopService(Intent(this, AppMonitorService::class.java))
         }
     }
 
@@ -979,7 +996,9 @@ class SettingsActivity : BaseActivity() {
                 sanitizeSelectedApps(sharedPreferences)
 
                 // 5. Update Runtime State (App Monitor Service)
-                val isMonitorEnabled = sharedPreferences.getBoolean(MainActivity.KEY_APP_MONITOR_ENABLED, false)
+                val isMonitorEnabled = sharedPreferences.getBoolean(MainActivity.KEY_APP_MONITOR_ENABLED, false) ||
+                    sharedPreferences.getBoolean(MainActivity.KEY_AUTO_FIREWALL_NEW_APPS, false) ||
+                    sharedPreferences.getBoolean(MainActivity.KEY_SHOW_FIREWALL_STATUS_NOTIFICATION, false)
                 val monitorIntent = Intent(this@SettingsActivity, AppMonitorService::class.java)
                 try {
                     if (isMonitorEnabled) {

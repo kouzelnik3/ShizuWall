@@ -146,6 +146,12 @@
     <string name="app_monitor_service_description">Показывать уведомление при установке нового приложения</string>
     <string name="auto_firewall_new_apps">Автоматически блокировать новые приложения</string>
     <string name="auto_firewall_new_apps_description">Автоматически блокировать новые установленные приложения (кроме режима белого списка)</string>
+    <string name="firewall_status_notification">Уведомление о состоянии брандмауэра</string>
+    <string name="firewall_status_notification_description">Показывать постоянное уведомление с текущим состоянием брандмауэра</string>
+    <string name="firewall_status_notification_enabled_title">Брандмауэр включён</string>
+    <string name="firewall_status_notification_enabled_text">Сетевой доступ приложений контролируется</string>
+    <string name="firewall_status_notification_disabled_title">Брандмауэр выключен</string>
+    <string name="firewall_status_notification_disabled_text">Сетевой доступ приложений не контролируется</string>
     <string name="new_app_installed">Установлено новое приложение: %s</string>
     <string name="firewall_app">Приложение Firewall</string>
     <string name="allow_app">Разрешить</string>

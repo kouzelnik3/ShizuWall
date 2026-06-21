@@ -159,6 +159,12 @@
     <string name="app_monitor_service_description">Show a notification when a new app is installed</string>
     <string name="auto_firewall_new_apps">Auto-Firewall New Apps</string>
     <string name="auto_firewall_new_apps_description">Automatically block newly installed apps (except in Whitelist mode)</string>
+    <string name="firewall_status_notification">Firewall Status Notification</string>
+    <string name="firewall_status_notification_description">Show a permanent notification with the current firewall status</string>
+    <string name="firewall_status_notification_enabled_title">Firewall enabled</string>
+    <string name="firewall_status_notification_enabled_text">App networking is being controlled</string>
+    <string name="firewall_status_notification_disabled_title">Firewall disabled</string>
+    <string name="firewall_status_notification_disabled_text">App networking is not being controlled</string>
     <string name="new_app_installed">New app installed: %s</string>
     <string name="firewall_app">Firewall App</string>
     <string name="allow_app">Allow</string>

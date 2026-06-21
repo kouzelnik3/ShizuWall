@@ -148,6 +148,12 @@
     <string name="app_monitor_service_description">إظهار إشعار عند تثبيت تطبيق جديد</string>
     <string name="auto_firewall_new_apps">حظر التطبيقات الجديدة تلقائيًا</string>
     <string name="auto_firewall_new_apps_description">حظر التطبيقات المثبتة حديثًا تلقائيًا (إلا في وضع القائمة البيضاء)</string>
+    <string name="firewall_status_notification">إشعار حالة الجدار الناري</string>
+    <string name="firewall_status_notification_description">إظهار إشعار دائم بحالة الجدار الناري الحالية</string>
+    <string name="firewall_status_notification_enabled_title">الجدار الناري مُفعّل</string>
+    <string name="firewall_status_notification_enabled_text">يتم التحكم في اتصال التطبيقات بالشبكة</string>
+    <string name="firewall_status_notification_disabled_title">الجدار الناري معطّل</string>
+    <string name="firewall_status_notification_disabled_text">لا يتم التحكم في اتصال التطبيقات بالشبكة</string>
     <string name="new_app_installed">تم تثبيت تطبيق جديد: %s</string>
     <string name="firewall_app">تطبيق الجدار الناري</string>
     <string name="allow_app">سماح</string>
