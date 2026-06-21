@@ -1,6 +1,9 @@
 package com.arslan.shizuwall.adapters
 
 import android.graphics.Bitmap
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ImageSpan
 import android.util.LruCache
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +23,7 @@ import kotlinx.coroutines.withContext
 import com.arslan.shizuwall.R
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import com.arslan.shizuwall.utils.UiUtils
 
@@ -81,8 +85,27 @@ class AppListAdapter(
         val appName: TextView = itemView.findViewById(R.id.appName)
         val packageName: TextView = itemView.findViewById(R.id.packageName)
         val appSwitch: ImageView = itemView.findViewById(R.id.appSwitch)
-        val favoriteIcon: ImageView = itemView.findViewById(R.id.favoriteIcon)
         val modeDropdownText: MaterialButton = itemView.findViewById(R.id.modeDropdownText)
+
+
+        private fun buildFavoriteName(name: String): CharSequence {
+            val context = itemView.context
+            val starSize = (appName.textSize * 0.9f).toInt()
+            val drawable = ContextCompat.getDrawable(
+                context, android.R.drawable.btn_star_big_on
+            )?.mutate() ?: return name
+            drawable.setBounds(0, 0, starSize, starSize)
+            drawable.setTint(MaterialColors.getColor(itemView, android.R.attr.colorPrimary))
+
+            val builder = SpannableStringBuilder(name).append(" ★")
+            val start = builder.length - 1
+            builder.setSpan(
+                ImageSpan(drawable, ImageSpan.ALIGN_BASELINE),
+                start, builder.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            return builder
+        }
 
         fun bind(appInfo: AppInfo) {
             // Load icon async
@@ -111,10 +134,12 @@ class AppListAdapter(
                 }
             }
 
-            appName.text = appInfo.appName
+            appName.text = if (appInfo.isFavorite) {
+                buildFavoriteName(appInfo.appName)
+            } else {
+                appInfo.appName
+            }
             packageName.text = appInfo.packageName
-
-            favoriteIcon.visibility = if (appInfo.isFavorite) View.VISIBLE else View.GONE
 
             if (appInfo.isSelected && isHybridMode) {
                 modeDropdownText.visibility = View.VISIBLE
