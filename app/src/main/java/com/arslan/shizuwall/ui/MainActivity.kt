@@ -2183,6 +2183,7 @@ class MainActivity : BaseActivity() {
         recyclerView.isEnabled = false
         recyclerView.isClickable = false
         appListAdapter.setSelectionEnabled(false)
+        appListAdapter.setFavoriteEnabled(firewallMode == FirewallMode.DEFAULT && !isFirewallProcessRunning)
         updateInteractiveViews()
     }
 
@@ -2191,6 +2192,7 @@ class MainActivity : BaseActivity() {
         recyclerView.isEnabled = true
         recyclerView.isClickable = true
         appListAdapter.setSelectionEnabled(true)
+        appListAdapter.setFavoriteEnabled(true)
         updateInteractiveViews()
     }
 

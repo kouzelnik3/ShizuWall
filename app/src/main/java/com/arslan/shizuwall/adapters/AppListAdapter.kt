@@ -57,6 +57,15 @@ class AppListAdapter(
         }
     }
 
+    private var favoriteEnabled: Boolean = true
+
+    fun setFavoriteEnabled(enabled: Boolean) {
+        if (favoriteEnabled != enabled) {
+            favoriteEnabled = enabled
+            notifyItemRangeChanged(0, itemCount)
+        }
+    }
+
     private var isHybridMode: Boolean = false
 
     fun setHybridModeEnabled(enabled: Boolean) {
@@ -143,6 +152,15 @@ class AppListAdapter(
             }
             card.setCardBackgroundColor(cardBgColor)
 
+            if (favoriteEnabled) {
+                itemView.setOnLongClickListener {
+                    onAppLongClick(appInfo)
+                    true
+                }
+            } else {
+                itemView.setOnLongClickListener(null)
+            }
+
             if (selectionEnabled) {
                 val isCurrentlySelected = appInfo.isSelected
                 appSwitch.isEnabled = true
@@ -154,20 +172,15 @@ class AppListAdapter(
                 appSwitch.setOnClickListener {
                     onAppClick(appInfo.copy(isSelected = !isCurrentlySelected))
                 }
-                itemView.setOnLongClickListener {
-                    onAppLongClick(appInfo)
-                    true
-                }
-                
+
                 modeDropdownText.setOnClickListener { view ->
                     showModePopupMenu(view, appInfo)
                 }
             } else {
-                // disable interactions while firewall active
+                // disable selection interactions while firewall active
                 appSwitch.isEnabled = false
                 appSwitch.alpha = 0.4f
                 itemView.setOnClickListener(null)
-                itemView.setOnLongClickListener(null)
                 itemView.isClickable = false
                 modeDropdownText.setOnClickListener(null)
             }
