@@ -1,0 +1,8 @@
+Unchecking "Show system apps" shows a info dialog. #113
+Long app names no longer hide the favorite star on narrow/portrait screens. #111
+Fixed the floating button triggering accidentally. #108
+Monochrome icon option. 112
+Firewall status as a notification. #109
+Customizable floating ball transparency.#107
+Can add apps to favorites while firewall is active with default mode. #106
+ 
