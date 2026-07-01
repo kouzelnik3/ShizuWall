@@ -33,6 +33,7 @@ class FloatingButtonService : Service() {
         const val KEY_FLOATING_SIZE = "floating_button_size"                 // dp
         const val KEY_FLOATING_FADE_DELAY = "floating_button_fade_delay"     // seconds
         const val KEY_FLOATING_EDGE_SNAP = "floating_button_edge_snap"       // boolean
+        const val KEY_FLOATING_DISABLE_DIM = "floating_button_disable_dim"   // boolean
 
         const val DEFAULT_IDLE_OPACITY = 30
         const val DEFAULT_SIZE_DP = 56
@@ -63,6 +64,7 @@ class FloatingButtonService : Service() {
     private var iconSizePx = 0
     private var fadeDelayMs = DEFAULT_FADE_DELAY * 1000L
     private var edgeSnap = false
+    private var disableDim = false
 
     private var snappedRight = true   
     private var isTucked = false      
@@ -84,7 +86,8 @@ class FloatingButtonService : Service() {
             KEY_FLOATING_IDLE_OPACITY,
             KEY_FLOATING_SIZE,
             KEY_FLOATING_FADE_DELAY,
-            KEY_FLOATING_EDGE_SNAP -> {
+            KEY_FLOATING_EDGE_SNAP,
+            KEY_FLOATING_DISABLE_DIM -> {
 
                 loadFloatingSettings()
                 applyFloatingSettingsLive()
@@ -113,6 +116,7 @@ class FloatingButtonService : Service() {
         val delay = sharedPreferences.getInt(KEY_FLOATING_FADE_DELAY, DEFAULT_FADE_DELAY).coerceIn(1, 30)
         fadeDelayMs = delay * 1000L
         edgeSnap = sharedPreferences.getBoolean(KEY_FLOATING_EDGE_SNAP, false)
+        disableDim = sharedPreferences.getBoolean(KEY_FLOATING_DISABLE_DIM, false)
     }
 
     override fun onDestroy() {
@@ -284,16 +288,19 @@ class FloatingButtonService : Service() {
         floatingView?.background?.alpha = 255
         fabIcon?.animate()?.cancel()
         fabIcon?.alpha = 1.0f
+        if (disableDim && !edgeSnap) return
         inactivityJob = scope.launch {
             delay(fadeDelayMs)
-            val targetBgAlpha = (idleOpacityFraction * 255).toInt()
-            val animator = android.animation.ValueAnimator.ofInt(255, targetBgAlpha)
-            animator.duration = 300
-            animator.addUpdateListener { animation ->
-                floatingView?.background?.alpha = animation.animatedValue as Int
+            if (!disableDim) {
+                val targetBgAlpha = (idleOpacityFraction * 255).toInt()
+                val animator = android.animation.ValueAnimator.ofInt(255, targetBgAlpha)
+                animator.duration = 300
+                animator.addUpdateListener { animation ->
+                    floatingView?.background?.alpha = animation.animatedValue as Int
+                }
+                animator.start()
+                fabIcon?.animate()?.alpha(idleOpacityFraction)?.setDuration(300)?.start()
             }
-            animator.start()
-            fabIcon?.animate()?.alpha(idleOpacityFraction)?.setDuration(300)?.start()
             if (edgeSnap) tuckToEdge()
         }
     }
@@ -308,6 +315,8 @@ class FloatingButtonService : Service() {
             snapToEdge()
         } else {
             isTucked = false
+            val screenWidth = resources.displayMetrics.widthPixels
+            params.x = params.x.coerceIn(0, screenWidth - params.width)
             try { windowManager?.updateViewLayout(floatingView, params) } catch (_: Exception) {}
         }
         resetInactivityTimer()
@@ -360,7 +369,7 @@ class FloatingButtonService : Service() {
     private fun updateFabAppearance() {
         val enabled = loadFirewallEnabled()
         fabIcon?.setImageResource(
-            if (enabled) R.drawable.ic_firewall_enabled else R.drawable.ic_quick_tile
+            if (enabled) R.drawable.ic_quick_tile else R.drawable.ic_firewall_enabled 
         )
         // Tint using standard colours — green when active, grey when off
         val tint = if (enabled) {

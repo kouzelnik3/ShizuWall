@@ -393,6 +393,8 @@
     <string name="floating_percent_format">%1$d%%</string>
     <string name="floating_dp_format">%1$d dp</string>
     <string name="floating_seconds_format">%1$d s</string>
+    <string name="floating_disable_dim">No atenuar</string>
+    <string name="floating_disable_dim_desc">Mantén el botón totalmente visible y nunca lo atenúes ni lo oculte en el borde cuando esté inactivo</string>
         <!-- Profiles -->
     <string name="profiles">Perfiles</string>
     <string name="profiles_subtitle">Cambia de contexto de firewall con un toque</string>

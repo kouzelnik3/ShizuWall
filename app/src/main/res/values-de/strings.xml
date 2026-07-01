@@ -391,6 +391,8 @@
     <string name="floating_percent_format">%1$d%%</string>
     <string name="floating_dp_format">%1$d dp</string>
     <string name="floating_seconds_format">%1$d s</string>
+    <string name="floating_disable_dim">Nicht abdunkeln</string>
+    <string name="floating_disable_dim_desc">Button dauerhaft sichtbar halten und ihn im Leerlauf nie abdunkeln oder einklappen</string>
     <string name="profiles">Profile</string>
     <string name="profiles_subtitle">Firewall-Kontexte mit einem Tippen wechseln</string>
     <string name="profiles_empty_title">Noch keine Profile</string>

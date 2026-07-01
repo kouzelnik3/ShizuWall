@@ -391,6 +391,8 @@
     <string name="floating_percent_format">%1$d%%</string>
     <string name="floating_dp_format">%1$d dp</string>
     <string name="floating_seconds_format">%1$d s</string>
+    <string name="floating_disable_dim">Hiç Soldurma</string>
+    <string name="floating_disable_dim_desc">Boşta kaldığında düğmeyi tam görünür tutar, asla soldurmaz veya kenara gizlemez</string>
     <!-- Profiles -->
     <string name="profiles">Profiller</string>
     <string name="profiles_subtitle">Güvenlik duvarı bağlamlarını tek dokunuşla değiştirin</string>

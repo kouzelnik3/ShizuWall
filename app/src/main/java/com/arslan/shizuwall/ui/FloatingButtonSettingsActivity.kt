@@ -25,6 +25,7 @@ class FloatingButtonSettingsActivity : BaseActivity() {
     private lateinit var sliderSize: Slider
     private lateinit var sliderFadeDelay: Slider
     private lateinit var switchEdgeSnap: MaterialSwitch
+    private lateinit var switchDisableDim: MaterialSwitch
     private lateinit var tvOpacityValue: TextView
     private lateinit var tvSizeValue: TextView
     private lateinit var tvFadeDelayValue: TextView
@@ -57,6 +58,7 @@ class FloatingButtonSettingsActivity : BaseActivity() {
         sliderSize = findViewById(R.id.sliderSize)
         sliderFadeDelay = findViewById(R.id.sliderFadeDelay)
         switchEdgeSnap = findViewById(R.id.switchEdgeSnap)
+        switchDisableDim = findViewById(R.id.switchDisableDim)
         tvOpacityValue = findViewById(R.id.tvOpacityValue)
         tvSizeValue = findViewById(R.id.tvSizeValue)
         tvFadeDelayValue = findViewById(R.id.tvFadeDelayValue)
@@ -82,6 +84,9 @@ class FloatingButtonSettingsActivity : BaseActivity() {
         switchEdgeSnap.isChecked = sharedPreferences.getBoolean(
             FloatingButtonService.KEY_FLOATING_EDGE_SNAP, false
         )
+        switchDisableDim.isChecked = sharedPreferences.getBoolean(
+            FloatingButtonService.KEY_FLOATING_DISABLE_DIM, false
+        )
 
         updateOpacityLabel(opacity)
         updateSizeLabel(size)
@@ -106,6 +111,9 @@ class FloatingButtonSettingsActivity : BaseActivity() {
         }
         switchEdgeSnap.setOnCheckedChangeListener { _, isChecked ->
             sharedPreferences.edit().putBoolean(FloatingButtonService.KEY_FLOATING_EDGE_SNAP, isChecked).apply()
+        }
+        switchDisableDim.setOnCheckedChangeListener { _, isChecked ->
+            sharedPreferences.edit().putBoolean(FloatingButtonService.KEY_FLOATING_DISABLE_DIM, isChecked).apply()
         }
     }
 

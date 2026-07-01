@@ -394,6 +394,8 @@
     <string name="floating_percent_format">%1$d%%</string>
     <string name="floating_dp_format">%1$d dp</string>
     <string name="floating_seconds_format">%1$d s</string>
+    <string name="floating_disable_dim">عدم التعتيم</string>
+    <string name="floating_disable_dim_desc">حافظ على ظهور الزر بالكامل ولا تعتّمه أو تخفيه عند الخمول</string>
         <!-- Profiles -->
     <string name="profiles">ملفات التعريف</string>
     <string name="profiles_subtitle">بدّل سياقات جدار الحماية بنقرة واحدة</string>

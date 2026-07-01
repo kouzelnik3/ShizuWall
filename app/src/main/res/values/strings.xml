@@ -390,6 +390,8 @@
     <string name="floating_percent_format">%1$d%%</string>
     <string name="floating_dp_format">%1$d dp</string>
     <string name="floating_seconds_format">%1$d s</string>
+    <string name="floating_disable_dim">Don\'t dim</string>
+    <string name="floating_disable_dim_desc">Keep the button fully visible and never fade or tuck it when idle</string>
 
     <string name="decrease">Decrease</string>
     <string name="increase">Increase</string>

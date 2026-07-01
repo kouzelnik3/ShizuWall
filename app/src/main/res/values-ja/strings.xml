@@ -393,6 +393,8 @@
     <string name="floating_percent_format">%1$d%%</string>
     <string name="floating_dp_format">%1$d dp</string>
     <string name="floating_seconds_format">%1$d s</string>
+    <string name="floating_disable_dim">薄暗くしない</string>
+    <string name="floating_disable_dim_desc">アイドル時にボタンを完全に表示したままにし、フェードや端への収納を行いません</string>
     <!-- Profiles -->
     <string name="profiles">プロファイル</string>
     <string name="profiles_subtitle">ワンタップでファイアウォールのコンテキストを切り替え</string>

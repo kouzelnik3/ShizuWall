@@ -391,6 +391,8 @@
     <string name="floating_percent_format">%1$d%%</string>
     <string name="floating_dp_format">%1$d dp</string>
     <string name="floating_seconds_format">%1$d s</string>
+    <string name="floating_disable_dim">Não escurecer</string>
+    <string name="floating_disable_dim_desc">Mantenha o botão totalmente visível e nunca o esmaeça ou recolha quando estiver inativo</string>
     <string name="profiles">Perfis</string>
     <string name="profiles_subtitle">Alterne contextos de firewall com um toque</string>
     <string name="profiles_empty_title">Ainda não há perfis</string>

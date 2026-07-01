@@ -391,6 +391,8 @@
     <string name="floating_percent_format">%1$d%%</string>
     <string name="floating_dp_format">%1$d dp</string>
     <string name="floating_seconds_format">%1$d s</string>
+    <string name="floating_disable_dim">不要变暗</string>
+    <string name="floating_disable_dim_desc">闲置时保持按钮完全可见，永不淡出或收进边缘</string>
     <!-- Profiles -->
     <string name="profiles">配置文件</string>
     <string name="profiles_subtitle">一键切换防火墙场景</string>
