@@ -394,4 +394,33 @@
     <string name="floating_percent_format">%1$d%%</string>
     <string name="floating_dp_format">%1$d dp</string>
     <string name="floating_seconds_format">%1$d s</string>
+        <!-- Profiles -->
+    <string name="profiles">Profily</string>
+    <string name="profiles_subtitle">Přepínejte kontexty firewallu jedním klepnutím</string>
+    <string name="profiles_empty_title">Zatím žádné profily</string>
+    <string name="profiles_empty_message">Vyberte aplikace, které chcete blokovat firewallem, a uložte je jako profil, abyste mohli okamžitě přepínat mezi nastaveními.</string>
+    <string name="profile_active">Aktivní</string>
+    <string name="profile_options">Možnosti profilu</string>
+    <string name="profile_save_current">Uložit aktuální výběr jako profil</string>
+    <string name="profile_name_hint">Název profilu</string>
+    <string name="profile_name_required">Zadejte název</string>
+    <string name="profile_subtitle_format">%1$s · %2$s</string>
+    <plurals name="profile_app_count">
+        <item quantity="one">%d aplikace</item>
+        <item quantity="few">%d aplikace</item>
+        <item quantity="other">%d aplikací</item>
+    </plurals>
+    <string name="profile_rename">Přejmenovat</string>
+    <string name="profile_update_to_current">Aktualizovat na aktuální výběr</string>
+    <string name="profile_update_action">Aktualizovat</string>
+    <string name="profile_update_confirm">Přepsat \"%1$s\" aktuálně vybranými aplikacemi a režimem?</string>
+    <string name="profile_delete">Smazat</string>
+    <string name="profile_delete_confirm">Smazat profil \"%1$s\"? Tuto akci nelze vrátit zpět.</string>
+    <string name="profile_save">Uložit</string>
+    <string name="profile_saved">Profil \"%1$s\" uložen</string>
+    <string name="profile_updated">\"%1$s\" aktualizován</string>
+    <string name="profile_switched">Přepnuto na \"%1$s\"</string>
+    <string name="profile_already_active">\"%1$s\" je již aktivní</string>
+    <string name="profile_not_found">Profil nenalezen: %1$s</string>
+
 </resources>

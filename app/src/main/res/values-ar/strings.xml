@@ -394,4 +394,36 @@
     <string name="floating_percent_format">%1$d%%</string>
     <string name="floating_dp_format">%1$d dp</string>
     <string name="floating_seconds_format">%1$d s</string>
+        <!-- Profiles -->
+    <string name="profiles">ملفات التعريف</string>
+    <string name="profiles_subtitle">بدّل سياقات جدار الحماية بنقرة واحدة</string>
+    <string name="profiles_empty_title">لا توجد ملفات تعريف بعد</string>
+    <string name="profiles_empty_message">حدد التطبيقات التي تريد حظرها بجدار الحماية، ثم احفظها كملف تعريف للتبديل بين الإعدادات فورًا.</string>
+    <string name="profile_active">نشط</string>
+    <string name="profile_options">خيارات الملف التعريفي</string>
+    <string name="profile_save_current">حفظ التحديد الحالي كملف تعريف</string>
+    <string name="profile_name_hint">اسم الملف التعريفي</string>
+    <string name="profile_name_required">أدخل اسمًا</string>
+    <string name="profile_subtitle_format">%1$s · %2$s</string>
+    <plurals name="profile_app_count">
+        <item quantity="zero">%d تطبيق</item>
+        <item quantity="one">تطبيق واحد</item>
+        <item quantity="two">تطبيقان</item>
+        <item quantity="few">%d تطبيقات</item>
+        <item quantity="many">%d تطبيقًا</item>
+        <item quantity="other">%d تطبيق</item>
+    </plurals>
+    <string name="profile_rename">إعادة تسمية</string>
+    <string name="profile_update_to_current">التحديث إلى التحديد الحالي</string>
+    <string name="profile_update_action">تحديث</string>
+    <string name="profile_update_confirm">هل تريد استبدال \"%1$s\" بالتطبيقات والوضع المحددين حاليًا؟</string>
+    <string name="profile_delete">حذف</string>
+    <string name="profile_delete_confirm">هل تريد حذف الملف التعريفي \"%1$s\"؟ لا يمكن التراجع عن هذا.</string>
+    <string name="profile_save">حفظ</string>
+    <string name="profile_saved">تم حفظ الملف التعريفي \"%1$s\"</string>
+    <string name="profile_updated">تم تحديث \"%1$s\"</string>
+    <string name="profile_switched">تم التبديل إلى \"%1$s\"</string>
+    <string name="profile_already_active">\"%1$s\" نشط بالفعل</string>
+    <string name="profile_not_found">لم يتم العثور على الملف التعريفي: %1$s</string>
+
 </resources>

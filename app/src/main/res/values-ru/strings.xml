@@ -393,4 +393,33 @@
     <string name="floating_percent_format">%1$d%%</string>
     <string name="floating_dp_format">%1$d dp</string>
     <string name="floating_seconds_format">%1$d s</string>
+    <!-- Profiles -->
+    <string name="profiles">Профили</string>
+    <string name="profiles_subtitle">Переключайте конфигурации брандмауэра одним касанием</string>
+    <string name="profiles_empty_title">Профилей пока нет</string>
+    <string name="profiles_empty_message">Выберите приложения, которые нужно ограничить брандмауэром, и сохраните их как профиль, чтобы мгновенно переключаться между наборами.</string>
+    <string name="profile_active">Активен</string>
+    <string name="profile_options">Параметры профиля</string>
+    <string name="profile_save_current">Сохранить текущий выбор как профиль</string>
+    <string name="profile_name_hint">Название профиля</string>
+    <string name="profile_name_required">Введите название</string>
+    <string name="profile_subtitle_format">%1$s · %2$s</string>
+    <plurals name="profile_app_count">
+        <item quantity="one">%d приложение</item>
+        <item quantity="few">%d приложения</item>
+        <item quantity="many">%d приложений</item>
+        <item quantity="other">%d приложения</item>
+    </plurals>
+    <string name="profile_rename">Переименовать</string>
+    <string name="profile_update_to_current">Обновить по текущему выбору</string>
+    <string name="profile_update_action">Обновить</string>
+    <string name="profile_update_confirm">Перезаписать \"%1$s\" текущими выбранными приложениями и режимом?</string>
+    <string name="profile_delete">Удалить</string>
+    <string name="profile_delete_confirm">Удалить профиль \"%1$s\"? Это действие необратимо.</string>
+    <string name="profile_save">Сохранить</string>
+    <string name="profile_saved">Профиль \"%1$s\" сохранён</string>
+    <string name="profile_updated">\"%1$s\" обновлён</string>
+    <string name="profile_switched">Переключено на \"%1$s\"</string>
+    <string name="profile_already_active">\"%1$s\" уже активен</string>
+    <string name="profile_not_found">Профиль не найден: %1$s</string>
 </resources>

@@ -395,4 +395,32 @@
     <string name="increase">Increase</string>
 
 
+    <!-- Profiles -->
+    <string name="profiles">Profiles</string>
+    <string name="profiles_subtitle">Switch firewall contexts in one tap</string>
+    <string name="profiles_empty_title">No profiles yet</string>
+    <string name="profiles_empty_message">Select the apps you want to firewall, then save them as a profile to switch between setups instantly.</string>
+    <string name="profile_active">Active</string>
+    <string name="profile_options">Profile options</string>
+    <string name="profile_save_current">Save current as profile</string>
+    <string name="profile_name_hint">Profile name</string>
+    <string name="profile_name_required">Enter a name</string>
+    <string name="profile_subtitle_format">%1$s · %2$s</string>
+    <plurals name="profile_app_count">
+        <item quantity="one">%d app</item>
+        <item quantity="other">%d apps</item>
+    </plurals>
+    <string name="profile_rename">Rename</string>
+    <string name="profile_update_to_current">Update to current selection</string>
+    <string name="profile_update_action">Update</string>
+    <string name="profile_update_confirm">Overwrite \"%1$s\" with the apps and mode you currently have selected?</string>
+    <string name="profile_delete">Delete</string>
+    <string name="profile_delete_confirm">Delete the profile \"%1$s\"? This cannot be undone.</string>
+    <string name="profile_save">Save</string>
+    <string name="profile_saved">Saved profile \"%1$s\"</string>
+    <string name="profile_updated">Updated \"%1$s\"</string>
+    <string name="profile_switched">Switched to \"%1$s\"</string>
+    <string name="profile_already_active">\"%1$s\" is already active</string>
+    <string name="profile_not_found">Profile not found: %1$s</string>
+
 </resources>

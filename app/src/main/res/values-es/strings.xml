@@ -393,4 +393,32 @@
     <string name="floating_percent_format">%1$d%%</string>
     <string name="floating_dp_format">%1$d dp</string>
     <string name="floating_seconds_format">%1$d s</string>
+        <!-- Profiles -->
+    <string name="profiles">Perfiles</string>
+    <string name="profiles_subtitle">Cambia de contexto de firewall con un toque</string>
+    <string name="profiles_empty_title">Aún no hay perfiles</string>
+    <string name="profiles_empty_message">Selecciona las apps que quieres bloquear con el firewall y guárdalas como un perfil para cambiar de configuración al instante.</string>
+    <string name="profile_active">Activo</string>
+    <string name="profile_options">Opciones del perfil</string>
+    <string name="profile_save_current">Guardar selección actual como perfil</string>
+    <string name="profile_name_hint">Nombre del perfil</string>
+    <string name="profile_name_required">Escribe un nombre</string>
+    <string name="profile_subtitle_format">%1$s · %2$s</string>
+    <plurals name="profile_app_count">
+        <item quantity="one">%d app</item>
+        <item quantity="other">%d apps</item>
+    </plurals>
+    <string name="profile_rename">Cambiar nombre</string>
+    <string name="profile_update_to_current">Actualizar con la selección actual</string>
+    <string name="profile_update_action">Actualizar</string>
+    <string name="profile_update_confirm">¿Sobrescribir \"%1$s\" con las apps y el modo seleccionados actualmente?</string>
+    <string name="profile_delete">Eliminar</string>
+    <string name="profile_delete_confirm">¿Eliminar el perfil \"%1$s\"? Esta acción no se puede deshacer.</string>
+    <string name="profile_save">Guardar</string>
+    <string name="profile_saved">Perfil \"%1$s\" guardado</string>
+    <string name="profile_updated">\"%1$s\" actualizado</string>
+    <string name="profile_switched">Se cambió a \"%1$s\"</string>
+    <string name="profile_already_active">\"%1$s\" ya está activo</string>
+    <string name="profile_not_found">Perfil no encontrado: %1$s</string>
+
 </resources>

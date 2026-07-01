@@ -391,4 +391,30 @@
     <string name="floating_percent_format">%1$d%%</string>
     <string name="floating_dp_format">%1$d dp</string>
     <string name="floating_seconds_format">%1$d s</string>
+    <!-- Profiles -->
+    <string name="profiles">配置文件</string>
+    <string name="profiles_subtitle">一键切换防火墙场景</string>
+    <string name="profiles_empty_title">暂无配置文件</string>
+    <string name="profiles_empty_message">选择要用防火墙拦截的应用，然后保存为配置文件，即可在不同设置间即时切换。</string>
+    <string name="profile_active">已启用</string>
+    <string name="profile_options">配置文件选项</string>
+    <string name="profile_save_current">将当前选择保存为配置文件</string>
+    <string name="profile_name_hint">配置文件名称</string>
+    <string name="profile_name_required">请输入名称</string>
+    <string name="profile_subtitle_format">%1$s · %2$s</string>
+    <plurals name="profile_app_count">
+        <item quantity="other">%d 个应用</item>
+    </plurals>
+    <string name="profile_rename">重命名</string>
+    <string name="profile_update_to_current">更新为当前选择</string>
+    <string name="profile_update_action">更新</string>
+    <string name="profile_update_confirm">用当前所选的应用和模式覆盖“%1$s”？</string>
+    <string name="profile_delete">删除</string>
+    <string name="profile_delete_confirm">删除配置文件“%1$s”？此操作无法撤销。</string>
+    <string name="profile_save">保存</string>
+    <string name="profile_saved">已保存配置文件“%1$s”</string>
+    <string name="profile_updated">已更新“%1$s”</string>
+    <string name="profile_switched">已切换到“%1$s”</string>
+    <string name="profile_already_active">“%1$s”已处于启用状态</string>
+    <string name="profile_not_found">未找到配置文件：%1$s</string>
 </resources>

@@ -391,4 +391,31 @@
     <string name="floating_percent_format">%1$d%%</string>
     <string name="floating_dp_format">%1$d dp</string>
     <string name="floating_seconds_format">%1$d s</string>
+    <!-- Profiles -->
+    <string name="profiles">Profiller</string>
+    <string name="profiles_subtitle">Güvenlik duvarı bağlamlarını tek dokunuşla değiştirin</string>
+    <string name="profiles_empty_title">Henüz profil yok</string>
+    <string name="profiles_empty_message">Güvenlik duvarına almak istediğiniz uygulamaları seçin, ardından kurulumlar arasında anında geçiş yapmak için bunları profil olarak kaydedin.</string>
+    <string name="profile_active">Etkin</string>
+    <string name="profile_options">Profil seçenekleri</string>
+    <string name="profile_save_current">Geçerli seçimi profil olarak kaydet</string>
+    <string name="profile_name_hint">Profil adı</string>
+    <string name="profile_name_required">Bir ad girin</string>
+    <string name="profile_subtitle_format">%1$s · %2$s</string>
+    <plurals name="profile_app_count">
+        <item quantity="one">%d uygulama</item>
+        <item quantity="other">%d uygulama</item>
+    </plurals>
+    <string name="profile_rename">Yeniden adlandır</string>
+    <string name="profile_update_to_current">Geçerli seçimle güncelle</string>
+    <string name="profile_update_action">Güncelle</string>
+    <string name="profile_update_confirm">\"%1$s\" profili şu anda seçili uygulamalar ve modla değiştirilsin mi?</string>
+    <string name="profile_delete">Sil</string>
+    <string name="profile_delete_confirm">\"%1$s\" profili silinsin mi? Bu geri alınamaz.</string>
+    <string name="profile_save">Kaydet</string>
+    <string name="profile_saved">\"%1$s\" profili kaydedildi</string>
+    <string name="profile_updated">\"%1$s\" güncellendi</string>
+    <string name="profile_switched">\"%1$s\" profiline geçildi</string>
+    <string name="profile_already_active">\"%1$s\" zaten etkin</string>
+    <string name="profile_not_found">Profil bulunamadı: %1$s</string>
 </resources>

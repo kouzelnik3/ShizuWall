@@ -117,7 +117,13 @@ class MainActivity : BaseActivity() {
         const val KEY_AUTO_FIREWALL_NEW_APPS = "auto_firewall_new_apps"
         const val KEY_SHOW_FIREWALL_STATUS_NOTIFICATION = "show_firewall_status_notification"
         const val KEY_APP_MODES = "app_modes_json"
+        const val KEY_PROFILES = "profiles_json"
+        const val KEY_ACTIVE_PROFILE_ID = "active_profile_id"
         private const val KEY_APPS_CACHE_JSON = "apps_cache_json_v1"
+
+        const val ACTION_PROFILE_CONTROL = "shizuwall.PROFILE"
+        const val EXTRA_PROFILE_NAME = "profile"
+        const val EXTRA_PROFILE_ID = "profile_id"
 
 
     }
@@ -388,6 +394,11 @@ class MainActivity : BaseActivity() {
             showSortDialog()
         }
 
+        val profilesButton: View? = findViewById(R.id.profilesButton)
+        profilesButton?.setOnClickListener {
+            showProfilesSheet()
+        }
+
         showSystemApps = sharedPreferences.getBoolean(KEY_SHOW_SYSTEM_APPS, false)
         moveSelectedTop = sharedPreferences.getBoolean(KEY_MOVE_SELECTED_TOP, true)
         firewallMode = FirewallMode.fromName(sharedPreferences.getString(KEY_FIREWALL_MODE, FirewallMode.DEFAULT.name))
@@ -568,6 +579,8 @@ class MainActivity : BaseActivity() {
         // Update firewallMode from preferences
         firewallMode = FirewallMode.fromName(sharedPreferences.getString(KEY_FIREWALL_MODE, FirewallMode.DEFAULT.name))
         updateFirewallToggleThumbIcon()
+
+        reconcileActiveProfile()
 
         // Reflect current firewall state in UI
         if (!isFirewallProcessRunning) {
@@ -1049,6 +1062,7 @@ class MainActivity : BaseActivity() {
         appListAdapter.setHybridModeEnabled(firewallMode == FirewallMode.HYBRID)
         recyclerView.adapter = appListAdapter
         defaultItemAnimator = recyclerView.itemAnimator
+        (defaultItemAnimator as? androidx.recyclerview.widget.SimpleItemAnimator)?.supportsChangeAnimations = false
 
 
     }
@@ -1262,7 +1276,8 @@ class MainActivity : BaseActivity() {
                 if (showSystemChanged) {
                     showSystemApps = newShowSystem
                     sharedPreferences.edit().putBoolean(KEY_SHOW_SYSTEM_APPS, showSystemApps).apply()
-                    
+                    reconcileActiveProfile()
+
                     // When hiding system apps, deselect all system apps to prevent them from being firewalled
                     if (!showSystemApps) {
                         val systemAppsToDeselect = appList.filter { it.isSystem && it.isSelected }
@@ -1288,7 +1303,7 @@ class MainActivity : BaseActivity() {
             .show()
     }
 
-    private fun sortAndFilterApps(preserveScrollPosition: Boolean = false, scrollToTop: Boolean = false, animate: Boolean = false) {
+    private fun sortAndFilterApps(preserveScrollPosition: Boolean = false, scrollToTop: Boolean = false, animate: Boolean = false, smoothTransition: Boolean = false) {
         val turkishCollator = java.text.Collator.getInstance(java.util.Locale.forLanguageTag("tr-TR"))
         
         var finalComparator: Comparator<AppInfo> = when (currentSortOrder) {
@@ -1312,37 +1327,40 @@ class MainActivity : BaseActivity() {
         }
 
         val updateList = {
-            // Disable animator to prevent visual clutter during list updates
             recyclerView.itemAnimator = null
             appListAdapter.submitList(filteredAppList.toList()) {
                 recyclerView.itemAnimator = defaultItemAnimator
-                
+
                 if (preserveScrollPosition && moveSelectedTop && firstVisible != RecyclerView.NO_POSITION) {
                     layoutManager.scrollToPositionWithOffset(firstVisible, offset)
                 } else if (scrollToTop) {
                     layoutManager.scrollToPosition(0)
                 }
-                
+
                 updateSelectedCount()
                 updateSelectAllCheckbox()
 
-                if (animate) {
+                if (animate || smoothTransition) {
+                    val fadeInDelay = if (smoothTransition) 0L else 400L
+                    val fadeInDuration = if (smoothTransition) 260L else 200L
                     recyclerView.post {
-                    val targetAlpha = if ((isFirewallEnabled && !firewallMode.allowsDynamicSelection()) || isFirewallProcessRunning) 0.5f else 1f
+                        val targetAlpha = if ((isFirewallEnabled && !firewallMode.allowsDynamicSelection()) || isFirewallProcessRunning) 0.5f else 1f
                         recyclerView.animate()
                             .alpha(targetAlpha)
-                            .setStartDelay(400)
-                            .setDuration(200)
+                            .setStartDelay(fadeInDelay)
+                            .setDuration(fadeInDuration)
                             .start()
                     }
                 }
             }
         }
 
-        if (animate) {
+        if (animate || smoothTransition) {
+            val fadeOutDuration = if (smoothTransition) 180L else 200L
+            recyclerView.animate().cancel()
             recyclerView.animate()
                 .alpha(0f)
-                .setDuration(200)
+                .setDuration(fadeOutDuration)
                 .withEndAction {
                     appList.sortWith(finalComparator)
                     filterApps(currentQuery)
@@ -1813,6 +1831,43 @@ class MainActivity : BaseActivity() {
             .putInt(KEY_SELECTED_COUNT, selectedPackages.size)
             .putString(KEY_APP_MODES, modesJson.toString())
             .apply()
+
+        reconcileActiveProfile()
+    }
+
+    private fun reconcileActiveProfile() {
+        val activeId = com.arslan.shizuwall.profiles.ProfilesStore.activeProfileId(this) ?: return
+        val profile = com.arslan.shizuwall.profiles.ProfilesStore.getById(this, activeId)
+        if (profile == null) {
+            com.arslan.shizuwall.profiles.ProfilesStore.setActiveProfileId(this, null)
+            return
+        }
+        val currentPackages = sharedPreferences.getStringSet(KEY_SELECTED_APPS, emptySet()) ?: emptySet()
+        val currentMode = sharedPreferences.getString(KEY_FIREWALL_MODE, FirewallMode.DEFAULT.name)
+            ?: FirewallMode.DEFAULT.name
+        val currentShowSystem = sharedPreferences.getBoolean(KEY_SHOW_SYSTEM_APPS, false)
+        val matches = profile.packages == currentPackages &&
+            profile.firewallMode == currentMode &&
+            profile.showSystemApps == currentShowSystem &&
+            parseAppModes(profile.appModesJson) == parseAppModes(sharedPreferences.getString(KEY_APP_MODES, "{}"))
+        if (!matches) {
+            com.arslan.shizuwall.profiles.ProfilesStore.setActiveProfileId(this, null)
+        }
+    }
+
+    private fun parseAppModes(json: String?): Map<String, Int> {
+        if (json.isNullOrBlank()) return emptyMap()
+        return try {
+            val obj = JSONObject(json)
+            val map = mutableMapOf<String, Int>()
+            for (key in obj.keys()) {
+                val value = obj.optInt(key, 0)
+                if (value != 0) map[key] = value
+            }
+            map
+        } catch (e: Exception) {
+            emptyMap()
+        }
     }
 
     private fun loadSelectedApps(): Set<String> {
@@ -2551,6 +2606,120 @@ class MainActivity : BaseActivity() {
         // continue was removed — close handles dialog dismissal
 
         dialog.show()
+    }
+
+    private var profilesBottomSheet: ProfilesBottomSheet? = null
+
+    private fun showProfilesSheet() {
+        val sheet = ProfilesBottomSheet(this, object : ProfilesBottomSheet.Listener {
+            override fun onActivateProfile(profile: com.arslan.shizuwall.model.Profile) {
+                activateProfile(profile)
+            }
+        })
+        profilesBottomSheet = sheet
+        sheet.show()
+    }
+
+    private fun activateProfile(profile: com.arslan.shizuwall.model.Profile) {
+        val oldActive = activeFirewallPackages.toList()
+
+        com.arslan.shizuwall.profiles.ProfilesStore.writeSelectionFromProfile(this, profile)
+
+        firewallMode = FirewallMode.fromName(profile.firewallMode)
+        showSystemApps = profile.showSystemApps
+
+        val appModes = try { JSONObject(profile.appModesJson) } catch (e: Exception) { JSONObject() }
+        for (i in appList.indices) {
+            val info = appList[i]
+            val selected = profile.packages.contains(info.packageName)
+            val mode = appModes.optInt(info.packageName, 0)
+            if (info.isSelected != selected || info.appFirewallMode != mode) {
+                appList[i] = info.copy(isSelected = selected, appFirewallMode = mode)
+            }
+        }
+
+        appListAdapter.setHybridModeEnabled(firewallMode == FirewallMode.HYBRID)
+        updateSelectedCount()
+        updateCategoryChips()
+        updateSelectAllCheckbox()
+        sortAndFilterApps(preserveScrollPosition = false, scrollToTop = true, smoothTransition = true)
+
+        if (!isFirewallEnabled) {
+            profilesBottomSheet?.notifyActivated(profile.id)
+            return
+        }
+
+        reapplyForProfileSwitch(profile, oldActive, appModes)
+    }
+
+    private fun reapplyForProfileSwitch(
+        profile: com.arslan.shizuwall.model.Profile,
+        oldActive: List<String>,
+        appModes: JSONObject
+    ) {
+        val selectedPkgs = profile.packages.toList()
+        val target = getTargetPackagesToBlock(selectedPkgs)
+        val whitelistAllow = getWhitelistAllowPackages(selectedPkgs)
+
+        firewallToggle.isEnabled = false
+        isFirewallProcessRunning = true
+        lifecycleScope.launch {
+            firewallProgress.visibility = android.view.View.VISIBLE
+            appListAdapter.setSelectionEnabled(false)
+            updateInteractiveViews()
+            try {
+                val (installedTarget, _) = withContext(Dispatchers.IO) { filterInstalledPackages(target) }
+
+                val effectiveTarget = when (firewallMode) {
+                    FirewallMode.SCREEN_LOCK_MODE ->
+                        if (ScreenLockModeReceiver.isDeviceLocked(this@MainActivity)) installedTarget else emptyList()
+                    FirewallMode.HYBRID -> {
+                        val isLocked = ScreenLockModeReceiver.isDeviceLocked(this@MainActivity)
+                        installedTarget.filter {
+                            when (appModes.optInt(it, 0)) {
+                                1 -> false
+                                2 -> isLocked
+                                else -> true
+                            }
+                        }
+                    }
+                    FirewallMode.SMART_FOREGROUND, FirewallMode.FOCUS_TRACKER -> emptyList()
+                    else -> installedTarget
+                }
+
+                val toUnblock = oldActive.filterNot { effectiveTarget.contains(it) }
+
+                val successful = withContext(Dispatchers.IO) {
+                    for (pkg in toUnblock) {
+                        runCommandDetailed("cmd connectivity set-package-networking-enabled true $pkg")
+                    }
+                    val (ok, _) = enableFirewall(effectiveTarget, whitelistAllow)
+                    ok
+                }
+
+                activeFirewallPackages.clear()
+                activeFirewallPackages.addAll(successful)
+                saveActivePackages(activeFirewallPackages)
+                saveFirewallEnabled(true)
+
+                if (firewallMode.requiresForegroundDetection()) {
+                    ForegroundDetectionService.start(this@MainActivity)
+                } else {
+                    ForegroundDetectionService.stop(this@MainActivity)
+                }
+
+                profilesBottomSheet?.notifyActivated(profile.id)
+            } catch (t: Throwable) {
+
+            } finally {
+                firewallProgress.visibility = android.view.View.GONE
+                firewallToggle.isEnabled = true
+                isFirewallProcessRunning = false
+                appListAdapter.setSelectionEnabled(true)
+                updateInteractiveViews()
+                applyListInteractionState()
+            }
+        }
     }
 
     private fun getTargetPackagesToBlock(selectedPkgs: List<String>): List<String> {

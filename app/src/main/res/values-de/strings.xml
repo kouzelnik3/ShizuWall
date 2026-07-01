@@ -391,4 +391,30 @@
     <string name="floating_percent_format">%1$d%%</string>
     <string name="floating_dp_format">%1$d dp</string>
     <string name="floating_seconds_format">%1$d s</string>
+    <string name="profiles">Profile</string>
+    <string name="profiles_subtitle">Firewall-Kontexte mit einem Tippen wechseln</string>
+    <string name="profiles_empty_title">Noch keine Profile</string>
+    <string name="profiles_empty_message">Wähle die Apps aus, die du per Firewall sperren möchtest, und speichere sie als Profil, um sofort zwischen Setups zu wechseln.</string>
+    <string name="profile_active">Aktiv</string>
+    <string name="profile_options">Profiloptionen</string>
+    <string name="profile_save_current">Aktuelle Auswahl als Profil speichern</string>
+    <string name="profile_name_hint">Profilname</string>
+    <string name="profile_name_required">Namen eingeben</string>
+    <string name="profile_subtitle_format">%1$s · %2$s</string>
+    <plurals name="profile_app_count">
+        <item quantity="one">%d App</item>
+        <item quantity="other">%d Apps</item>
+    </plurals>
+    <string name="profile_rename">Umbenennen</string>
+    <string name="profile_update_to_current">Auf aktuelle Auswahl aktualisieren</string>
+    <string name="profile_update_action">Aktualisieren</string>
+    <string name="profile_update_confirm">\"%1$s\" mit den aktuell ausgewählten Apps und dem Modus überschreiben?</string>
+    <string name="profile_delete">Löschen</string>
+    <string name="profile_delete_confirm">Profil \"%1$s\" löschen? Dies kann nicht rückgängig gemacht werden.</string>
+    <string name="profile_save">Speichern</string>
+    <string name="profile_saved">Profil \"%1$s\" gespeichert</string>
+    <string name="profile_updated">\"%1$s\" aktualisiert</string>
+    <string name="profile_switched">Zu \"%1$s\" gewechselt</string>
+    <string name="profile_already_active">\"%1$s\" ist bereits aktiv</string>
+    <string name="profile_not_found">Profil nicht gefunden: %1$s</string>
 </resources>

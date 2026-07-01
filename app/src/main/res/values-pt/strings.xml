@@ -391,4 +391,30 @@
     <string name="floating_percent_format">%1$d%%</string>
     <string name="floating_dp_format">%1$d dp</string>
     <string name="floating_seconds_format">%1$d s</string>
+    <string name="profiles">Perfis</string>
+    <string name="profiles_subtitle">Alterne contextos de firewall com um toque</string>
+    <string name="profiles_empty_title">Ainda não há perfis</string>
+    <string name="profiles_empty_message">Selecione os apps que deseja bloquear no firewall e salve-os como um perfil para alternar entre configurações instantaneamente.</string>
+    <string name="profile_active">Ativo</string>
+    <string name="profile_options">Opções do perfil</string>
+    <string name="profile_save_current">Salvar seleção atual como perfil</string>
+    <string name="profile_name_hint">Nome do perfil</string>
+    <string name="profile_name_required">Digite um nome</string>
+    <string name="profile_subtitle_format">%1$s · %2$s</string>
+    <plurals name="profile_app_count">
+        <item quantity="one">%d app</item>
+        <item quantity="other">%d apps</item>
+    </plurals>
+    <string name="profile_rename">Renomear</string>
+    <string name="profile_update_to_current">Atualizar para a seleção atual</string>
+    <string name="profile_update_action">Atualizar</string>
+    <string name="profile_update_confirm">Substituir \"%1$s\" pelos apps e modo selecionados atualmente?</string>
+    <string name="profile_delete">Excluir</string>
+    <string name="profile_delete_confirm">Excluir o perfil \"%1$s\"? Isso não pode ser desfeito.</string>
+    <string name="profile_save">Salvar</string>
+    <string name="profile_saved">Perfil \"%1$s\" salvo</string>
+    <string name="profile_updated">\"%1$s\" atualizado</string>
+    <string name="profile_switched">Alterado para \"%1$s\"</string>
+    <string name="profile_already_active">\"%1$s\" já está ativo</string>
+    <string name="profile_not_found">Perfil não encontrado: %1$s</string>
 </resources>
