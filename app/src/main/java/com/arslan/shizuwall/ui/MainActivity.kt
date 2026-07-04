@@ -67,6 +67,7 @@ import com.arslan.shizuwall.shell.RootShellExecutor
 import com.arslan.shizuwall.shell.ShellExecutorProvider
 import com.arslan.shizuwall.receivers.ScreenLockModeReceiver
 import com.arslan.shizuwall.utils.ShizukuPackageResolver
+import com.arslan.shizuwall.utils.ForegroundAppResolver
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.json.JSONArray
 import org.json.JSONObject
@@ -93,7 +94,7 @@ class MainActivity : BaseActivity() {
         const val KEY_USE_DYNAMIC_COLOR = "use_dynamic_color"
         const val KEY_USE_AMOLED_BLACK = "use_amoled_black"
         const val KEY_ADAPTIVE_MODE = "adaptive_mode" 
-        const val KEY_FIREWALL_MODE = "firewall_mode" 
+        const val KEY_FIREWALL_MODE = "firewall_mode"
         const val KEY_SCREEN_LOCK_DELAY_SECONDS = "screen_lock_delay_seconds"
         const val DEFAULT_SCREEN_LOCK_DELAY_SECONDS = 2
         const val KEY_SMART_FOREGROUND_APP = "smart_foreground_app"  // Current foreground app in smart mode
@@ -113,8 +114,16 @@ class MainActivity : BaseActivity() {
 
         const val KEY_FIREWALL_UPDATE_TS = "firewall_update_ts"
         const val KEY_APP_MONITOR_ENABLED = "app_monitor_enabled"
+        const val KEY_AUTO_FIREWALL_NEW_APPS = "auto_firewall_new_apps"
+        const val KEY_SHOW_FIREWALL_STATUS_NOTIFICATION = "show_firewall_status_notification"
         const val KEY_APP_MODES = "app_modes_json"
+        const val KEY_PROFILES = "profiles_json"
+        const val KEY_ACTIVE_PROFILE_ID = "active_profile_id"
         private const val KEY_APPS_CACHE_JSON = "apps_cache_json_v1"
+
+        const val ACTION_PROFILE_CONTROL = "shizuwall.PROFILE"
+        const val EXTRA_PROFILE_NAME = "profile"
+        const val EXTRA_PROFILE_ID = "profile_id"
 
 
     }
@@ -313,8 +322,10 @@ class MainActivity : BaseActivity() {
 
         setContentView(R.layout.activity_main)
 
-        // Start App Monitor Service if enabled
-        if (sharedPreferences.getBoolean(KEY_APP_MONITOR_ENABLED, false)) {
+        // Start App Monitor Service if any of its features are enabled
+        if (sharedPreferences.getBoolean(KEY_APP_MONITOR_ENABLED, false) ||
+            sharedPreferences.getBoolean(KEY_AUTO_FIREWALL_NEW_APPS, false) ||
+            sharedPreferences.getBoolean(KEY_SHOW_FIREWALL_STATUS_NOTIFICATION, false)) {
             val monitorIntent = Intent(this, AppMonitorService::class.java)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(monitorIntent)
@@ -381,6 +392,11 @@ class MainActivity : BaseActivity() {
         val sortButton: View? = findViewById(R.id.sortButton)
         sortButton?.setOnClickListener {
             showSortDialog()
+        }
+
+        val profilesButton: View? = findViewById(R.id.profilesButton)
+        profilesButton?.setOnClickListener {
+            showProfilesSheet()
         }
 
         showSystemApps = sharedPreferences.getBoolean(KEY_SHOW_SYSTEM_APPS, false)
@@ -564,6 +580,8 @@ class MainActivity : BaseActivity() {
         firewallMode = FirewallMode.fromName(sharedPreferences.getString(KEY_FIREWALL_MODE, FirewallMode.DEFAULT.name))
         updateFirewallToggleThumbIcon()
 
+        reconcileActiveProfile()
+
         // Reflect current firewall state in UI
         if (!isFirewallProcessRunning) {
             val enabled = loadFirewallEnabled()
@@ -580,28 +598,11 @@ class MainActivity : BaseActivity() {
         appListAdapter.setHybridModeEnabled(firewallMode == FirewallMode.HYBRID)
         loadInstalledApps()
         
-        // If firewall is ON and mode requires accessibility, ensure it's enabled
-        if (isFirewallEnabled && (firewallMode == FirewallMode.SMART_FOREGROUND ||
-            firewallMode == FirewallMode.HYBRID ||
-            firewallMode == FirewallMode.FOCUS_TRACKER)) {
-
-            if (!ForegroundDetectionService.isServiceEnabled(this)) {
-                lifecycleScope.launch {
-                    val success = ForegroundDetectionService.enableServiceViaShell(this@MainActivity)
-                    if (!success) {
-                        Toast.makeText(this@MainActivity, getString(R.string.accessibility_manual_enable_needed), Toast.LENGTH_LONG).show()
-                    }
-                }
-            }
-        } else if (!isFirewallEnabled && (firewallMode == FirewallMode.SMART_FOREGROUND ||
-                   firewallMode == FirewallMode.HYBRID ||
-                   firewallMode == FirewallMode.FOCUS_TRACKER)) {
-
-            if (ForegroundDetectionService.isServiceEnabled(this)) {
-                lifecycleScope.launch {
-                    ForegroundDetectionService.disableServiceViaShell(this@MainActivity)
-                }
-            }
+        // If firewall is ON and mode needs foreground detection, ensure the service runs
+        if (isFirewallEnabled && firewallMode.requiresForegroundDetection()) {
+            ForegroundDetectionService.start(this)
+        } else if (!isFirewallEnabled && firewallMode.requiresForegroundDetection()) {
+            ForegroundDetectionService.stop(this)
         }
 
         // Register package change receiver so installs/uninstalls/updates immediately refresh the list.
@@ -1061,6 +1062,7 @@ class MainActivity : BaseActivity() {
         appListAdapter.setHybridModeEnabled(firewallMode == FirewallMode.HYBRID)
         recyclerView.adapter = appListAdapter
         defaultItemAnimator = recyclerView.itemAnimator
+        (defaultItemAnimator as? androidx.recyclerview.widget.SimpleItemAnimator)?.supportsChangeAnimations = false
 
 
     }
@@ -1237,6 +1239,19 @@ class MainActivity : BaseActivity() {
             checkboxShowSystem.isEnabled = false
         }
 
+        checkboxShowSystem.setOnCheckedChangeListener { _, isChecked ->
+            if (!isChecked && showSystemApps && appList.any { it.isSystem && it.isSelected }) {
+                MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.show_system_apps)
+                    .setMessage(R.string.show_system_apps_uncheck_confirm)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .setNegativeButton(android.R.string.cancel) { _, _ ->
+                        checkboxShowSystem.isChecked = true
+                    }
+                    .show()
+            }
+        }
+
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.sort)
             .setView(dialogView)
@@ -1261,7 +1276,8 @@ class MainActivity : BaseActivity() {
                 if (showSystemChanged) {
                     showSystemApps = newShowSystem
                     sharedPreferences.edit().putBoolean(KEY_SHOW_SYSTEM_APPS, showSystemApps).apply()
-                    
+                    reconcileActiveProfile()
+
                     // When hiding system apps, deselect all system apps to prevent them from being firewalled
                     if (!showSystemApps) {
                         val systemAppsToDeselect = appList.filter { it.isSystem && it.isSelected }
@@ -1287,7 +1303,7 @@ class MainActivity : BaseActivity() {
             .show()
     }
 
-    private fun sortAndFilterApps(preserveScrollPosition: Boolean = false, scrollToTop: Boolean = false, animate: Boolean = false) {
+    private fun sortAndFilterApps(preserveScrollPosition: Boolean = false, scrollToTop: Boolean = false, animate: Boolean = false, smoothTransition: Boolean = false) {
         val turkishCollator = java.text.Collator.getInstance(java.util.Locale.forLanguageTag("tr-TR"))
         
         var finalComparator: Comparator<AppInfo> = when (currentSortOrder) {
@@ -1311,37 +1327,40 @@ class MainActivity : BaseActivity() {
         }
 
         val updateList = {
-            // Disable animator to prevent visual clutter during list updates
             recyclerView.itemAnimator = null
             appListAdapter.submitList(filteredAppList.toList()) {
                 recyclerView.itemAnimator = defaultItemAnimator
-                
+
                 if (preserveScrollPosition && moveSelectedTop && firstVisible != RecyclerView.NO_POSITION) {
                     layoutManager.scrollToPositionWithOffset(firstVisible, offset)
                 } else if (scrollToTop) {
                     layoutManager.scrollToPosition(0)
                 }
-                
+
                 updateSelectedCount()
                 updateSelectAllCheckbox()
 
-                if (animate) {
+                if (animate || smoothTransition) {
+                    val fadeInDelay = if (smoothTransition) 0L else 400L
+                    val fadeInDuration = if (smoothTransition) 260L else 200L
                     recyclerView.post {
-                    val targetAlpha = if ((isFirewallEnabled && !firewallMode.allowsDynamicSelection()) || isFirewallProcessRunning) 0.5f else 1f
+                        val targetAlpha = if ((isFirewallEnabled && !firewallMode.allowsDynamicSelection()) || isFirewallProcessRunning) 0.5f else 1f
                         recyclerView.animate()
                             .alpha(targetAlpha)
-                            .setStartDelay(400)
-                            .setDuration(200)
+                            .setStartDelay(fadeInDelay)
+                            .setDuration(fadeInDuration)
                             .start()
                     }
                 }
             }
         }
 
-        if (animate) {
+        if (animate || smoothTransition) {
+            val fadeOutDuration = if (smoothTransition) 180L else 200L
+            recyclerView.animate().cancel()
             recyclerView.animate()
                 .alpha(0f)
-                .setDuration(200)
+                .setDuration(fadeOutDuration)
                 .withEndAction {
                     appList.sortWith(finalComparator)
                     filterApps(currentQuery)
@@ -1812,6 +1831,43 @@ class MainActivity : BaseActivity() {
             .putInt(KEY_SELECTED_COUNT, selectedPackages.size)
             .putString(KEY_APP_MODES, modesJson.toString())
             .apply()
+
+        reconcileActiveProfile()
+    }
+
+    private fun reconcileActiveProfile() {
+        val activeId = com.arslan.shizuwall.profiles.ProfilesStore.activeProfileId(this) ?: return
+        val profile = com.arslan.shizuwall.profiles.ProfilesStore.getById(this, activeId)
+        if (profile == null) {
+            com.arslan.shizuwall.profiles.ProfilesStore.setActiveProfileId(this, null)
+            return
+        }
+        val currentPackages = sharedPreferences.getStringSet(KEY_SELECTED_APPS, emptySet()) ?: emptySet()
+        val currentMode = sharedPreferences.getString(KEY_FIREWALL_MODE, FirewallMode.DEFAULT.name)
+            ?: FirewallMode.DEFAULT.name
+        val currentShowSystem = sharedPreferences.getBoolean(KEY_SHOW_SYSTEM_APPS, false)
+        val matches = profile.packages == currentPackages &&
+            profile.firewallMode == currentMode &&
+            profile.showSystemApps == currentShowSystem &&
+            parseAppModes(profile.appModesJson) == parseAppModes(sharedPreferences.getString(KEY_APP_MODES, "{}"))
+        if (!matches) {
+            com.arslan.shizuwall.profiles.ProfilesStore.setActiveProfileId(this, null)
+        }
+    }
+
+    private fun parseAppModes(json: String?): Map<String, Int> {
+        if (json.isNullOrBlank()) return emptyMap()
+        return try {
+            val obj = JSONObject(json)
+            val map = mutableMapOf<String, Int>()
+            for (key in obj.keys()) {
+                val value = obj.optInt(key, 0)
+                if (value != 0) map[key] = value
+            }
+            map
+        } catch (e: Exception) {
+            emptyMap()
+        }
     }
 
     private fun loadSelectedApps(): Set<String> {
@@ -1898,9 +1954,9 @@ class MainActivity : BaseActivity() {
                 packageNames.filter {
                     val mode = appModes.optInt(it, 0)
                     when (mode) {
-                        1 -> false // SMART_FOREGROUND app -> handled dynamically by accessibility service
-                        2 -> isLocked // SCREEN_LOCK app -> block if screen locked
-                        else -> true // DEFAULT app -> block immediately
+                        1 -> false
+                        2 -> isLocked
+                        else -> true
                     }
                 }
             } else if (firewallMode == FirewallMode.SMART_FOREGROUND) {
@@ -1921,13 +1977,8 @@ class MainActivity : BaseActivity() {
             updateInteractiveViews()
             showDimOverlay(force = true)
             
-            if (enable && (firewallMode == FirewallMode.SMART_FOREGROUND || firewallMode == FirewallMode.HYBRID || firewallMode == FirewallMode.FOCUS_TRACKER)) {
-                if (!ForegroundDetectionService.isServiceEnabled(this@MainActivity)) {
-                    val granted = ForegroundDetectionService.enableServiceViaShell(this@MainActivity)
-                    if (granted) {
-                        Toast.makeText(this@MainActivity, getString(R.string.accessibility_auto_enabled), Toast.LENGTH_SHORT).show()
-                    }
-                }
+            if (enable && firewallMode.requiresForegroundDetection()) {
+                promptUsageAccessIfNeeded()
             }
             
             try {
@@ -1970,13 +2021,9 @@ class MainActivity : BaseActivity() {
                         saveActivePackages(activeFirewallPackages)
                         saveFirewallEnabled(true)
                         
-                        // Auto-enable accessibility for modes that require it
-                        if (firewallMode == FirewallMode.SMART_FOREGROUND || firewallMode == FirewallMode.HYBRID) {
-                            if (!ForegroundDetectionService.isServiceEnabled(this@MainActivity)) {
-                                lifecycleScope.launch {
-                                    ForegroundDetectionService.enableServiceViaShell(this@MainActivity)
-                                }
-                            }
+                        // Start foreground detection for modes that require it
+                        if (firewallMode.requiresForegroundDetection()) {
+                            ForegroundDetectionService.start(this@MainActivity)
                         }
                         
                         // Ensure toggle stays ON
@@ -2073,6 +2120,17 @@ class MainActivity : BaseActivity() {
                 applyListInteractionState()
             }
         }
+    }
+
+    /**
+     * Last-resort prompt for usage access. The detection service self-grants it via the
+     * privileged shell on start; this only fires when usage access is missing.
+     */
+    private fun promptUsageAccessIfNeeded() {
+        if (ForegroundAppResolver.hasUsageAccess(this)) return
+        try {
+            startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS))
+        } catch (_: Exception) {}
     }
 
     private fun filterInstalledPackages(packageNames: List<String>): Pair<List<String>, List<String>> {
@@ -2193,6 +2251,7 @@ class MainActivity : BaseActivity() {
         recyclerView.isEnabled = false
         recyclerView.isClickable = false
         appListAdapter.setSelectionEnabled(false)
+        appListAdapter.setFavoriteEnabled(firewallMode == FirewallMode.DEFAULT && !isFirewallProcessRunning)
         updateInteractiveViews()
     }
 
@@ -2201,6 +2260,7 @@ class MainActivity : BaseActivity() {
         recyclerView.isEnabled = true
         recyclerView.isClickable = true
         appListAdapter.setSelectionEnabled(true)
+        appListAdapter.setFavoriteEnabled(true)
         updateInteractiveViews()
     }
 
@@ -2546,6 +2606,120 @@ class MainActivity : BaseActivity() {
         // continue was removed — close handles dialog dismissal
 
         dialog.show()
+    }
+
+    private var profilesBottomSheet: ProfilesBottomSheet? = null
+
+    private fun showProfilesSheet() {
+        val sheet = ProfilesBottomSheet(this, object : ProfilesBottomSheet.Listener {
+            override fun onActivateProfile(profile: com.arslan.shizuwall.model.Profile) {
+                activateProfile(profile)
+            }
+        })
+        profilesBottomSheet = sheet
+        sheet.show()
+    }
+
+    private fun activateProfile(profile: com.arslan.shizuwall.model.Profile) {
+        val oldActive = activeFirewallPackages.toList()
+
+        com.arslan.shizuwall.profiles.ProfilesStore.writeSelectionFromProfile(this, profile)
+
+        firewallMode = FirewallMode.fromName(profile.firewallMode)
+        showSystemApps = profile.showSystemApps
+
+        val appModes = try { JSONObject(profile.appModesJson) } catch (e: Exception) { JSONObject() }
+        for (i in appList.indices) {
+            val info = appList[i]
+            val selected = profile.packages.contains(info.packageName)
+            val mode = appModes.optInt(info.packageName, 0)
+            if (info.isSelected != selected || info.appFirewallMode != mode) {
+                appList[i] = info.copy(isSelected = selected, appFirewallMode = mode)
+            }
+        }
+
+        appListAdapter.setHybridModeEnabled(firewallMode == FirewallMode.HYBRID)
+        updateSelectedCount()
+        updateCategoryChips()
+        updateSelectAllCheckbox()
+        sortAndFilterApps(preserveScrollPosition = false, scrollToTop = true, smoothTransition = true)
+
+        if (!isFirewallEnabled) {
+            profilesBottomSheet?.notifyActivated(profile.id)
+            return
+        }
+
+        reapplyForProfileSwitch(profile, oldActive, appModes)
+    }
+
+    private fun reapplyForProfileSwitch(
+        profile: com.arslan.shizuwall.model.Profile,
+        oldActive: List<String>,
+        appModes: JSONObject
+    ) {
+        val selectedPkgs = profile.packages.toList()
+        val target = getTargetPackagesToBlock(selectedPkgs)
+        val whitelistAllow = getWhitelistAllowPackages(selectedPkgs)
+
+        firewallToggle.isEnabled = false
+        isFirewallProcessRunning = true
+        lifecycleScope.launch {
+            firewallProgress.visibility = android.view.View.VISIBLE
+            appListAdapter.setSelectionEnabled(false)
+            updateInteractiveViews()
+            try {
+                val (installedTarget, _) = withContext(Dispatchers.IO) { filterInstalledPackages(target) }
+
+                val effectiveTarget = when (firewallMode) {
+                    FirewallMode.SCREEN_LOCK_MODE ->
+                        if (ScreenLockModeReceiver.isDeviceLocked(this@MainActivity)) installedTarget else emptyList()
+                    FirewallMode.HYBRID -> {
+                        val isLocked = ScreenLockModeReceiver.isDeviceLocked(this@MainActivity)
+                        installedTarget.filter {
+                            when (appModes.optInt(it, 0)) {
+                                1 -> false
+                                2 -> isLocked
+                                else -> true
+                            }
+                        }
+                    }
+                    FirewallMode.SMART_FOREGROUND, FirewallMode.FOCUS_TRACKER -> emptyList()
+                    else -> installedTarget
+                }
+
+                val toUnblock = oldActive.filterNot { effectiveTarget.contains(it) }
+
+                val successful = withContext(Dispatchers.IO) {
+                    for (pkg in toUnblock) {
+                        runCommandDetailed("cmd connectivity set-package-networking-enabled true $pkg")
+                    }
+                    val (ok, _) = enableFirewall(effectiveTarget, whitelistAllow)
+                    ok
+                }
+
+                activeFirewallPackages.clear()
+                activeFirewallPackages.addAll(successful)
+                saveActivePackages(activeFirewallPackages)
+                saveFirewallEnabled(true)
+
+                if (firewallMode.requiresForegroundDetection()) {
+                    ForegroundDetectionService.start(this@MainActivity)
+                } else {
+                    ForegroundDetectionService.stop(this@MainActivity)
+                }
+
+                profilesBottomSheet?.notifyActivated(profile.id)
+            } catch (t: Throwable) {
+
+            } finally {
+                firewallProgress.visibility = android.view.View.GONE
+                firewallToggle.isEnabled = true
+                isFirewallProcessRunning = false
+                appListAdapter.setSelectionEnabled(true)
+                updateInteractiveViews()
+                applyListInteractionState()
+            }
+        }
     }
 
     private fun getTargetPackagesToBlock(selectedPkgs: List<String>): List<String> {

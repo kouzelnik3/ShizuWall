@@ -122,6 +122,7 @@
     <string name="settings_title">Ayarlar</string>
     <string name="display_section">Görüntü</string>
     <string name="show_system_apps_description">Sistem uygulamalarını listeye dahil et</string>
+    <string name="show_system_apps_uncheck_confirm">Seçili tüm sistem uygulamalarının seçimi kaldırılacak ve varsayılan durumuna sıfırlanacak. İşareti kaldırmak istiyor musunuz?</string>
     <string name="move_selected_top">Seçili uygulamaları üste taşı</string>
     <string name="move_selected_top_description">Seçili uygulamaları başta göster</string>
     <string name="use_dynamic_color">Dinamik renk kullan</string>
@@ -136,8 +137,16 @@
     <string name="working_mode_shizuku">Shizuku</string>
     <string name="working_mode_ladb">LADB</string>
     <string name="notifications_section">Bildirimler</string>
-    <string name="app_monitor_service">Uygulama İzleme Servisi</string>
-    <string name="app_monitor_service_description">Yeni yüklenen uygulamaları algıla ve bir bildirim göster</string>
+    <string name="app_monitor_service">Yeni Uygulama Bildirimleri</string>
+    <string name="app_monitor_service_description">Yeni bir uygulama yüklendiğinde bildirim göster</string>
+    <string name="auto_firewall_new_apps">Yeni Uygulamaları Otomatik Engelle</string>
+    <string name="auto_firewall_new_apps_description">Yeni yüklenen uygulamaları otomatik olarak engelle (Beyaz Liste modu hariç)</string>
+    <string name="firewall_status_notification">Güvenlik Duvarı Durumu Bildirimi</string>
+    <string name="firewall_status_notification_description">Geçerli güvenlik duvarı durumunu kalıcı bir bildirimde göster</string>
+    <string name="firewall_status_notification_enabled_title">Güvenlik duvarı etkin</string>
+    <string name="firewall_status_notification_enabled_text">Uygulama ağ erişimi denetleniyor</string>
+    <string name="firewall_status_notification_disabled_title">Güvenlik duvarı devre dışı</string>
+    <string name="firewall_status_notification_disabled_text">Uygulama ağ erişimi denetlenmiyor</string>
     <string name="new_app_installed">Yeni uygulama yüklendi: %s</string>
     <string name="firewall_app">Uygulamayı Engelle</string>
     <string name="allow_app">İzin Ver</string>
@@ -295,10 +304,6 @@
     
     <string name="firewall_mode_focus_tracker">Odak Takipçisi</string>
     <string name="firewall_mode_focus_tracker_description">ShizuWall odak dışı olduğunda güvenlik duvarını etkinleştir, odaklandığında ise devre dışı bırak.</string>
-    <string name="focus_tracker_info_enabled">Odak Takipçisi modu, ShizuWall\'dan çıktığınızda seçili uygulamaları engeller ve ShizuWall içindeyken izin verir.\n\nGerekli Erişilebilirlik izni, güvenlik duvarını etkinleştirdiğinizde otomatik olarak verilir.</string>
-    
-    <string name="smart_foreground_requires_accessibility">Erişilebilirlik izni gereklidir</string>
-    <string name="smart_foreground_service_description">Güvenlik duvarı kurallarını yönetmek için ön plan uygulamasını izler</string>
     <string name="smart_foreground_notification_channel_name">Akıllı Ön Plan (Servis)</string>
     <string name="smart_foreground_notification_channel_description">Ön plan uygulamasını izlemek için arka plan servisi</string>
     <string name="smart_foreground_active">Akıllı Ön Plan Aktif</string>
@@ -306,14 +311,7 @@
     
     <string name="focus_tracker_active">Odak Takipçisi: Etkin</string>
     <string name="focus_tracker_paused">Odak Takipçisi: Etkin değil</string>
-    
-    <string name="accessibility_service_label">ShizuWall Ön Plan İzleyici</string>
-    <string name="accessibility_auto_enabled">Erişilebilirlik servisi otomatik olarak etkinleştirildi</string>
-    <string name="smart_foreground_info_enabled">Akıllı Ön Plan modu, yalnızca şu anda kullandığınız uygulama için ağ erişimine izin verecektir. Diğer tüm uygulamalar engellenecektir.\n\nBu modu seçtiğinizde gerekli Erişilebilirlik izni otomatik olarak verilir.</string>
-    <string name="hybrid_mode_info_enabled">Hibrit mod, uygulama başına üç alt modu birleştirir: Varsayılan Engelleme, Akıllı Ön Plan ve Ekran Kilidi. Her uygulamayı ayrı ayrı yapılandırabilirsiniz.\n\nGüvenlik duvarını etkinleştirdiğinizde gerekli Erişilebilirlik izni otomatik olarak verilir.</string>
-    <string name="smart_foreground_info_deferred">Akıllı Ön Plan modu, yalnızca şu anda kullandığınız uygulama için ağ erişimine izin verecektir. Diğer tüm uygulamalar engellenecektir.\n\nShizuku/Daemon çalışırken veya güvenlik duvarını etkinleştirdiğinizde Erişilebilirlik izni otomatik olarak verilecektir.</string>
     <string name="firewall_enabled_smart_foreground">Güvenlik duvarı etkinleştirildi (Akıllı Ön Plan Modu)</string>
-    <string name="accessibility_manual_enable_needed">Erişilebilirlik servisi otomatik olarak etkinleştirilemedi. Lütfen cihaz ayarlarınızdan manuel olarak etkinleştirin.</string>
     <string name="smart_foreground_active_app">Aktif: %s</string>
     <string name="enable_firewall_dialog_title">Güvenlik Duvarını Etkinleştir</string>
     <string name="enable_firewall_dialog_message">Aşağıda listelenen %d uygulama için güvenlik duvarını etkinleştirmek istiyor musunuz?</string>
@@ -378,4 +376,48 @@
     <string name="screen_lock_mode_notification_title">Ekran Kilidi Modu</string>
     <string name="screen_lock_mode_notification_channel_description">Ekran kilidi otomasyonu için arka plan servisi</string>
     <string name="screen_lock_delay_title">Kilit Gecikmesi</string>
+
+    <!-- Floating Button Personalization -->
+    <string name="floating_settings_title">Floating Button</string>
+    <string name="floating_settings_content_description">Personalize floating button</string>
+    <string name="floating_idle_opacity">Idle transparency</string>
+    <string name="floating_idle_opacity_desc">How visible the button stays when idle</string>
+    <string name="floating_size">Button size</string>
+    <string name="floating_size_desc">Size of the floating button</string>
+    <string name="floating_fade_delay">Fade delay</string>
+    <string name="floating_fade_delay_desc">Time before the button fades when idle</string>
+    <string name="floating_edge_snap">Hide at screen edge</string>
+    <string name="floating_edge_snap_desc">Tuck the button against the nearest edge when idle to prevent accidental taps. Tap once to reveal it.</string>
+    <string name="floating_percent_format">%1$d%%</string>
+    <string name="floating_dp_format">%1$d dp</string>
+    <string name="floating_seconds_format">%1$d s</string>
+    <string name="floating_disable_dim">Hiç Soldurma</string>
+    <string name="floating_disable_dim_desc">Boşta kaldığında düğmeyi tam görünür tutar, asla soldurmaz veya kenara gizlemez</string>
+    <!-- Profiles -->
+    <string name="profiles">Profiller</string>
+    <string name="profiles_subtitle">Güvenlik duvarı bağlamlarını tek dokunuşla değiştirin</string>
+    <string name="profiles_empty_title">Henüz profil yok</string>
+    <string name="profiles_empty_message">Güvenlik duvarına almak istediğiniz uygulamaları seçin, ardından kurulumlar arasında anında geçiş yapmak için bunları profil olarak kaydedin.</string>
+    <string name="profile_active">Etkin</string>
+    <string name="profile_options">Profil seçenekleri</string>
+    <string name="profile_save_current">Geçerli seçimi profil olarak kaydet</string>
+    <string name="profile_name_hint">Profil adı</string>
+    <string name="profile_name_required">Bir ad girin</string>
+    <string name="profile_subtitle_format">%1$s · %2$s</string>
+    <plurals name="profile_app_count">
+        <item quantity="one">%d uygulama</item>
+        <item quantity="other">%d uygulama</item>
+    </plurals>
+    <string name="profile_rename">Yeniden adlandır</string>
+    <string name="profile_update_to_current">Geçerli seçimle güncelle</string>
+    <string name="profile_update_action">Güncelle</string>
+    <string name="profile_update_confirm">\"%1$s\" profili şu anda seçili uygulamalar ve modla değiştirilsin mi?</string>
+    <string name="profile_delete">Sil</string>
+    <string name="profile_delete_confirm">\"%1$s\" profili silinsin mi? Bu geri alınamaz.</string>
+    <string name="profile_save">Kaydet</string>
+    <string name="profile_saved">\"%1$s\" profili kaydedildi</string>
+    <string name="profile_updated">\"%1$s\" güncellendi</string>
+    <string name="profile_switched">\"%1$s\" profiline geçildi</string>
+    <string name="profile_already_active">\"%1$s\" zaten etkin</string>
+    <string name="profile_not_found">Profil bulunamadı: %1$s</string>
 </resources>

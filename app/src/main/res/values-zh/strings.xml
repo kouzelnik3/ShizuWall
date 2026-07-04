@@ -122,6 +122,7 @@
     <string name="settings_title">设置</string>
     <string name="display_section">显示</string>
     <string name="show_system_apps_description">在列表中包含系统应用程序</string>
+    <string name="show_system_apps_uncheck_confirm">所有已选择的系统应用都将被取消选择并恢复为默认状态。要取消勾选吗？</string>
     <string name="move_selected_top">将选定的应用移至顶部</string>
     <string name="move_selected_top_description">在开头显示选定的应用</string>
     <string name="use_dynamic_color">使用动态颜色</string>
@@ -136,8 +137,16 @@
     <string name="working_mode_shizuku">Shizuku</string>
     <string name="working_mode_ladb">LADB (测试版)</string>
     <string name="notifications_section">通知</string>
-    <string name="app_monitor_service">应用监控服务</string>
-    <string name="app_monitor_service_description">检测新安装的应用并显示通知</string>
+    <string name="app_monitor_service">新应用通知</string>
+    <string name="app_monitor_service_description">当新应用安装时显示通知</string>
+    <string name="auto_firewall_new_apps">自动封锁新应用</string>
+    <string name="auto_firewall_new_apps_description">自动封锁新安装的应用（白名单模式除外）</string>
+    <string name="firewall_status_notification">防火墙状态通知</string>
+    <string name="firewall_status_notification_description">显示带有当前防火墙状态的常驻通知</string>
+    <string name="firewall_status_notification_enabled_title">防火墙已启用</string>
+    <string name="firewall_status_notification_enabled_text">正在控制应用的网络访问</string>
+    <string name="firewall_status_notification_disabled_title">防火墙已禁用</string>
+    <string name="firewall_status_notification_disabled_text">未控制应用的网络访问</string>
     <string name="new_app_installed">新应用已安装：%s</string>
     <string name="firewall_app">防火墙应用</string>
     <string name="allow_app">允许</string>
@@ -295,10 +304,6 @@
     
     <string name="firewall_mode_focus_tracker">焦点追踪器</string>
     <string name="firewall_mode_focus_tracker_description">当 ShizuWall 处于非活动状态时启用防火墙，处于活动状态时禁用。</string>
-    <string name="focus_tracker_info_enabled">焦点追踪器模式会在您离开 ShizuWall 时阻止选定的应用，并在您处于 ShizuWall 内时允许它们。\n\n所需的辅助功能权限会在您启用防火墙时自动授予。</string>
-    
-    <string name="smart_foreground_requires_accessibility">需要无障碍权限</string>
-    <string name="smart_foreground_service_description">监控前台应用以管理防火墙规则</string>
     <string name="smart_foreground_notification_channel_name">智能前台 (服务)</string>
     <string name="smart_foreground_notification_channel_description">用于监控前台应用的后台服务</string>
     <string name="smart_foreground_active">智能前台已激活</string>
@@ -306,14 +311,7 @@
     
     <string name="focus_tracker_active">焦点追踪器：已启用</string>
     <string name="focus_tracker_paused">焦点追踪器：未激活</string>
-    
-    <string name="accessibility_service_label">ShizuWall 前台监控</string>
-    <string name="accessibility_auto_enabled">无障碍服务已自动启用</string>
-    <string name="smart_foreground_info_enabled">智能前台模式将仅允许您当前使用的应用访问网络。所有其他应用将被阻止。\n\n选择此模式时，所需的无障碍权限会自动授予。</string>
-    <string name="hybrid_mode_info_enabled">混合模式为每个应用组合了三种子模式：默认阻止、智能前台和屏幕锁定。您可以单独配置每个应用。\n\n启用防火墙时，所需的无障碍权限会自动授予。</string>
-    <string name="smart_foreground_info_deferred">智能前台模式将仅允许您当前使用的应用访问网络。所有其他应用将被阻止。\n\n当 Shizuku/守护进程运行时或当您启用防火墙时，无障碍权限将自动授予。</string>
     <string name="firewall_enabled_smart_foreground">防火墙已激活（智能前台模式）</string>
-    <string name="accessibility_manual_enable_needed">无法自动启用无障碍服务。请在设备设置中手动启用。</string>
     <string name="smart_foreground_active_app">活动: %s</string>
     <string name="enable_firewall_dialog_title">启用防火墙</string>
     <string name="enable_firewall_dialog_message">您要为下面列出的 %d 个应用启用防火墙吗？</string>
@@ -378,4 +376,47 @@
     <string name="screen_lock_mode_notification_channel_description">锁屏自动化的后台服务</string>
     <string name="decrease">减少</string>
     <string name="screen_lock_delay_dialog_title">锁屏延迟</string>
+
+    <!-- Floating Button Personalization -->
+    <string name="floating_settings_title">Floating Button</string>
+    <string name="floating_settings_content_description">Personalize floating button</string>
+    <string name="floating_idle_opacity">Idle transparency</string>
+    <string name="floating_idle_opacity_desc">How visible the button stays when idle</string>
+    <string name="floating_size">Button size</string>
+    <string name="floating_size_desc">Size of the floating button</string>
+    <string name="floating_fade_delay">Fade delay</string>
+    <string name="floating_fade_delay_desc">Time before the button fades when idle</string>
+    <string name="floating_edge_snap">Hide at screen edge</string>
+    <string name="floating_edge_snap_desc">Tuck the button against the nearest edge when idle to prevent accidental taps. Tap once to reveal it.</string>
+    <string name="floating_percent_format">%1$d%%</string>
+    <string name="floating_dp_format">%1$d dp</string>
+    <string name="floating_seconds_format">%1$d s</string>
+    <string name="floating_disable_dim">不要变暗</string>
+    <string name="floating_disable_dim_desc">闲置时保持按钮完全可见，永不淡出或收进边缘</string>
+    <!-- Profiles -->
+    <string name="profiles">配置文件</string>
+    <string name="profiles_subtitle">一键切换防火墙场景</string>
+    <string name="profiles_empty_title">暂无配置文件</string>
+    <string name="profiles_empty_message">选择要用防火墙拦截的应用，然后保存为配置文件，即可在不同设置间即时切换。</string>
+    <string name="profile_active">已启用</string>
+    <string name="profile_options">配置文件选项</string>
+    <string name="profile_save_current">将当前选择保存为配置文件</string>
+    <string name="profile_name_hint">配置文件名称</string>
+    <string name="profile_name_required">请输入名称</string>
+    <string name="profile_subtitle_format">%1$s · %2$s</string>
+    <plurals name="profile_app_count">
+        <item quantity="other">%d 个应用</item>
+    </plurals>
+    <string name="profile_rename">重命名</string>
+    <string name="profile_update_to_current">更新为当前选择</string>
+    <string name="profile_update_action">更新</string>
+    <string name="profile_update_confirm">用当前所选的应用和模式覆盖“%1$s”？</string>
+    <string name="profile_delete">删除</string>
+    <string name="profile_delete_confirm">删除配置文件“%1$s”？此操作无法撤销。</string>
+    <string name="profile_save">保存</string>
+    <string name="profile_saved">已保存配置文件“%1$s”</string>
+    <string name="profile_updated">已更新“%1$s”</string>
+    <string name="profile_switched">已切换到“%1$s”</string>
+    <string name="profile_already_active">“%1$s”已处于启用状态</string>
+    <string name="profile_not_found">未找到配置文件：%1$s</string>
 </resources>

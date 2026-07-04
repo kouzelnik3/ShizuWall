@@ -86,6 +86,8 @@ class SettingsActivity : BaseActivity() {
     private lateinit var switchApplyRootRulesAfterReboot: SwitchCompat
     private lateinit var cardApplyRootRulesAfterReboot: com.google.android.material.card.MaterialCardView
     private lateinit var switchAppMonitor: SwitchCompat
+    private lateinit var switchAutoFirewallNewApps: SwitchCompat
+    private lateinit var switchFirewallStatusNotification: SwitchCompat
     private lateinit var switchFloatingButton: SwitchCompat
 
     private lateinit var cardAdbBroadcastUsage: com.google.android.material.card.MaterialCardView
@@ -100,6 +102,7 @@ class SettingsActivity : BaseActivity() {
     private var autoEnablePreviousState: Boolean = false  // Store previous state before disabling
     private var rootReapplyPreviousState: Boolean = false
     private var suppressWorkingModeListener = false
+    private var suppressFirewallModeListener = false
     
     // Firewall Mode Selector
     private lateinit var radioGroupFirewallMode: RadioGroup
@@ -239,7 +242,12 @@ class SettingsActivity : BaseActivity() {
         cardSetLadb = findViewById(R.id.cardSetLadb)
         layoutSetLadb = findViewById(R.id.layoutSetLadb)
         switchAppMonitor = findViewById(R.id.switchAppMonitor)
+        switchAutoFirewallNewApps = findViewById(R.id.switchAutoFirewallNewApps)
+        switchFirewallStatusNotification = findViewById(R.id.switchFirewallStatusNotification)
         switchFloatingButton = findViewById(R.id.switchFloatingButton)
+        findViewById<MaterialButton>(R.id.btnFloatingButtonSettings).setOnClickListener {
+            startActivity(Intent(this, FloatingButtonSettingsActivity::class.java))
+        }
         // Auto-enable switch (new)
         switchAutoEnableOnShizukuStart = findViewById(R.id.switchAutoEnableOnShizukuStart)
         cardAutoEnableOnShizukuStart = findViewById(R.id.cardAutoEnableOnShizukuStart)
@@ -301,6 +309,8 @@ class SettingsActivity : BaseActivity() {
         switchAutoEnableOnShizukuStart.isChecked = sharedPreferences.getBoolean(MainActivity.KEY_AUTO_ENABLE_ON_SHIZUKU_START, false)
         switchApplyRootRulesAfterReboot.isChecked = sharedPreferences.getBoolean(MainActivity.KEY_APPLY_ROOT_RULES_AFTER_REBOOT, false)
         switchAppMonitor.isChecked = sharedPreferences.getBoolean(MainActivity.KEY_APP_MONITOR_ENABLED, false)
+        switchAutoFirewallNewApps.isChecked = sharedPreferences.getBoolean(MainActivity.KEY_AUTO_FIREWALL_NEW_APPS, false)
+        switchFirewallStatusNotification.isChecked = sharedPreferences.getBoolean(MainActivity.KEY_SHOW_FIREWALL_STATUS_NOTIFICATION, false)
         switchFloatingButton.isChecked = sharedPreferences.getBoolean(
             com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false
         )
@@ -332,6 +342,37 @@ class SettingsActivity : BaseActivity() {
         }
     }
     
+    private fun commitFirewallMode(newMode: FirewallMode) {
+        sharedPreferences.edit().putString(MainActivity.KEY_FIREWALL_MODE, newMode.name).apply()
+        setResult(RESULT_OK)
+
+        TransitionManager.beginDelayedTransition(findViewById(R.id.settingsRoot), AutoTransition())
+        updateFirewallModeUI(newMode)
+
+        if (newMode == FirewallMode.WHITELIST) {
+            showWhitelistInfoDialog()
+        }
+    }
+
+   
+    private fun revertFirewallModeSelection() {
+        val currentMode = FirewallMode.fromName(
+            sharedPreferences.getString(MainActivity.KEY_FIREWALL_MODE, FirewallMode.DEFAULT.name)
+        )
+        val targetId = when (currentMode) {
+            FirewallMode.ADAPTIVE -> R.id.radioModeAdaptive
+            FirewallMode.SCREEN_LOCK_MODE -> R.id.radioModeScreenLock
+            FirewallMode.SMART_FOREGROUND -> R.id.radioModeSmartForeground
+            FirewallMode.FOCUS_TRACKER -> R.id.radioModeFocusTracker
+            FirewallMode.WHITELIST -> R.id.radioModeWhitelist
+            FirewallMode.HYBRID -> R.id.radioModeHybrid
+            else -> R.id.radioModeDefault
+        }
+        suppressFirewallModeListener = true
+        radioGroupFirewallMode.check(targetId)
+        suppressFirewallModeListener = false
+    }
+
     /**
      * Update UI elements based on firewall mode
      */
@@ -383,26 +424,17 @@ class SettingsActivity : BaseActivity() {
 
         // Firewall Mode Selector Listener
         radioGroupFirewallMode.setOnCheckedChangeListener { _, checkedId ->
+            if (suppressFirewallModeListener) return@setOnCheckedChangeListener
+
             // Check if firewall is enabled - if so, prevent mode change
             val isFirewallEnabled = sharedPreferences.getBoolean(MainActivity.KEY_FIREWALL_ENABLED, false)
             if (isFirewallEnabled) {
                 // Show toast message and revert selection
                 Toast.makeText(this, R.string.firewall_mode_change_disabled, Toast.LENGTH_LONG).show()
-                
-                // Revert to current mode
-                val currentMode = FirewallMode.fromName(sharedPreferences.getString(MainActivity.KEY_FIREWALL_MODE, FirewallMode.DEFAULT.name))
-                when (currentMode) {
-                    FirewallMode.ADAPTIVE -> radioGroupFirewallMode.check(R.id.radioModeAdaptive)
-                    FirewallMode.SCREEN_LOCK_MODE -> radioGroupFirewallMode.check(R.id.radioModeScreenLock)
-                    FirewallMode.SMART_FOREGROUND -> radioGroupFirewallMode.check(R.id.radioModeSmartForeground)
-                    FirewallMode.FOCUS_TRACKER -> radioGroupFirewallMode.check(R.id.radioModeFocusTracker)
-                    FirewallMode.WHITELIST -> radioGroupFirewallMode.check(R.id.radioModeWhitelist)
-                    FirewallMode.HYBRID -> radioGroupFirewallMode.check(R.id.radioModeHybrid)
-                    else -> radioGroupFirewallMode.check(R.id.radioModeDefault)
-                }
+                revertFirewallModeSelection()
                 return@setOnCheckedChangeListener
             }
-            
+
             val newMode = when (checkedId) {
                 R.id.radioModeAdaptive -> FirewallMode.ADAPTIVE
                 R.id.radioModeScreenLock -> FirewallMode.SCREEN_LOCK_MODE
@@ -412,20 +444,8 @@ class SettingsActivity : BaseActivity() {
                 R.id.radioModeHybrid -> FirewallMode.HYBRID
                 else -> FirewallMode.DEFAULT
             }
-            
-            sharedPreferences.edit().putString(MainActivity.KEY_FIREWALL_MODE, newMode.name).apply()
-            setResult(RESULT_OK)
-            
-            TransitionManager.beginDelayedTransition(findViewById(R.id.settingsRoot), AutoTransition())
-            updateFirewallModeUI(newMode)
-            
-            when (newMode) {
-                FirewallMode.SMART_FOREGROUND -> showSmartForegroundInfoDialog()
-                FirewallMode.HYBRID -> showHybridModeInfoDialog()
-                FirewallMode.FOCUS_TRACKER -> showFocusTrackerInfoDialog()
-                FirewallMode.WHITELIST -> showWhitelistInfoDialog()
-                else -> {}
-            }
+
+            commitFirewallMode(newMode)
         }
 
         switchSkipConfirm.setOnCheckedChangeListener { _, isChecked ->
@@ -513,16 +533,13 @@ class SettingsActivity : BaseActivity() {
                 }
             }
             sharedPreferences.edit().putBoolean(MainActivity.KEY_APP_MONITOR_ENABLED, isChecked).apply()
-            val intent = Intent(this, AppMonitorService::class.java)
-            if (isChecked) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startForegroundService(intent)
-                } else {
-                    startService(intent)
-                }
-            } else {
-                stopService(intent)
-            }
+            syncAppMonitorService()
+        }
+
+        switchAutoFirewallNewApps.setOnCheckedChangeListener { _, isChecked ->
+            sharedPreferences.edit().putBoolean(MainActivity.KEY_AUTO_FIREWALL_NEW_APPS, isChecked).apply()
+            setResult(RESULT_OK)
+            syncAppMonitorService()
         }
 
         radioGroupWorkingMode.setOnCheckedChangeListener { _, checkedId ->
@@ -614,6 +631,15 @@ class SettingsActivity : BaseActivity() {
             }
         }
 
+        switchFirewallStatusNotification.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                checkAndRequestNotificationPermission()
+            }
+            sharedPreferences.edit().putBoolean(MainActivity.KEY_SHOW_FIREWALL_STATUS_NOTIFICATION, isChecked).apply()
+            setResult(RESULT_OK)
+            syncAppMonitorService()
+        }
+
         layoutAdbBroadcastUsage.setOnClickListener { showAdbBroadcastDialog() }
 
         // Make the whole card area toggle the corresponding switches when tapped
@@ -626,7 +652,34 @@ class SettingsActivity : BaseActivity() {
         makeCardClickableForSwitch(switchAutoEnableOnShizukuStart)
         makeCardClickableForSwitch(switchApplyRootRulesAfterReboot)
         makeCardClickableForSwitch(switchAppMonitor)
+        makeCardClickableForSwitch(switchAutoFirewallNewApps)
+        makeCardClickableForSwitch(switchFirewallStatusNotification)
         makeCardClickableForSwitch(switchFloatingButton)
+    }
+
+    private fun startAppMonitorService() {
+        val intent = Intent(this, AppMonitorService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent)
+        } else {
+            startService(intent)
+        }
+    }
+
+    /**
+     * AppMonitorService is shared by three features (new-app notifications,
+     * auto-firewall new apps, and the persistent firewall-status notification).
+     * Keep it running while any of them is on; stop it once all are off.
+     */
+    private fun syncAppMonitorService() {
+        val anyEnabled = sharedPreferences.getBoolean(MainActivity.KEY_APP_MONITOR_ENABLED, false) ||
+            sharedPreferences.getBoolean(MainActivity.KEY_AUTO_FIREWALL_NEW_APPS, false) ||
+            sharedPreferences.getBoolean(MainActivity.KEY_SHOW_FIREWALL_STATUS_NOTIFICATION, false)
+        if (anyEnabled) {
+            startAppMonitorService()
+        } else {
+            stopService(Intent(this, AppMonitorService::class.java))
+        }
     }
 
     private fun updateScreenLockDelaySummary() {
@@ -728,50 +781,6 @@ class SettingsActivity : BaseActivity() {
             .setPositiveButton(R.string.ok) { _, _ ->
                 if (checkbox.isChecked) {
                     sharedPreferences.edit().putBoolean("show_whitelist_prompt", false).apply()
-                }
-            }
-            .show()
-    }
-
-    private fun showSmartForegroundInfoDialog() {
-        val showPrompt = sharedPreferences.getBoolean("show_smart_foreground_prompt", true)
-        if (!showPrompt) return
-
-        val promptView = layoutInflater.inflate(R.layout.dialog_shizuku_prompt, null)
-        val messageText: TextView = promptView.findViewById(R.id.shizuku_prompt_message_text)
-        val checkbox: android.widget.CheckBox = promptView.findViewById(R.id.shizuku_prompt_do_not_show)
-
-        messageText.text = getString(R.string.smart_foreground_info_enabled)
-        checkbox.text = getString(R.string.dont_show_again)
-
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.firewall_mode_smart_foreground)
-            .setView(promptView)
-            .setPositiveButton(R.string.ok) { _, _ ->
-                if (checkbox.isChecked) {
-                    sharedPreferences.edit().putBoolean("show_smart_foreground_prompt", false).apply()
-                }
-            }
-            .show()
-    }
-
-    private fun showHybridModeInfoDialog() {
-        val showPrompt = sharedPreferences.getBoolean("show_hybrid_mode_prompt", true)
-        if (!showPrompt) return
-
-        val promptView = layoutInflater.inflate(R.layout.dialog_shizuku_prompt, null)
-        val messageText: TextView = promptView.findViewById(R.id.shizuku_prompt_message_text)
-        val checkbox: android.widget.CheckBox = promptView.findViewById(R.id.shizuku_prompt_do_not_show)
-
-        messageText.text = getString(R.string.hybrid_mode_info_enabled)
-        checkbox.text = getString(R.string.dont_show_again)
-
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.firewall_mode_hybrid)
-            .setView(promptView)
-            .setPositiveButton(R.string.ok) { _, _ ->
-                if (checkbox.isChecked) {
-                    sharedPreferences.edit().putBoolean("show_hybrid_mode_prompt", false).apply()
                 }
             }
             .show()
@@ -990,7 +999,9 @@ class SettingsActivity : BaseActivity() {
                 sanitizeSelectedApps(sharedPreferences)
 
                 // 5. Update Runtime State (App Monitor Service)
-                val isMonitorEnabled = sharedPreferences.getBoolean(MainActivity.KEY_APP_MONITOR_ENABLED, false)
+                val isMonitorEnabled = sharedPreferences.getBoolean(MainActivity.KEY_APP_MONITOR_ENABLED, false) ||
+                    sharedPreferences.getBoolean(MainActivity.KEY_AUTO_FIREWALL_NEW_APPS, false) ||
+                    sharedPreferences.getBoolean(MainActivity.KEY_SHOW_FIREWALL_STATUS_NOTIFICATION, false)
                 val monitorIntent = Intent(this@SettingsActivity, AppMonitorService::class.java)
                 try {
                     if (isMonitorEnabled) {
@@ -1522,27 +1533,5 @@ class SettingsActivity : BaseActivity() {
             }
         }
         return file.delete() || !file.exists()
-    }
-    
-    private fun showFocusTrackerInfoDialog() {
-        val showPrompt = sharedPreferences.getBoolean("show_focus_tracker_prompt", true)
-        if (!showPrompt) return
-
-        val promptView = layoutInflater.inflate(R.layout.dialog_shizuku_prompt, null)
-        val messageText: TextView = promptView.findViewById(R.id.shizuku_prompt_message_text)
-        val checkbox: android.widget.CheckBox = promptView.findViewById(R.id.shizuku_prompt_do_not_show)
-
-        messageText.text = getString(R.string.focus_tracker_info_enabled)
-        checkbox.text = getString(R.string.dont_show_again)
-
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.firewall_mode_focus_tracker)
-            .setView(promptView)
-            .setPositiveButton(R.string.ok) { _, _ ->
-                if (checkbox.isChecked) {
-                    sharedPreferences.edit().putBoolean("show_focus_tracker_prompt", false).apply()
-                }
-            }
-            .show()
     }
 }

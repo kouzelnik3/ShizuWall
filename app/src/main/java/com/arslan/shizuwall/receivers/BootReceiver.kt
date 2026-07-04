@@ -13,9 +13,11 @@ import android.os.UserManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.arslan.shizuwall.FirewallMode
 import com.arslan.shizuwall.R
 import com.arslan.shizuwall.WorkingMode
 import com.arslan.shizuwall.services.AppMonitorService
+import com.arslan.shizuwall.services.ForegroundDetectionService
 import com.arslan.shizuwall.shell.RootShellExecutor
 import com.arslan.shizuwall.ui.MainActivity
 import com.arslan.shizuwall.utils.ShizukuPackageResolver
@@ -60,10 +62,12 @@ class BootReceiver : BroadcastReceiver() {
         val enabled = readBoolean(dpPrefs, normalPrefs, MainActivity.KEY_FIREWALL_ENABLED, false)
         val savedElapsed = readLong(dpPrefs, normalPrefs, MainActivity.KEY_FIREWALL_SAVED_ELAPSED, -1L)
         val appMonitorEnabled = readBoolean(dpPrefs, normalPrefs, MainActivity.KEY_APP_MONITOR_ENABLED, false)
+        val autoFirewallEnabled = readBoolean(dpPrefs, normalPrefs, MainActivity.KEY_AUTO_FIREWALL_NEW_APPS, false)
+        val firewallStatusNotificationEnabled = readBoolean(dpPrefs, normalPrefs, MainActivity.KEY_SHOW_FIREWALL_STATUS_NOTIFICATION, false)
         val floatingButtonEnabled = readBoolean(dpPrefs, normalPrefs, com.arslan.shizuwall.services.FloatingButtonService.KEY_FLOATING_BUTTON_ENABLED, false)
-        Log.d(TAG, "prefs: enabled=$enabled, savedElapsed=$savedElapsed, appMonitorEnabled=$appMonitorEnabled, floatingButtonEnabled=$floatingButtonEnabled")
+        Log.d(TAG, "prefs: enabled=$enabled, savedElapsed=$savedElapsed, appMonitorEnabled=$appMonitorEnabled, autoFirewallEnabled=$autoFirewallEnabled, firewallStatusNotificationEnabled=$firewallStatusNotificationEnabled, floatingButtonEnabled=$floatingButtonEnabled")
 
-        if (appMonitorEnabled) {
+        if (appMonitorEnabled || autoFirewallEnabled || firewallStatusNotificationEnabled) {
             val monitorIntent = Intent(context, AppMonitorService::class.java)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 context.startForegroundService(monitorIntent)
@@ -79,6 +83,9 @@ class BootReceiver : BroadcastReceiver() {
         val rebootDetected = enabled && savedElapsed > 0L && SystemClock.elapsedRealtime() < savedElapsed
         if (!rebootDetected) {
             Log.d(TAG, "No reboot detected (currentElapsed >= savedElapsed)")
+            if (enabled && action == Intent.ACTION_BOOT_COMPLETED) {
+                maybeStartForegroundDetection(context, dpPrefs, normalPrefs)
+            }
             return
         }
 
@@ -109,6 +116,7 @@ class BootReceiver : BroadcastReceiver() {
                 updateFirewallStateAfterReapply(dpPrefs, elapsed)
                 updateFirewallStateAfterReapply(normalPrefs, elapsed)
                 Log.d(TAG, "Successfully re-applied firewall rules after reboot via root")
+                maybeStartForegroundDetection(context, dpPrefs, normalPrefs)
                 return
             }
             Log.w(TAG, "Root re-apply failed, clearing persisted firewall state")
@@ -123,6 +131,24 @@ class BootReceiver : BroadcastReceiver() {
             R.string.firewall_reboot_message
         }
         postBootNotification(context, messageRes)
+    }
+
+    /**
+     * Foreground detection is a normal service now (no OS auto-rebind like the old
+     * accessibility service), so it must be restarted after boot when the firewall
+     * is still enabled in a mode that needs it.
+     */
+    private fun maybeStartForegroundDetection(
+        context: Context,
+        primary: SharedPreferences,
+        fallback: SharedPreferences?
+    ) {
+        val firewallMode = FirewallMode.fromName(
+            readString(primary, fallback, MainActivity.KEY_FIREWALL_MODE, FirewallMode.DEFAULT.name)
+        )
+        if (firewallMode.requiresForegroundDetection()) {
+            ForegroundDetectionService.start(context)
+        }
     }
 
     private fun getDeviceProtectedPrefs(context: Context): SharedPreferences {

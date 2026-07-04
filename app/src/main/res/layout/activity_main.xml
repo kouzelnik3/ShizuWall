@@ -96,6 +96,17 @@
             app:queryBackground="@null" />
 
         <ImageButton
+            android:id="@+id/profilesButton"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:src="@drawable/ic_profiles_24px"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/profiles"
+            android:scaleType="center"
+            android:padding="12dp"
+            app:tint="?attr/colorPrimary" />
+
+        <ImageButton
             android:id="@+id/sortButton"
             android:layout_width="44dp"
             android:layout_height="44dp"

@@ -130,6 +130,7 @@
     <string name="settings_title">Settings</string>
     <string name="display_section">Display</string>
     <string name="show_system_apps_description">Include system applications in the list</string>
+    <string name="show_system_apps_uncheck_confirm">Any selected system app will be unselected and reset to its default state. Do you want to un-check it?</string>
     <string name="move_selected_top">Move selected apps to top</string>
     <string name="move_selected_top_description">Show selected apps at the beginning</string>
     <string name="use_dynamic_color">Use dynamic color</string>
@@ -155,8 +156,16 @@
     <string name="working_mode_root">Root (su)</string>
     <string name="root_not_found_message">Root not found, please allow ShizuWall for accessing root permissions.</string>
     <string name="notifications_section">Notifications</string>
-    <string name="app_monitor_service">App Monitor Service</string>
-    <string name="app_monitor_service_description">Detect new installed apps and show a notification</string>
+    <string name="app_monitor_service">New App Notifications</string>
+    <string name="app_monitor_service_description">Show a notification when a new app is installed</string>
+    <string name="auto_firewall_new_apps">Auto-Firewall New Apps</string>
+    <string name="auto_firewall_new_apps_description">Automatically block newly installed apps (except in Whitelist mode)</string>
+    <string name="firewall_status_notification">Firewall Status Notification</string>
+    <string name="firewall_status_notification_description">Show a permanent notification with the current firewall status</string>
+    <string name="firewall_status_notification_enabled_title">Firewall enabled</string>
+    <string name="firewall_status_notification_enabled_text">App networking is being controlled</string>
+    <string name="firewall_status_notification_disabled_title">Firewall disabled</string>
+    <string name="firewall_status_notification_disabled_text">App networking is not being controlled</string>
     <string name="new_app_installed">New app installed: %s</string>
     <string name="firewall_app">Firewall App</string>
     <string name="allow_app">Allow</string>
@@ -322,15 +331,12 @@
     
     <string name="firewall_mode_focus_tracker">Focus Tracker</string>
     <string name="firewall_mode_focus_tracker_description">Enable firewall when ShizuWall is unfocused, and disable when focused.</string>
-    
-    <string name="smart_foreground_requires_accessibility">Requires Accessibility permission</string>
     <string name="firewall_mode_change_disabled">Cannot change firewall mode while firewall is enabled. Please disable the firewall first.</string>
     <string name="firewall_mode_hybrid">Hybrid Mode</string>
     <string name="firewall_mode_hybrid_description">Configure mode individually per app</string>
     <string name="hybrid_mode_default_block">Default Block</string>
     <string name="hybrid_mode_smart_foreground">Smart Foreground</string>
     <string name="hybrid_mode_screen_lock">Screen Lock</string>
-    <string name="smart_foreground_service_description">Monitors foreground app to manage firewall rules</string>
     <string name="smart_foreground_notification_channel_name">Smart Foreground (Service)</string>
     <string name="smart_foreground_notification_channel_description">Background service for monitoring foreground app</string>
     <string name="smart_foreground_active">Smart Foreground Active</string>
@@ -338,15 +344,7 @@
     
     <string name="focus_tracker_active">Focus Tracker: Active</string>
     <string name="focus_tracker_paused">Focus Tracker: Inactive</string>
-    
-    <string name="accessibility_service_label">ShizuWall Foreground Monitor</string>
-    <string name="accessibility_auto_enabled">Accessibility service enabled automatically</string>
-    <string name="smart_foreground_info_enabled">Smart Foreground mode will only allow network access for the app you are currently using. All other apps will be blocked.\n\nThe required Accessibility permission is granted automatically when you enable the firewall.</string>
-    <string name="focus_tracker_info_enabled">Focus Tracker mode blocks selected apps when you leave ShizuWall, and allows them when you are inside ShizuWall.\n\nThe required Accessibility permission is granted automatically when you enable the firewall.</string>
-    <string name="hybrid_mode_info_enabled">Hybrid mode combines three sub-modes per app: Default Block, Smart Foreground, and Screen Lock. You can configure each app individually.\n\nThe required Accessibility permission is granted automatically when you enable the firewall.</string>
-    <string name="smart_foreground_info_deferred">Smart Foreground mode will only allow network access for the app you are currently using. All other apps will be blocked.\n\nThe Accessibility permission will be granted automatically when Shizuku/Daemon is running or when you enable the firewall.</string>
     <string name="firewall_enabled_smart_foreground">Firewall activated (Smart Foreground Mode)</string>
-    <string name="accessibility_manual_enable_needed">Failed to auto-enable accessibility service. Please enable it manually in your device settings.</string>
     <string name="smart_foreground_active_app">Active: %s</string>
     <string name="enable_firewall_dialog_title">Enable Firewall</string>
     <string name="enable_firewall_dialog_message">Do you want to enable firewall for %d apps listed below?</string>
@@ -378,8 +376,53 @@
     <string name="floating_button_content_description">Toggle firewall</string>
     <string name="overlay_permission_required">Overlay permission is required for the floating button</string>
 
+    <!-- Floating Button Personalization -->
+    <string name="floating_settings_title">Floating Button</string>
+    <string name="floating_settings_content_description">Personalize floating button</string>
+    <string name="floating_idle_opacity">Idle transparency</string>
+    <string name="floating_idle_opacity_desc">How visible the button stays when idle</string>
+    <string name="floating_size">Button size</string>
+    <string name="floating_size_desc">Size of the floating button</string>
+    <string name="floating_fade_delay">Fade delay</string>
+    <string name="floating_fade_delay_desc">Time before the button fades when idle</string>
+    <string name="floating_edge_snap">Hide at screen edge</string>
+    <string name="floating_edge_snap_desc">Tuck the button against the nearest edge when idle to prevent accidental taps. Tap once to reveal it.</string>
+    <string name="floating_percent_format">%1$d%%</string>
+    <string name="floating_dp_format">%1$d dp</string>
+    <string name="floating_seconds_format">%1$d s</string>
+    <string name="floating_disable_dim">Don\'t dim</string>
+    <string name="floating_disable_dim_desc">Keep the button fully visible and never fade or tuck it when idle</string>
+
     <string name="decrease">Decrease</string>
     <string name="increase">Increase</string>
 
+
+    <!-- Profiles -->
+    <string name="profiles">Profiles</string>
+    <string name="profiles_subtitle">Switch firewall contexts in one tap</string>
+    <string name="profiles_empty_title">No profiles yet</string>
+    <string name="profiles_empty_message">Select the apps you want to firewall, then save them as a profile to switch between setups instantly.</string>
+    <string name="profile_active">Active</string>
+    <string name="profile_options">Profile options</string>
+    <string name="profile_save_current">Save current as profile</string>
+    <string name="profile_name_hint">Profile name</string>
+    <string name="profile_name_required">Enter a name</string>
+    <string name="profile_subtitle_format">%1$s · %2$s</string>
+    <plurals name="profile_app_count">
+        <item quantity="one">%d app</item>
+        <item quantity="other">%d apps</item>
+    </plurals>
+    <string name="profile_rename">Rename</string>
+    <string name="profile_update_to_current">Update to current selection</string>
+    <string name="profile_update_action">Update</string>
+    <string name="profile_update_confirm">Overwrite \"%1$s\" with the apps and mode you currently have selected?</string>
+    <string name="profile_delete">Delete</string>
+    <string name="profile_delete_confirm">Delete the profile \"%1$s\"? This cannot be undone.</string>
+    <string name="profile_save">Save</string>
+    <string name="profile_saved">Saved profile \"%1$s\"</string>
+    <string name="profile_updated">Updated \"%1$s\"</string>
+    <string name="profile_switched">Switched to \"%1$s\"</string>
+    <string name="profile_already_active">\"%1$s\" is already active</string>
+    <string name="profile_not_found">Profile not found: %1$s</string>
 
 </resources>

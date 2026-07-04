@@ -123,6 +123,7 @@
     <string name="settings_title">الإعدادات</string>
     <string name="display_section">العرض</string>
     <string name="show_system_apps_description">تضمين تطبيقات النظام في القائمة</string>
+    <string name="show_system_apps_uncheck_confirm">سيتم إلغاء تحديد أي تطبيق نظام محدد وإعادته إلى حالته الافتراضية. هل تريد إلغاء التحديد؟</string>
     <string name="move_selected_top">نقل التطبيقات المحددة للأعلى</string>
     <string name="move_selected_top_description">إظهار التطبيقات المحددة في البداية</string>
     <string name="use_dynamic_color">استخدام ألوان ديناميكية</string>
@@ -144,8 +145,16 @@
     <string name="working_mode_shizuku">Shizuku</string>
     <string name="working_mode_ladb">LADB</string>
     <string name="notifications_section">الإشعارات</string>
-    <string name="app_monitor_service">خدمة مراقبة التطبيقات</string>
-    <string name="app_monitor_service_description">اكتشاف التطبيقات الجديدة المثبتة وإظهار إشعار</string>
+    <string name="app_monitor_service">إشعارات التطبيقات الجديدة</string>
+    <string name="app_monitor_service_description">إظهار إشعار عند تثبيت تطبيق جديد</string>
+    <string name="auto_firewall_new_apps">حظر التطبيقات الجديدة تلقائيًا</string>
+    <string name="auto_firewall_new_apps_description">حظر التطبيقات المثبتة حديثًا تلقائيًا (إلا في وضع القائمة البيضاء)</string>
+    <string name="firewall_status_notification">إشعار حالة الجدار الناري</string>
+    <string name="firewall_status_notification_description">إظهار إشعار دائم بحالة الجدار الناري الحالية</string>
+    <string name="firewall_status_notification_enabled_title">الجدار الناري مُفعّل</string>
+    <string name="firewall_status_notification_enabled_text">يتم التحكم في اتصال التطبيقات بالشبكة</string>
+    <string name="firewall_status_notification_disabled_title">الجدار الناري معطّل</string>
+    <string name="firewall_status_notification_disabled_text">لا يتم التحكم في اتصال التطبيقات بالشبكة</string>
     <string name="new_app_installed">تم تثبيت تطبيق جديد: %s</string>
     <string name="firewall_app">تطبيق الجدار الناري</string>
     <string name="allow_app">سماح</string>
@@ -299,16 +308,12 @@
     
     <string name="firewall_mode_focus_tracker">متتبع التركيز</string>
     <string name="firewall_mode_focus_tracker_description">.خارج نطاق التركيز، وقم بتعطيله عندما يكون داخل نطاق التركيزShizuWall قم بتفعيل جدار الحماية عندما يكون </string>
-    <string name="focus_tracker_info_enabled">يقوم وضع متتبع التركيز بحظر التطبيقات المحددة عندما تغادر ShizuWall، ويسمح بها عندما تكون داخل ShizuWall.\n\nيتم منح إذن الوصول المطلوب تلقائياً عند تفعيل جدار الحماية.</string>
-    
-    <string name="smart_foreground_requires_accessibility">يتطلب إذن الوصول (Accessibility)</string>
     <string name="firewall_mode_change_disabled">لا يمكن تغيير وضع الجدار الناري أثناء تفعيله. يرجى تعطيل الجدار الناري أولاً.</string>
     <string name="firewall_mode_hybrid">الوضع الهجين</string>
     <string name="firewall_mode_hybrid_description">تكوين الوضع بشكل فردي لكل تطبيق</string>
     <string name="hybrid_mode_default_block">حظر افتراضي</string>
     <string name="hybrid_mode_smart_foreground">الواجهة الذكية</string>
     <string name="hybrid_mode_screen_lock">قفل الشاشة</string>
-    <string name="smart_foreground_service_description">يراقب التطبيقات في الواجهة لإدارة قواعد الجدار الناري</string>
     <string name="smart_foreground_notification_channel_name">واجهة ذكية (خدمة)</string>
     <string name="smart_foreground_notification_channel_description">خدمة خلفية لمراقبة التطبيقات في الواجهة</string>
     <string name="smart_foreground_active">الواجهة الذكية نشطة</string>
@@ -316,14 +321,7 @@
     
     <string name="focus_tracker_active">متتبع التركيز: نشط</string>
     <string name="focus_tracker_paused">متتبع التركيز: غير نشط</string>
-
-    <string name="accessibility_service_label">مراقب واجهة ShizuWall</string>
-    <string name="accessibility_auto_enabled">تم تفعيل خدمة الوصول تلقائياً</string>
-    <string name="smart_foreground_info_enabled">سيسمح وضع الواجهة الذكية بالوصول إلى الشبكة فقط للتطبيق الذي تستخدمه حالياً. سيتم حظر جميع التطبيقات الأخرى.\n\nيتم منح إذن الوصول المطلوب تلقائياً عند اختيار هذا الوضع.</string>
-    <string name="hybrid_mode_info_enabled">يجمع الوضع الهجين بين ثلاثة أوضاع فرعية لكل تطبيق: الحظر الافتراضي، والواجهة الذكية، وقفل الشاشة. يمكنك تكوين كل تطبيق بشكل فردي.\n\nيتم منح إذن الوصول المطلوب تلقائياً عند تفعيل الجدار الناري.</string>
-    <string name="smart_foreground_info_deferred">سيسمح وضع الواجهة الذكية بالوصول إلى الشبكة فقط للتطبيق الذي تستخدمه حالياً. سيتم حظر جميع التطبيقات الأخرى.\n\nسيتم منح إذن الوصول تلقائياً عندما يكون Shizuku/الخدمة قيد التشغيل أو عند تفعيل الجدار الناري.</string>
     <string name="firewall_enabled_smart_foreground">تم تفعيل الجدار الناري (وضع الواجهة الذكية)</string>
-    <string name="accessibility_manual_enable_needed">فشل تفعيل خدمة الوصول تلقائياً. يرجى تفعيلها يدوياً من إعدادات جهازك.</string>
     <string name="smart_foreground_active_app">نشط: %s</string>
     <string name="enable_firewall_dialog_title">تفعيل الجدار الناري</string>
     <string name="enable_firewall_dialog_message">هل تريد تفعيل الجدار الناري لـ %d من التطبيقات المدرجة أدناه؟</string>
@@ -381,4 +379,53 @@
     <string name="screen_lock_mode_notification_channel_description">خدمة خلفية لأتمتة قفل الشاشة</string>
     <string name="decrease">تقليل</string>
     <string name="screen_lock_delay_dialog_title">تأخير قفل الشاشة</string>
+
+    <!-- Floating Button Personalization -->
+    <string name="floating_settings_title">Floating Button</string>
+    <string name="floating_settings_content_description">Personalize floating button</string>
+    <string name="floating_idle_opacity">Idle transparency</string>
+    <string name="floating_idle_opacity_desc">How visible the button stays when idle</string>
+    <string name="floating_size">Button size</string>
+    <string name="floating_size_desc">Size of the floating button</string>
+    <string name="floating_fade_delay">Fade delay</string>
+    <string name="floating_fade_delay_desc">Time before the button fades when idle</string>
+    <string name="floating_edge_snap">Hide at screen edge</string>
+    <string name="floating_edge_snap_desc">Tuck the button against the nearest edge when idle to prevent accidental taps. Tap once to reveal it.</string>
+    <string name="floating_percent_format">%1$d%%</string>
+    <string name="floating_dp_format">%1$d dp</string>
+    <string name="floating_seconds_format">%1$d s</string>
+    <string name="floating_disable_dim">عدم التعتيم</string>
+    <string name="floating_disable_dim_desc">حافظ على ظهور الزر بالكامل ولا تعتّمه أو تخفيه عند الخمول</string>
+        <!-- Profiles -->
+    <string name="profiles">ملفات التعريف</string>
+    <string name="profiles_subtitle">بدّل سياقات جدار الحماية بنقرة واحدة</string>
+    <string name="profiles_empty_title">لا توجد ملفات تعريف بعد</string>
+    <string name="profiles_empty_message">حدد التطبيقات التي تريد حظرها بجدار الحماية، ثم احفظها كملف تعريف للتبديل بين الإعدادات فورًا.</string>
+    <string name="profile_active">نشط</string>
+    <string name="profile_options">خيارات الملف التعريفي</string>
+    <string name="profile_save_current">حفظ التحديد الحالي كملف تعريف</string>
+    <string name="profile_name_hint">اسم الملف التعريفي</string>
+    <string name="profile_name_required">أدخل اسمًا</string>
+    <string name="profile_subtitle_format">%1$s · %2$s</string>
+    <plurals name="profile_app_count">
+        <item quantity="zero">%d تطبيق</item>
+        <item quantity="one">تطبيق واحد</item>
+        <item quantity="two">تطبيقان</item>
+        <item quantity="few">%d تطبيقات</item>
+        <item quantity="many">%d تطبيقًا</item>
+        <item quantity="other">%d تطبيق</item>
+    </plurals>
+    <string name="profile_rename">إعادة تسمية</string>
+    <string name="profile_update_to_current">التحديث إلى التحديد الحالي</string>
+    <string name="profile_update_action">تحديث</string>
+    <string name="profile_update_confirm">هل تريد استبدال \"%1$s\" بالتطبيقات والوضع المحددين حاليًا؟</string>
+    <string name="profile_delete">حذف</string>
+    <string name="profile_delete_confirm">هل تريد حذف الملف التعريفي \"%1$s\"؟ لا يمكن التراجع عن هذا.</string>
+    <string name="profile_save">حفظ</string>
+    <string name="profile_saved">تم حفظ الملف التعريفي \"%1$s\"</string>
+    <string name="profile_updated">تم تحديث \"%1$s\"</string>
+    <string name="profile_switched">تم التبديل إلى \"%1$s\"</string>
+    <string name="profile_already_active">\"%1$s\" نشط بالفعل</string>
+    <string name="profile_not_found">لم يتم العثور على الملف التعريفي: %1$s</string>
+
 </resources>

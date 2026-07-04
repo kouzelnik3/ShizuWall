@@ -121,6 +121,7 @@
     <string name="settings_title">Ajustes</string>
     <string name="display_section">Pantalla</string>
     <string name="show_system_apps_description">Incluir aplicaciones del sistema en la lista</string>
+    <string name="show_system_apps_uncheck_confirm">Cualquier aplicación del sistema seleccionada se deseleccionará y volverá a su estado predeterminado. ¿Desea desmarcarla?</string>
     <string name="move_selected_top">Mover seleccionadas arriba</string>
     <string name="move_selected_top_description">Mostrar apps seleccionadas al principio</string>
     <string name="use_dynamic_color">Usar color dinámico</string>
@@ -142,8 +143,16 @@
     <string name="working_mode_shizuku">Shizuku</string>
     <string name="working_mode_ladb">LADB</string>
     <string name="notifications_section">Notificaciones</string>
-    <string name="app_monitor_service">Servicio de monitor de apps</string>
-    <string name="app_monitor_service_description">Detectar nuevas apps instaladas y mostrar una notificación</string>
+    <string name="app_monitor_service">Notificaciones de nuevas apps</string>
+    <string name="app_monitor_service_description">Mostrar una notificación cuando se instala una nueva app</string>
+    <string name="auto_firewall_new_apps">Bloquear nuevas apps automáticamente</string>
+    <string name="auto_firewall_new_apps_description">Bloquear automáticamente las apps recién instaladas (excepto en modo lista blanca)</string>
+    <string name="firewall_status_notification">Notificación de estado del cortafuegos</string>
+    <string name="firewall_status_notification_description">Mostrar una notificación permanente con el estado actual del cortafuegos</string>
+    <string name="firewall_status_notification_enabled_title">Cortafuegos activado</string>
+    <string name="firewall_status_notification_enabled_text">Se está controlando el acceso a la red de las apps</string>
+    <string name="firewall_status_notification_disabled_title">Cortafuegos desactivado</string>
+    <string name="firewall_status_notification_disabled_text">No se está controlando el acceso a la red de las apps</string>
     <string name="new_app_installed">Nueva app instalada: %s</string>
     <string name="firewall_app">App de firewall</string>
     <string name="allow_app">Permitir</string>
@@ -297,10 +306,6 @@
     
     <string name="firewall_mode_focus_tracker">Rastreador de enfoque</string>
     <string name="firewall_mode_focus_tracker_description">Activar el cortafuegos cuando ShizuWall no esté activo, y desactivarlo cuando esté activo.</string>
-    <string name="focus_tracker_info_enabled">El modo Rastreador de enfoque bloquea las apps seleccionadas cuando sales de ShizuWall y las permite cuando estás dentro de ShizuWall.\n\nEl permiso de Accesibilidad requerido se otorga automáticamente cuando activas el cortafuegos.</string>
-    
-    <string name="smart_foreground_requires_accessibility">Requiere permiso de Accesibilidad</string>
-    <string name="smart_foreground_service_description">Monitorea la app en primer plano para gestionar reglas del firewall</string>
     <string name="smart_foreground_notification_channel_name">Primer Plano Inteligente (Servicio)</string>
     <string name="smart_foreground_notification_channel_description">Servicio en segundo plano para monitorear la app en primer plano</string>
     <string name="smart_foreground_active">Primer Plano Inteligente Activo</string>
@@ -308,14 +313,7 @@
     
     <string name="focus_tracker_active">Seguimiento de enfoque: Active</string>
     <string name="focus_tracker_paused">Seguimiento de enfoque: Inactivo</string>
-    
-    <string name="accessibility_service_label">ShizuWall Monitor de Primer Plano</string>
-    <string name="accessibility_auto_enabled">Servicio de accesibilidad habilitado automáticamente</string>
-    <string name="smart_foreground_info_enabled">El modo Primer Plano Inteligente solo permitirá acceso a la red para la app que estés usando. Todas las demás apps serán bloqueadas.\n\nEl permiso de Accesibilidad se otorga automáticamente al seleccionar este modo.</string>
-    <string name="hybrid_mode_info_enabled">El modo Híbrido combina tres submodos por app: Bloqueo Predeterminado, Primer Plano Inteligente y Bloqueo de Pantalla. Puedes configurar cada app individualmente.\n\nEl permiso de Accesibilidad requerido se otorga automáticamente al activar el firewall.</string>
-    <string name="smart_foreground_info_deferred">El modo Primer Plano Inteligente solo permitirá acceso a la red para la app que estés usando. Todas las demás apps serán bloqueadas.\n\nEl permiso de Accesibilidad se otorgará automáticamente cuando Shizuku/Daemon esté en ejecución o cuando actives el firewall.</string>
     <string name="firewall_enabled_smart_foreground">Firewall activado (Modo Primer Plano Inteligente)</string>
-    <string name="accessibility_manual_enable_needed">No se pudo habilitar automáticamente el servicio de accesibilidad. Por favor, habilítalo manualmente en los ajustes de tu dispositivo.</string>
     <string name="smart_foreground_active_app">Activo: %s</string>
     <string name="enable_firewall_dialog_title">Activar Firewall</string>
     <string name="enable_firewall_dialog_message">¿Quieres activar el firewall para las %d apps listadas a continuación?</string>
@@ -380,4 +378,49 @@
     <string name="screen_lock_mode_notification_channel_description">Servicio en segundo plano para automatización del bloqueo</string>
     <string name="decrease">Disminuir</string>
     <string name="screen_lock_delay_dialog_title">Retraso de bloqueo</string>
+
+    <!-- Floating Button Personalization -->
+    <string name="floating_settings_title">Floating Button</string>
+    <string name="floating_settings_content_description">Personalize floating button</string>
+    <string name="floating_idle_opacity">Idle transparency</string>
+    <string name="floating_idle_opacity_desc">How visible the button stays when idle</string>
+    <string name="floating_size">Button size</string>
+    <string name="floating_size_desc">Size of the floating button</string>
+    <string name="floating_fade_delay">Fade delay</string>
+    <string name="floating_fade_delay_desc">Time before the button fades when idle</string>
+    <string name="floating_edge_snap">Hide at screen edge</string>
+    <string name="floating_edge_snap_desc">Tuck the button against the nearest edge when idle to prevent accidental taps. Tap once to reveal it.</string>
+    <string name="floating_percent_format">%1$d%%</string>
+    <string name="floating_dp_format">%1$d dp</string>
+    <string name="floating_seconds_format">%1$d s</string>
+    <string name="floating_disable_dim">No atenuar</string>
+    <string name="floating_disable_dim_desc">Mantén el botón totalmente visible y nunca lo atenúes ni lo oculte en el borde cuando esté inactivo</string>
+        <!-- Profiles -->
+    <string name="profiles">Perfiles</string>
+    <string name="profiles_subtitle">Cambia de contexto de firewall con un toque</string>
+    <string name="profiles_empty_title">Aún no hay perfiles</string>
+    <string name="profiles_empty_message">Selecciona las apps que quieres bloquear con el firewall y guárdalas como un perfil para cambiar de configuración al instante.</string>
+    <string name="profile_active">Activo</string>
+    <string name="profile_options">Opciones del perfil</string>
+    <string name="profile_save_current">Guardar selección actual como perfil</string>
+    <string name="profile_name_hint">Nombre del perfil</string>
+    <string name="profile_name_required">Escribe un nombre</string>
+    <string name="profile_subtitle_format">%1$s · %2$s</string>
+    <plurals name="profile_app_count">
+        <item quantity="one">%d app</item>
+        <item quantity="other">%d apps</item>
+    </plurals>
+    <string name="profile_rename">Cambiar nombre</string>
+    <string name="profile_update_to_current">Actualizar con la selección actual</string>
+    <string name="profile_update_action">Actualizar</string>
+    <string name="profile_update_confirm">¿Sobrescribir \"%1$s\" con las apps y el modo seleccionados actualmente?</string>
+    <string name="profile_delete">Eliminar</string>
+    <string name="profile_delete_confirm">¿Eliminar el perfil \"%1$s\"? Esta acción no se puede deshacer.</string>
+    <string name="profile_save">Guardar</string>
+    <string name="profile_saved">Perfil \"%1$s\" guardado</string>
+    <string name="profile_updated">\"%1$s\" actualizado</string>
+    <string name="profile_switched">Se cambió a \"%1$s\"</string>
+    <string name="profile_already_active">\"%1$s\" ya está activo</string>
+    <string name="profile_not_found">Perfil no encontrado: %1$s</string>
+
 </resources>

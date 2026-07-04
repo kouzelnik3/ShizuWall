@@ -22,7 +22,9 @@
   <a href="https://play.google.com/store/apps/details?id=com.arslan.shizuwall">
     <img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" width="250" />
   </a>
-  
+  <a href="https://f-droid.org/packages/com.arslan.shizuwall/">
+    <img alt="Get it on F-Droid" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" width="250" />
+  </a>
 </p>
 
 <p align="center">
@@ -52,14 +54,18 @@
 ## Screenshots
 
 <p align="center">
-  <img src="assets/screenshots/v4.5/1.png" width="30%" />
-  <img src="assets/screenshots/v4.5/2.png" width="30%" />
-  <img src="assets/screenshots/v4.5/3.png" width="30%" />
-  <img src="assets/screenshots/v4.5/4.png" width="30%" />
-  <img src="assets/screenshots/v4.5/5.png" width="30%" />
-  <img src="assets/screenshots/v4.5/6.png" width="30%" />
-  <img src="assets/screenshots/v4.5/7.png" width="30%" />
-  <img src="assets/screenshots/v4.5/8.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/1.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/2.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/3.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/4.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/5.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/6.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/7.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/8.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/9.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/10.png" width="30%" />
+  <img src="assets/screenshots/v4.5.2/11.png" width="30%" />
+
 </p>
 
 ## Requirements
@@ -165,7 +171,7 @@ ShizuWall is provided **"as is"** without warranty of any kind.
 By using this app, you acknowledge that it relies on advanced system permissions (Shizuku/ADB/Root), and you accept all related risks. The developer is not responsible for damages such as system instability, data loss, service interruption or side effects from blocked networking.
 
 **Official Distribution and Third-Party Risks**
-The developers and contributors of ShizuWall assume no liability or responsibility for any damages, security breaches, malware infections or data losses arising from the download, installation, or use of APK files obtained from third-party sources. ShizuWall is officially developed and distributed exclusively through the Google Play Store and its official GitHub repository. ShizuWall does not own, operate or endorse any official website. Any website or third-party platform claiming to offer official ShizuWall downloads is entirely unaffiliated and unauthorized. Users obtaining the application outside of the officially designated channels do so strictly at their own risk.
+The developers and contributors of ShizuWall assume no liability or responsibility for any damages, security breaches, malware infections or data losses arising from the download, installation, or use of APK files obtained from third-party sources. ShizuWall is officially developed and distributed exclusively through the Google Play Store, its official GitHub repository and F-Droid. ShizuWall does not own, operate or endorse any official website. Any website or third-party platform claiming to offer official ShizuWall downloads is entirely unaffiliated and unauthorized. Users obtaining the application outside of the officially designated channels do so strictly at their own risk.
 
 **ShizuWall is an open-source application. The developer accepts no financial, moral, or legal responsibility for the use of this application. All responsibility belongs to the user.**
 
